@@ -1,7 +1,5 @@
+
 {
-    # Auto HTTPS
-    auto_https
-    # Optional: email for Let's Encrypt
     email elshenawy19@gmail.com
 }
 
