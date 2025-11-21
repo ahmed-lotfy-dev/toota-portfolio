@@ -3,7 +3,7 @@
     # Auto HTTPS
     auto_https on
     # Optional: email for Let's Encrypt
-    email youremail@example.com
+    email elshenawy19@gmail.com
 }
 
 toota-art.ahmedlotfy.site {
