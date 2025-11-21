@@ -1,0 +1,22 @@
+# Caddyfile for Laravel + FrankenPHP
+{
+    # Auto HTTPS
+    auto_https on
+    # Optional: email for Let's Encrypt
+    email youremail@example.com
+}
+
+toota-art.ahmedlotfy.site {
+    root * /app/public
+    encode zstd gzip br
+
+    php_fastcgi unix//tmp/frankenphp.sock
+
+    file_server
+
+    # Hide sensitive files
+    @hidden {
+        path /.env /Caddyfile
+    }
+    respond @hidden 404
+}
