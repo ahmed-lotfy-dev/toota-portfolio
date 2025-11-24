@@ -1,3 +1,7 @@
-<div>
-    <!-- When there is no desire, all things are at peace. - Laozi -->
+<div class="flex flex-col justify-center items-center">
+    Home
+    Services
+    About
+    Contact
+    Galleryco
 </div>
