@@ -5,7 +5,7 @@ namespace App\Livewire;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
 
-#[Layout('components.layouts.landing')]
+#[Layout(name: 'components.layouts.landing')]
 class Home extends Component
 {
     public function render()
