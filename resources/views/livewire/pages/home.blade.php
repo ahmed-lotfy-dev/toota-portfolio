@@ -1,6 +1,6 @@
 <x-layouts.landing :title="__('Home')">
   <div class="w-full min-h-screen flex flex-col ">
-    <x-landing.header />
+    <x-header.header />
     <x-landing.hero />
     <livewire:projects />
     <x-landing.about />
