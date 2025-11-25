@@ -1,4 +1,5 @@
 <x-layouts.dashboard :title="__('Dashboard')">
+    <x-dashboard.dashboard-nav />
     <div class="flex h-full w-full flex-1 flex-col gap-4 rounded-xl p-4 md:p-8">
         <div class="grid auto-rows-min gap-4 md:grid-cols-3">
             <div

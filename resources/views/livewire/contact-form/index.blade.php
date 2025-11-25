@@ -30,14 +30,14 @@
 
         {{-- Contact Form Card --}}
         <div class="relative group mb-16">
-            <div class="absolute -inset-0.5 bg-gradient-to-r from-stone-300 via-stone-200 to-stone-300 rounded-lg blur opacity-10 group-hover:opacity-20 transition duration-500"></div>
+            <div class="absolute -inset-0.5 bg-linear-to-r from-stone-300 via-stone-200 to-stone-300 rounded-lg blur opacity-10 group-hover:opacity-20 transition duration-500"></div>
 
             <div class="relative bg-white rounded-lg shadow-lg p-8 md:p-12 border border-stone-100">
                 {{-- Success Message --}}
                 @if (session()->has('message'))
                     <div class="mb-8 p-4 bg-stone-50 border-l-4 border-stone-400 rounded">
                         <div class="flex items-center gap-3">
-                            <div class="w-10 h-10 bg-stone-800 rounded flex items-center justify-center flex-shrink-0">
+                            <div class="w-10 h-10 bg-stone-800 rounded flex items-center justify-center shrink-0">
                                 <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
                                 </svg>
