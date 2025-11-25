@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\LanguageController;
 use App\Livewire\Dashboard;
 use App\Livewire\Home;
 use App\Livewire\Settings\Appearance;
@@ -13,6 +14,8 @@ Route::get('/', action: Home::class)->name('home');
 Route::get('dashboard', Dashboard::class)
     ->middleware(['auth', 'verified'])
     ->name('dashboard');
+
+Route::get('lang', [LanguageController::class, 'change'])->name("change.lang");
 
 Route::middleware(['auth'])->group(function () {
     Route::redirect('settings', 'settings/profile');
