@@ -18,6 +18,11 @@ Route::get('dashboard', Dashboard::class)
 Route::get('lang', [LanguageController::class, 'change'])->name("change.lang");
 
 Route::middleware(['auth'])->group(function () {
+    Route::resource('categories', App\Http\Controllers\CategoryController::class);
+    Route::resource('projects', App\Http\Controllers\ProjectController::class);
+    Route::resource('project-images', App\Http\Controllers\ProjectImageController::class);
+
+    
     Route::redirect('settings', 'settings/profile');
 
     Route::get('settings/profile', Profile::class)->name('profile.edit');
