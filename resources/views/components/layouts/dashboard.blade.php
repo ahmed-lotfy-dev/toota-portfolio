@@ -4,6 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <!-- Google Fonts -->
@@ -19,9 +20,15 @@
 </head>
 
 <body class="bg-white text-gray-900">
-    <main>
-        {{ $slot }}
-    </main>
+    <div class="flex min-h-screen">
+        <!-- Sidebar -->
+        <x-dashboard.dashboard-nav />
+
+        <!-- Main Content -->
+        <main class="flex-1 bg-gray-50">
+            {{ $slot }}
+        </main>
+    </div>
     @livewireScripts
 </body>
 

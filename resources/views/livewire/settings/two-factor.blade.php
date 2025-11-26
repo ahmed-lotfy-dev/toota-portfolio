@@ -1,10 +1,8 @@
-<section class="w-full">
-    @include('partials.settings-heading')
+<section class="w-full p-8">
+    <flux:heading>{{ __('Two Factor Authentication') }}</flux:heading>
+    <flux:subheading>{{ __('Manage your two-factor authentication settings') }}</flux:subheading>
 
-    <x-settings.layout
-        :heading="__('Two Factor Authentication')"
-        :subheading="__('Manage your two-factor authentication settings')"
-    >
+    <div class="mt-5 w-full max-w-lg">
         <div class="flex flex-col w-full mx-auto space-y-6 text-sm" wire:cloak>
             @if ($twoFactorEnabled)
                 <div class="space-y-4">
@@ -50,7 +48,7 @@
                 </div>
             @endif
         </div>
-    </x-settings.layout>
+    </div>
 
     <flux:modal
         name="two-factor-setup-modal"
