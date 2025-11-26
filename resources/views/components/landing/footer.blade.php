@@ -68,16 +68,7 @@
                 <h4 class="text-xs font-bold uppercase tracking-[0.2em] text-stone-500 mb-8">{{ __('footer.newsletter.title') }}</h4>
                 <p class="text-stone-400 text-sm mb-6 leading-relaxed">{{ __('footer.newsletter.description') }}</p>
                 
-                <form class="space-y-4">
-                    <div class="relative">
-                        <input type="email" 
-                               placeholder="{{ __('footer.newsletter.placeholder') }}" 
-                               class="w-full px-5 py-4 bg-stone-800 border border-transparent text-[#FDFCF8] placeholder-stone-600 focus:outline-none focus:bg-stone-700 focus:border-stone-500 transition-all duration-300">
-                    </div>
-                    <button type="submit" class="w-full px-8 py-4 bg-[#FDFCF8] text-stone-900 text-xs uppercase tracking-widest font-bold hover:bg-stone-300 transition-colors duration-300">
-                        {{ __('footer.newsletter.subscribe') }}
-                    </button>
-                </form>
+                <livewire:newsletter-subscribe />
             </div>
         </div>
 

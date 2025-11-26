@@ -31,4 +31,5 @@ return [
   'email_us' => 'Email Us',
   'call_us' => 'Call Us',
   'visit_us' => 'Visit Us',
+  "success_message" => "Email sent successfully and I'll be contacting you to start the work.",
 ];
