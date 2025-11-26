@@ -6,6 +6,7 @@ use App\Livewire\Home;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\ProjectImageController;
+use App\Http\Controllers\PresignedUrlController;
 use App\Livewire\Settings\Appearance;
 use App\Livewire\Settings\Password;
 use App\Livewire\Settings\Profile;
@@ -21,6 +22,7 @@ Route::middleware(['auth', 'verified'])->prefix('dashboard')->group(function () 
 
     Route::get('categories', App\Livewire\Dashboard\Categories::class)->name('categories.index')->name('categories');
     Route::get('projects', App\Livewire\Dashboard\Projects::class)->name('projects.index')->name('projects');
+    Route::post('presigned-url', [PresignedUrlController::class, 'store'])->name('presigned-url.store');
 
     Route::get('profile', Profile::class)->name('profile.edit');
     Route::get('password', Password::class)->name('user-password.edit');

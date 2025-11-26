@@ -5,7 +5,9 @@
 
     <nav class="space-y-2 text-sm">
         <!-- Starter Kit Default Links -->
-        <a href="{{ url('/dashboard') }}" class="block px-3 py-2 rounded-lg hover:bg-stone-800 transition">Home</a>
+        <a href="{{ url('/') }}" class="block px-3 py-2 rounded-lg hover:bg-stone-800 transition">Home</a>
+        <a href="{{ url('/dashboard') }}" class="block px-3 py-2 rounded-lg hover:bg-stone-800 transition">Dashboard
+            Home</a>
 
         <hr class="border-stone-700 my-4" />
 
