@@ -48,7 +48,7 @@ services:
     container_name: toota-art-nginx
     restart: unless-stopped
     ports:
-      - "80:80" # Only expose port 80, SSL will be handled by Dokploy
+      - "8080:80" # Mapped to host port 8080 to avoid conflicts
     networks:
       - toota-art-network
     depends_on:
