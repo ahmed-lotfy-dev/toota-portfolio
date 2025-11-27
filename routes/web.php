@@ -3,6 +3,10 @@
 use App\Http\Controllers\LanguageController;
 use App\Livewire\Dashboard;
 use App\Livewire\Home;
+use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\ProjectController;
+use App\Http\Controllers\ProjectImageController;
+use App\Http\Controllers\PresignedUrlController;
 use App\Livewire\Settings\Appearance;
 use App\Livewire\Settings\Password;
 use App\Livewire\Settings\Profile;
@@ -11,25 +15,20 @@ use Illuminate\Support\Facades\Route;
 use Laravel\Fortify\Features;
 
 Route::get('/', action: Home::class)->name('home');
-Route::get('dashboard', Dashboard::class)
-    ->middleware(['auth', 'verified'])
-    ->name('dashboard');
-
 Route::get('lang', [LanguageController::class, 'change'])->name("change.lang");
 
-Route::middleware(['auth'])->group(function () {
-    Route::resource('categories', App\Http\Controllers\CategoryController::class);
-    Route::resource('projects', App\Http\Controllers\ProjectController::class);
-    Route::resource('project-images', App\Http\Controllers\ProjectImageController::class);
+Route::middleware(['auth', 'verified'])->prefix('dashboard')->group(function () {
+    Route::get('/', Dashboard::class)->name('dashboard');
 
-    
-    Route::redirect('settings', 'settings/profile');
+    Route::get('categories', App\Livewire\Dashboard\Categories::class)->name('categories.index')->name('categories');
+    Route::get('projects', App\Livewire\Dashboard\Projects::class)->name('projects.index')->name('projects');
+    Route::post('presigned-url', [PresignedUrlController::class, 'store'])->name('presigned-url.store');
 
-    Route::get('settings/profile', Profile::class)->name('profile.edit');
-    Route::get('settings/password', Password::class)->name('user-password.edit');
-    Route::get('settings/appearance', Appearance::class)->name('appearance.edit');
+    Route::get('profile', Profile::class)->name('profile.edit');
+    Route::get('password', Password::class)->name('user-password.edit');
+    Route::get('appearance', Appearance::class)->name('appearance.edit');
 
-    Route::get('settings/two-factor', TwoFactor::class)
+    Route::get('two-factor', TwoFactor::class)
         ->middleware(
             when(
                 Features::canManageTwoFactorAuthentication()
@@ -39,4 +38,6 @@ Route::middleware(['auth'])->group(function () {
             ),
         )
         ->name('two-factor.show');
+
+    Route::get('testimonials', App\Livewire\Dashboard\Testimonials::class)->name('testimonials.index');
 });

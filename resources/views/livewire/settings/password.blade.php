@@ -1,8 +1,9 @@
-<section class="w-full">
-    @include('partials.settings-heading')
+<section class="w-full p-8">
+    <flux:heading>{{ __('Update password') }}</flux:heading>
+    <flux:subheading>{{ __('Ensure your account is using a long, random password to stay secure') }}</flux:subheading>
 
-    <x-settings.layout :heading="__('Update password')" :subheading="__('Ensure your account is using a long, random password to stay secure')">
-        <form method="POST" wire:submit="updatePassword" class="mt-6 space-y-6">
+    <div class="mt-5 w-full max-w-lg">
+        <form method="POST" wire:submit="updatePassword" class="space-y-6">
             <flux:input
                 wire:model="current_password"
                 :label="__('Current password')"
@@ -35,5 +36,5 @@
                 </x-action-message>
             </div>
         </form>
-    </x-settings.layout>
+    </div>
 </section>

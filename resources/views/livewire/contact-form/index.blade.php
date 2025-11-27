@@ -1,4 +1,4 @@
-<section class="relative py-20 px-4 sm:px-6 lg:px-8 overflow-hidden bg-[#FDFCF8]">
+<section class="relative py-20 px-4 sm:px-6 lg:px-8 overflow-hidden bg-[#FDFCF8]" id="contact">
     {{-- Decorative background elements - Artisan aesthetic --}}
     <div class="absolute inset-0 -z-10">
         <div class="absolute top-40 right-20 w-96 h-96 bg-orange-100/20 rounded-full blur-3xl"></div>

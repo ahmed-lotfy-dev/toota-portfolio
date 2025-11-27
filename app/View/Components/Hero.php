@@ -21,6 +21,6 @@ class Hero extends Component
      */
     public function render(): View|Closure|string
     {
-        return view('components.hero');
+        return view('components.landing.hero');
     }
 }

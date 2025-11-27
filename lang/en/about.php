@@ -5,9 +5,9 @@ return [
 
   'heading' => 'Crafting Handmade Art That Inspires',
 
-  'description' => 'Sarah Toota is a passionate artist dedicated to creating unique handmade masks, props, and decorative pieces. Her work combines creativity, precision, and storytelling, bringing characters and concepts to life for theater, cosplay, and exhibitions.',
+  'description' => 'Shimaa Toota is a passionate artist dedicated to creating unique handmade masks, props, and decorative pieces. Her work combines creativity, precision, and storytelling, bringing characters and concepts to life for theater, cosplay, and exhibitions.',
 
-  'artist_image_alt' => 'Portrait of Sarah Toota',
+  'artist_image_alt' => 'Portrait of Shimaa Toota',
 
   'experience_years' => '10+ Years',
   'experience_label' => 'Professional Experience',

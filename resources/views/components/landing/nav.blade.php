@@ -72,7 +72,7 @@
                     </svg>
                 </a>
 
-                <a href="/contact"
+                <a href="/#contact"
                     class="px-6 py-3 bg-stone-900 text-[#FDFCF8] text-xs uppercase tracking-widest hover:bg-stone-700 transition-colors duration-300">
                     {{ __('nav.contact') }}
                 </a>
@@ -119,7 +119,7 @@
                 class="text-sm uppercase tracking-widest text-stone-400 hover:text-stone-900 transition pt-4">
                 {{ __('nav.dashboard') }}
             </a>
-            <a href="/contact"
+            <a href="#contact"
                 class="w-full max-w-xs py-4 bg-stone-900 text-[#FDFCF8] uppercase tracking-widest text-sm hover:bg-stone-700 transition">
                 {{ __('nav.contact') }}
             </a>
