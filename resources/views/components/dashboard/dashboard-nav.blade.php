@@ -17,6 +17,8 @@
             class="block px-3 py-2 rounded-lg hover:bg-stone-800 transition">Categories</a>
         <a href="{{ url('/dashboard/projects') }}"
             class="block px-3 py-2 rounded-lg hover:bg-stone-800 transition">Projects</a>
+        <a href="{{ route('testimonials.index') }}"
+            class="block px-3 py-2 rounded-lg hover:bg-stone-800 transition">Testimonials</a>
 
         <hr class="border-stone-700 my-4" />
 

@@ -21,6 +21,6 @@ class services extends Component
      */
     public function render(): View|Closure|string
     {
-        return view('components.services');
+        return view('components.landing.services');
     }
 }

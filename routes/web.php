@@ -38,4 +38,6 @@ Route::middleware(['auth', 'verified'])->prefix('dashboard')->group(function () 
             ),
         )
         ->name('two-factor.show');
+
+    Route::get('testimonials', App\Livewire\Dashboard\Testimonials::class)->name('testimonials.index');
 });

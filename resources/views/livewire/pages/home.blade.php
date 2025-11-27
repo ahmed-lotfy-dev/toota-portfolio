@@ -4,6 +4,7 @@
   <livewire:projects />
   <x-landing.about />
   <x-landing.services />
+  <x-testimonials />
   <livewire:contact-form />
   <x-landing.footer />
 </div>
