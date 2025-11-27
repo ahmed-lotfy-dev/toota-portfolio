@@ -1,11 +1,9 @@
 services:
   app:
     build:
-      args:
-        user: www-data
-        uid: 1000 # Default user id for alpine images
       context: .
       dockerfile: Dockerfile.production
+      target: app
     image: toota-art:latest # You can change this to your image name for a registry
     container_name: toota-art-app
     restart: unless-stopped
@@ -44,9 +42,8 @@ services:
   nginx:
     build:
       context: .
-      dockerfile: docker/nginx/Dockerfile.production
-      args:
-        - APP_IMAGE=toota-art:latest
+      dockerfile: Dockerfile.production
+      target: nginx
     image: toota-art-nginx:latest
     container_name: toota-art-nginx
     restart: unless-stopped
