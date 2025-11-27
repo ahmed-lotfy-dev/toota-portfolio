@@ -19,7 +19,7 @@
 
                 <div class="relative border-4 border-stone-900 rounded-lg shadow-xl bg-white/50 backdrop-blur-sm">
                     <div class="aspect-3/4 overflow-hidden rounded-md">
-                        <img src="{{ $image ?? asset('images/artist-default.jpg') }}"
+                        <img src="{{ $image ?? asset('images/Artist-Image.png') }}"
                             alt="{{ __('about.artist_image_alt') }}"
                             class="w-full h-full object-cover transform transition duration-700 group-hover:scale-[1.03] grayscale-10 group-hover:grayscale-0">
                     </div>
