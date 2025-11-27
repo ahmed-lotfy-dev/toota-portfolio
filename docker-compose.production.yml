@@ -1,0 +1,91 @@
+services:
+  app:
+    build:
+      args:
+        user: www-data
+        uid: 1000 # Default user id for alpine images
+      context: .
+      dockerfile: Dockerfile.production
+    image: toota-art:latest # You can change this to your image name for a registry
+    container_name: toota-art-app
+    restart: unless-stopped
+    environment:
+      # Laravel specific environment variables
+      APP_NAME: "${APP_NAME}"
+      APP_ENV: production
+      APP_KEY: "${APP_KEY}"
+      APP_DEBUG: "${APP_DEBUG}"
+      APP_URL: "${APP_URL}"
+
+      # Database connection (PostgreSQL)
+      DB_CONNECTION: pgsql
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_DATABASE: "${DB_DATABASE}"
+      DB_USERNAME: "${DB_USERNAME}"
+      DB_PASSWORD: "${DB_PASSWORD}"
+
+      # Redis connection
+      REDIS_HOST: redis
+      REDIS_PASSWORD: "${REDIS_PASSWORD}"
+      REDIS_PORT: 6379
+
+      # Caching & Sessions
+      CACHE_STORE: redis
+      SESSION_DRIVER: redis
+      QUEUE_CONNECTION: redis
+    working_dir: /var/www
+    depends_on:
+      - db
+      - redis
+    networks:
+      - toota-art-network
+
+  nginx:
+    build:
+      context: .
+      dockerfile: docker/nginx/Dockerfile.production
+      args:
+        - APP_IMAGE=toota-art:latest
+    image: toota-art-nginx:latest
+    container_name: toota-art-nginx
+    restart: unless-stopped
+    ports:
+      - "80:80" # Only expose port 80, SSL will be handled by Dokploy
+    networks:
+      - toota-art-network
+    depends_on:
+      - app
+
+  db:
+    image: postgres:18-alpine # Using a specific, stable version for production
+    container_name: toota-art-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: "${DB_DATABASE}"
+      POSTGRES_USER: "${DB_USERNAME}"
+      POSTGRES_PASSWORD: "${DB_PASSWORD}"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    networks:
+      - toota-art-network
+
+  redis:
+    image: redis:alpine
+    container_name: toota-art-redis
+    restart: unless-stopped
+    command: redis-server --requirepass "${REDIS_PASSWORD}"
+    volumes:
+      - redis_data:/data
+    networks:
+      - toota-art-network
+
+networks:
+  toota-art-network:
+    driver: bridge
+
+volumes:
+  db_data:
+    driver: local
+  redis_data:
+    driver: local

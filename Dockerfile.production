@@ -1,0 +1,72 @@
+# Stage 1: Base PHP Image
+# Using PHP 8.3 to match your composer.json requirement
+FROM php:8.3-fpm-alpine AS base
+WORKDIR /var/www
+
+# Install essential PHP extensions for Laravel
+# Note: You may need to add more extensions depending on your app's specific dependencies (e.g., gd, redis)
+RUN apk add --no-cache \
+        $PHPIZE_DEPS \
+        curl \
+        libpng-dev \
+        libxml2-dev \
+        zip \
+        unzip \
+        postgresql-dev; # For pgsql driver
+
+RUN pecl install redis && docker-php-ext-enable redis
+
+RUN docker-php-ext-install \
+    pdo \
+    pdo_pgsql \
+    pcntl \
+    xml
+
+# Stage 2: Install Composer Dependencies
+FROM base AS composer_vendor
+COPY --from=composer:latest /usr/bin/composer /usr/local/bin/composer
+
+COPY database/ database/
+COPY composer.json composer.lock ./
+RUN composer install --no-interaction --no-dev --no-scripts --prefer-dist
+
+# Stage 3: Build Frontend Assets
+FROM node:20-alpine AS npm_assets
+WORKDIR /app
+
+COPY package.json package-lock.json ./
+# Copy vendor directory from composer stage, as it's needed for the frontend build
+COPY --from=composer_vendor /var/www/vendor/ ./vendor/
+
+RUN npm install
+
+COPY vite.config.js ./
+COPY resources/js/ ./resources/js/
+COPY resources/css/ ./resources/css/
+RUN npm run build
+
+# Stage 4: Production Image
+FROM base AS production
+WORKDIR /var/www
+
+# Copy vendor dependencies, frontend assets, and application code
+COPY --from=composer_vendor /var/www/vendor/ ./vendor/
+COPY --from=npm_assets /app/public/build ./public/build
+COPY . .
+
+# Set correct permissions for Laravel
+RUN chown -R www-data:www-data /var/www/storage /var/www/bootstrap/cache
+RUN chmod -R 775 /var/www/storage /var/www/bootstrap/cache
+
+# Generate Laravel caches
+# The .env file is not copied into the image for security.
+# It should be provided by the deployment environment (e.g., Dokploy).
+# These commands will fail if no .env file is present, but they are crucial for production.
+# I've commented them out. You should run these in your deployment pipeline after injecting the .env file.
+# RUN php artisan config:cache
+# RUN php artisan route:cache
+# RUN php artisan view:cache
+
+# Expose port 9000 for PHP-FPM
+EXPOSE 9000
+CMD ["php-fpm"]
