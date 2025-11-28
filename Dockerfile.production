@@ -1,59 +1,69 @@
-# Stage 0 - Builder: composer + node build
-FROM composer:2 AS builder
+# Stage 1 - Builder: Install dependencies and build assets
+FROM composer:2.7 AS builder
 
 WORKDIR /app
 
-# copy composer files first for caching
+# Install system dependencies for building assets
+RUN apk add --no-cache \
+    npm
+
+# Copy composer and package manager files
 COPY composer.json composer.lock ./
+COPY package.json package-lock.json* vite.config.js ./
 
-# copy package files so node can build if present
-COPY package.json package-lock.json vite.config.js ./
-
-# copy everything (artisan is required for composer scripts)
-COPY . .
-
-# install PHP deps
-RUN composer install --no-dev --optimize-autoloader --no-interaction --prefer-dist
-
-# build frontend (if package.json exists)
+# Install frontend dependencies and build assets first
+# This allows caching if only backend code changes
 RUN if [ -f package.json ]; then \
       npm ci --no-audit --no-fund && \
       npm run build; \
     fi
 
-# run artisan optimize commands (optional) — ensure APP_KEY is set via env in build or runtime
-# NOTE: package discovery already ran during composer install; if you rely on runtime envs keep discovery at runtime.
-#RUN php artisan key:generate --force
+# Install composer dependencies
+RUN composer install --no-dev --no-scripts --no-interaction --prefer-dist
+
+# Copy the rest of the application code
+COPY . .
+
+# Run composer scripts (like package discovery)
+RUN composer dump-autoload --optimize && \
+    composer run-script post-install-cmd --no-dev
+
 
 # ---------------------------------------------------------
-# Stage 1 - Runtime: FrankenPHP
+# Stage 2 - Final Runtime Image
 # ---------------------------------------------------------
-FROM dunglas/frankenphp:latest
+FROM dunglas/frankenphp:1-php8.3 AS final
 
-# Set server root and name
-ENV SERVER_ROOT=/app/public
-# For automatic HTTPS set your domain, e.g. SERVER_NAME=yourdomain.com
-ENV SERVER_NAME=:80
+# Set recommended PHP opcache settings for production
+# See https://www.php.net/manual/en/opcache.configuration.php
+ENV PHP_OPCACHE_ENABLE="1"
+ENV PHP_OPCACHE_ENABLE_CLI="1"
+ENV PHP_OPCACHE_INTERNED_STRINGS_BUFFER="16"
+ENV PHP_OPCACHE_MEMORY_CONSUMPTION="128"
+ENV PHP_OPCACHE_MAX_ACCELERATED_FILES="10000"
+ENV PHP_OPCACHE_REVALIDATE_FREQ="0"
+ENV PHP_OPCACHE_VALIDATE_TIMESTAMPS="0"
 
-# Use production php.ini
-RUN mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini" || true
+# Use the production php.ini
+RUN mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini"
 
 WORKDIR /app
 
-# Copy project files
-COPY . .
-
-# Copy built vendor & assets from builder
+# Copy built artifacts from the builder stage
 COPY --from=builder /app/vendor ./vendor
 COPY --from=builder /app/public/build ./public/build
+COPY --from=builder /app .
 
-# Ensure storage & cache are writable
-RUN chmod -R 0777 /app/storage /app/bootstrap/cache || true
+# FrankenPHP runs as user `frankenphp` by default.
+# Give this user ownership of the app directory, specifically for storage and cache.
+RUN chown -R frankenphp:frankenphp .
+USER frankenphp
 
-# Expose HTTP/HTTPS
-EXPOSE 80 443
+# Expose HTTP/HTTPS ports
+EXPOSE 80 443 443/udp
 
-# Recommended: do not run migrate automatically in image build.
 # The container will start the FrankenPHP server automatically.
-# not recommended for all workflows — optional auto-migrate on container start
-CMD php artisan migrate --force && frankenphp run
+# The entrypoint is pre-configured in the base image.
+# We removed `php artisan migrate` from the CMD.
+# You should run migrations as a one-off task in your deployment pipeline (e.g., a post-deploy hook in Dokploy).
+CMD ["frankenphp", "run", "--config", "/app/docker/caddy/Caddyfile"]
