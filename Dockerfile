@@ -1,51 +1,70 @@
-# -------------------------------------------------------
-# STAGE 1: Composer Builder
-# -------------------------------------------------------
-FROM composer:2 AS vendor
-WORKDIR /app
+# Stage 1: Build environment and Composer dependencies
+FROM php:8.4-cli AS builder
 
-COPY composer.json composer.lock ./
-RUN composer install --no-dev --prefer-dist --no-interaction --optimize-autoloader
+# Install system dependencies and PHP extensions required for Laravel + MySQL/PostgreSQL support
+# Some dependencies are required for PHP extensions only in the build stage
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    curl \
+    unzip \
+    libpq-dev \
+    libonig-dev \
+    libssl-dev \
+    libxml2-dev \
+    libcurl4-openssl-dev \
+    libicu-dev \
+    libzip-dev \
+    && docker-php-ext-install -j$(nproc) \
+    pdo_mysql \
+    pdo_pgsql \
+    pgsql \
+    opcache \
+    intl \
+    zip \
+    bcmath \
+    soap \
+    && pecl install redis \
+    && docker-php-ext-enable redis \
+    && apt-get autoremove -y && apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
-COPY . .
-RUN composer dump-autoload -o
+# Set the working directory inside the container
+WORKDIR /var/www
 
+# Copy the entire Laravel application code into the container
+COPY . /var/www
 
-# -------------------------------------------------------
-# STAGE 2: Node/Vite Builder
-# -------------------------------------------------------
-FROM node:20-alpine AS frontend
-WORKDIR /app
+# Install Composer and dependencies
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer \
+    && composer install --no-dev --optimize-autoloader --no-interaction --no-progress --prefer-dist
 
-COPY package.json package-lock.json ./
-RUN npm install --production=false
+# Stage 2: Production environment
+FROM php:8.4-cli
 
-COPY . .
-RUN npm run build
+# Install client libraries required for php extensions in runtime
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    libpq-dev \
+    libicu-dev \
+    libzip-dev \
+    && apt-get autoremove -y && apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
+# Copy PHP extensions and libraries from the builder stage
+COPY --from=builder /usr/local/lib/php/extensions/ /usr/local/lib/php/extensions/
+COPY --from=builder /usr/local/etc/php/conf.d/ /usr/local/etc/php/conf.d/
+COPY --from=builder /usr/local/bin/docker-php-ext-* /usr/local/bin/
 
-# -------------------------------------------------------
-# STAGE 3: Production PHP-FPM App
-# -------------------------------------------------------
-FROM php:8.3-fpm AS app
+# Use the default production configuration for PHP runtime arguments
+RUN mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini"
 
-# Install system + PHP extensions
-RUN apt-get update && apt-get install -y \
-    zip unzip curl git libpng-dev libjpeg62-turbo-dev libfreetype6-dev \
-    libonig-dev libxml2-dev libzip-dev \
- && docker-php-ext-install pdo_mysql mbstring zip gd
+# Copy the application code and dependencies from the build stage
+COPY --from=builder /var/www /var/www
 
-WORKDIR /var/www/html
+# Set working directory
+WORKDIR /var/www
 
-# Copy application source
-COPY . .
+# Ensure correct permissions
+RUN chown -R www-data:www-data /var/www
 
-# Copy vendors + production assets
-COPY --from=vendor /app/vendor ./vendor
-COPY --from=frontend /app/public/build ./public/build
+# Switch to the non-privileged user to run the application
+USER www-data
 
-# Permissions
-RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
-
-EXPOSE 9000
-CMD ["php-fpm"]
+# Default command: Provide a bash shell to allow running any command
+CMD ["bash"]
