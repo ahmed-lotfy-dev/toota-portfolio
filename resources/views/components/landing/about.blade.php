@@ -9,7 +9,40 @@
 
     <div class="max-w-7xl mx-auto">
         <div class="grid lg:grid-cols-2 gap-12 lg:gap-24 items-center">
-            
+                        {{-- 1. Image Column: Framed Art Look --}}
+            <div class="relative group" data-aos="fade-right">
+                
+                {{-- Decorative Back Layer (Contrast Block) --}}
+                <div class="absolute inset-0 md:-inset-4 bg-stone-200 rounded-lg transform translate-x-2 translate-y-2 opacity-50 transition duration-500 group-hover:translate-x-3 group-hover:translate-y-3">
+                </div>
+
+                <div class="relative border-4 border-stone-900 rounded-lg shadow-xl bg-white/50 backdrop-blur-sm">
+                    <div class="aspect-3/4 overflow-hidden rounded-md bg-gradient-to-br from-stone-100 to-stone-50">
+                        <img src="{{ $image ?? asset('images/ArtistImageFlippedpaintingdesk.png') }}"
+                            alt="{{ __('about.artist_image_alt') }}"
+                            class="w-full h-full object-cover transform transition duration-700 group-hover:scale-[1.03] grayscale-10 group-hover:grayscale-0">
+                    </div>
+                    
+                    {{-- Floating Museum Tag/Badge (High Contrast) --}}
+                    <div
+                        class="absolute -bottom-6 -right-6 bg-stone-900 rounded-md border-4 border-[#FDFCF8] shadow-2xl p-4 transform group-hover:-translate-y-0.5 transition duration-300">
+                        <div class="flex items-center gap-3">
+                            {{-- Icon: Simple Tool (Chisel/Brush) --}}
+                            <div
+                                class="w-10 h-10 bg-stone-700 rounded-md flex items-center justify-center">
+                                <svg class="w-5 h-5 text-[#FDFCF8]" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 21v-8.25M15.75 21v-8.25M8.25 21v-8.25M3 9l9-6 9 6m-7.5 3h6m2.25 0h-6M12 18v-5.25" />
+                                </svg>
+                            </div>
+                            <div>
+                                <p class="text-sm font-semibold text-[#FDFCF8]">{{ __('about.experience_years') }}</p>
+                                <p class="text-xs text-stone-300">{{ __('about.experience_label') }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             {{-- 2. Content Section --}}
             <div class="space-y-8" data-aos="fade-left">
                 
@@ -80,40 +113,6 @@
                                 d="M17.25 8.25L21 12m0 0l-3.75 3.75M21 12H3"></path>
                         </svg>
                     </a>
-                </div>
-            </div>
-            
-            {{-- 1. Image Column: Framed Art Look --}}
-            <div class="relative group" data-aos="fade-right">
-                
-                {{-- Decorative Back Layer (Contrast Block) --}}
-                <div class="absolute inset-0 md:-inset-4 bg-stone-200 rounded-lg transform translate-x-2 translate-y-2 opacity-50 transition duration-500 group-hover:translate-x-3 group-hover:translate-y-3">
-                </div>
-
-                <div class="relative border-4 border-stone-900 rounded-lg shadow-xl bg-white/50 backdrop-blur-sm">
-                    <div class="aspect-3/4 overflow-hidden rounded-md">
-                        <img src="{{ $image ?? asset('images/Artist-Image.png') }}"
-                            alt="{{ __('about.artist_image_alt') }}"
-                            class="w-full h-full object-cover transform transition duration-700 group-hover:scale-[1.03] grayscale-10 group-hover:grayscale-0">
-                    </div>
-                    
-                    {{-- Floating Museum Tag/Badge (High Contrast) --}}
-                    <div
-                        class="absolute -bottom-6 -right-6 bg-stone-900 rounded-md border-4 border-[#FDFCF8] shadow-2xl p-4 transform group-hover:-translate-y-0.5 transition duration-300">
-                        <div class="flex items-center gap-3">
-                            {{-- Icon: Simple Tool (Chisel/Brush) --}}
-                            <div
-                                class="w-10 h-10 bg-stone-700 rounded-md flex items-center justify-center">
-                                <svg class="w-5 h-5 text-[#FDFCF8]" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 21v-8.25M15.75 21v-8.25M8.25 21v-8.25M3 9l9-6 9 6m-7.5 3h6m2.25 0h-6M12 18v-5.25" />
-                                </svg>
-                            </div>
-                            <div>
-                                <p class="text-sm font-semibold text-[#FDFCF8]">{{ __('about.experience_years') }}</p>
-                                <p class="text-xs text-stone-300">{{ __('about.experience_label') }}</p>
-                            </div>
-                        </div>
-                    </div>
                 </div>
             </div>
         </div>
