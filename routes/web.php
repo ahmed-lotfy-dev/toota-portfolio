@@ -17,6 +17,11 @@ use Laravel\Fortify\Features;
 Route::get('/', action: Home::class)->name('home');
 Route::get('lang', [LanguageController::class, 'change'])->name("change.lang");
 
+// Google OAuth routes
+Route::get('/login/google', [App\Http\Controllers\GoogleAuthController::class, 'redirect'])->name('auth.google');
+Route::get('/login/google/callback', [App\Http\Controllers\GoogleAuthController::class, 'callback'])->name('auth.google.callback');
+Route::get('/access-denied', [App\Http\Controllers\GoogleAuthController::class, 'accessDenied'])->name('access.denied');
+
 Route::middleware(['auth', 'verified'])->prefix('dashboard')->group(function () {
     Route::get('/', Dashboard::class)->name('dashboard');
 
@@ -41,3 +46,6 @@ Route::middleware(['auth', 'verified'])->prefix('dashboard')->group(function () 
 
     Route::get('testimonials', App\Livewire\Dashboard\Testimonials::class)->name('testimonials.index');
 });
+
+// Fallback route for 404
+Route::fallback(App\Livewire\Pages\NotFound::class);

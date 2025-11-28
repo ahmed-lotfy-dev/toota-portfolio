@@ -34,5 +34,14 @@
         @endif
         <a href="{{ url('/dashboard/appearance') }}"
             class="block px-3 py-2 rounded-lg hover:bg-stone-800 transition">Appearance</a>
+
+        <hr class="border-stone-700 my-4" />
+
+        <form method="POST" action="{{ route('logout') }}">
+            @csrf
+            <button type="submit" class="w-full text-left block px-3 py-2 rounded-lg hover:bg-red-900/20 text-red-400 hover:text-red-300 transition">
+                Log Out
+            </button>
+        </form>
     </nav>
 </aside>
