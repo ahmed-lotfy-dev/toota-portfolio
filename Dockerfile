@@ -1,44 +1,51 @@
-# ============================================
-# 1) COMPOSER STAGE
-# ============================================
-FROM composer:2 AS composer_builder
+# -------------------------------------------------------
+# STAGE 1: Composer Builder
+# -------------------------------------------------------
+FROM composer:2 AS vendor
 WORKDIR /app
 
 COPY composer.json composer.lock ./
-RUN composer install --no-dev --optimize-autoloader --no-interaction --prefer-dist
+RUN composer install --no-dev --prefer-dist --no-interaction --optimize-autoloader
 
-# ============================================
-# 2) NODE/VITE STAGE
-# ============================================
-FROM node:18 AS node_builder
+COPY . .
+RUN composer dump-autoload -o
+
+
+# -------------------------------------------------------
+# STAGE 2: Node/Vite Builder
+# -------------------------------------------------------
+FROM node:20-alpine AS frontend
 WORKDIR /app
 
 COPY package.json package-lock.json ./
-RUN npm install
+RUN npm install --production=false
 
 COPY . .
 RUN npm run build
 
-# ============================================
-# 3) PROD STAGE (FrankenPHP)
-# ============================================
-FROM dunglas/frankenphp:1.1-php8.3 AS production
 
-WORKDIR /app
+# -------------------------------------------------------
+# STAGE 3: Production PHP-FPM App
+# -------------------------------------------------------
+FROM php:8.3-fpm AS app
 
-# Copy whole Laravel project
+# Install system + PHP extensions
+RUN apt-get update && apt-get install -y \
+    zip unzip curl git libpng-dev libjpeg62-turbo-dev libfreetype6-dev \
+    libonig-dev libxml2-dev libzip-dev \
+ && docker-php-ext-install pdo_mysql mbstring zip gd
+
+WORKDIR /var/www/html
+
+# Copy application source
 COPY . .
 
-# Copy dependencies from Composer stage
-COPY --from=composer_builder /app/vendor ./vendor
+# Copy vendors + production assets
+COPY --from=vendor /app/vendor ./vendor
+COPY --from=frontend /app/public/build ./public/build
 
-# Copy built assets from Node stage
-COPY --from=node_builder /app/public ./public
+# Permissions
+RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
 
-# Set correct permissions
-RUN chown -R www-data:www-data /app/storage /app/bootstrap/cache
-
-EXPOSE 80
-EXPOSE 443
-
-CMD ["php", "frankenphp", "run", "--config=/app/frankenphp.php"]
+EXPOSE 9000
+CMD ["php-fpm"]
