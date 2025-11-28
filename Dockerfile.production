@@ -1,77 +1,59 @@
-# Stage 1: Base PHP Image
-# Using PHP 8.3 to match your composer.json requirement
-FROM php:8.3-fpm-alpine AS base
-WORKDIR /var/www
+# Stage 0 - Builder: composer + node build
+FROM composer:2 AS builder
 
-# Install essential PHP extensions for Laravel
-RUN apk add --no-cache \
-        $PHPIZE_DEPS \
-        curl \
-        libpng-dev \
-        libxml2-dev \
-        zip \
-        unzip \
-        postgresql-dev \
-        redis;
-
-RUN pecl install redis && docker-php-ext-enable redis
-
-RUN docker-php-ext-install \
-    pdo \
-    pdo_pgsql \
-    pcntl \
-    xml
-
-# Stage 2: Install Composer Dependencies
-FROM base AS composer_vendor
-COPY --from=composer:latest /usr/bin/composer /usr/local/bin/composer
-
-COPY database/ database/
-COPY composer.json composer.lock ./
-RUN composer install --no-interaction --no-dev --no-scripts --prefer-dist
-
-# Stage 3: Build Frontend Assets
-FROM node:20-alpine AS npm_assets
 WORKDIR /app
 
-COPY package.json package-lock.json ./
-# Copy vendor directory from composer stage, as it's needed for the frontend build
-COPY --from=composer_vendor /var/www/vendor/ ./vendor/
+# copy composer files first for caching
+COPY composer.json composer.lock ./
 
-RUN npm install
+# copy package files so node can build if present
+COPY package.json package-lock.json vite.config.js ./
 
-COPY vite.config.js ./
-COPY resources/js/ ./resources/js/
-COPY resources/css/ ./resources/css/
-RUN npm run build
-
-#--------------------------------------------------------------------------
-# Final App Image
-#--------------------------------------------------------------------------
-FROM base AS app
-WORKDIR /var/www
-
-# Copy vendor dependencies, frontend assets, and application code
-COPY --from=composer_vendor /var/www/vendor/ ./vendor/
-COPY --from=npm_assets /app/public/build ./public/build
+# copy everything (artisan is required for composer scripts)
 COPY . .
 
-# Set correct permissions for Laravel
-RUN chown -R www-data:www-data /var/www/storage /var/www/bootstrap/cache
-RUN chmod -R 775 /var/www/storage /var/www/bootstrap/cache
+# install PHP deps
+RUN composer install --no-dev --optimize-autoloader --no-interaction --prefer-dist
 
-# Expose port 9000 for PHP-FPM
-EXPOSE 9000
-CMD ["php-fpm"]
+# build frontend (if package.json exists)
+RUN if [ -f package.json ]; then \
+      npm ci --no-audit --no-fund && \
+      npm run build; \
+    fi
 
+# run artisan optimize commands (optional) — ensure APP_KEY is set via env in build or runtime
+# NOTE: package discovery already ran during composer install; if you rely on runtime envs keep discovery at runtime.
+#RUN php artisan key:generate --force
 
-#--------------------------------------------------------------------------
-# Final Nginx Image
-#--------------------------------------------------------------------------
-FROM nginx:alpine AS nginx
+# ---------------------------------------------------------
+# Stage 1 - Runtime: FrankenPHP
+# ---------------------------------------------------------
+FROM dunglas/frankenphp:latest
 
-# Copy the compiled static assets from the app image's public directory
-COPY --from=app /var/www/public /var/www/public
+# Set server root and name
+ENV SERVER_ROOT=/app/public
+# For automatic HTTPS set your domain, e.g. SERVER_NAME=yourdomain.com
+ENV SERVER_NAME=:80
 
-# Copy the nginx configuration file
-COPY docker/nginx/production.conf /etc/nginx/conf.d/default.conf
+# Use production php.ini
+RUN mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini" || true
+
+WORKDIR /app
+
+# Copy project files
+COPY . .
+
+# Copy built vendor & assets from builder
+COPY --from=builder /app/vendor ./vendor
+COPY --from=builder /app/public/build ./public/build
+
+# Ensure storage & cache are writable
+RUN chmod -R 0777 /app/storage /app/bootstrap/cache || true
+
+# Expose HTTP/HTTPS
+EXPOSE 80 443
+
+# Recommended: do not run migrate automatically in image build.
+# The container will start the FrankenPHP server automatically.
+# not recommended for all workflows — optional auto-migrate on container start
+CMD php artisan migrate --force && frankenphp run
