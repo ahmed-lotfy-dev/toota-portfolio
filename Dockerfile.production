@@ -1,32 +1,31 @@
 # Stage 1 - Builder: Install dependencies and build assets
-FROM composer:2.7 AS builder
+FROM node:22-alpine AS builder
 
 WORKDIR /app
 
-# Install system dependencies for building assets
+# Install PHP, Composer, and required PHP extensions
 RUN apk add --no-cache \
-    npm
+    php \
+    php-dom \
+    php-xml \
+    php-tokenizer \
+    composer
 
-# Copy composer and package manager files
-COPY composer.json composer.lock ./
-COPY package.json package-lock.json* vite.config.js ./
+# Copy all source files into the builder
+COPY . .
 
-# Install frontend dependencies and build assets first
-# This allows caching if only backend code changes
+# Install PHP dependencies
+# We run scripts here to ensure packages like Laravel IDEA helper are discovered
+RUN composer install --no-dev --no-interaction --prefer-dist
+
+# Install Node dependencies and build assets
 RUN if [ -f package.json ]; then \
       npm ci --no-audit --no-fund && \
       npm run build; \
     fi
 
-# Install composer dependencies
-RUN composer install --no-dev --no-scripts --no-interaction --prefer-dist
-
-# Copy the rest of the application code
-COPY . .
-
-# Run composer scripts (like package discovery)
-RUN composer dump-autoload --optimize && \
-    composer run-script post-install-cmd --no-dev
+# Optimize autoloader after all files are in place
+RUN composer dump-autoload --optimize
 
 
 # ---------------------------------------------------------
