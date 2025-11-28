@@ -8,10 +8,10 @@
     </div>
 
     <div class="max-w-7xl mx-auto">
-        <div class="grid lg:grid-cols-2 gap-12 lg:gap-24 items-center">
+        <div class="grid lg:grid-cols-5 gap-12 lg:gap-24 items-center">
             
             {{-- 1. Image Column: Framed Art Look --}}
-            <div class="relative group" data-aos="fade-right">
+            <div class="relative group lg:col-span-2" data-aos="fade-right">
                 
                 {{-- Decorative Back Layer (Contrast Block) --}}
                 <div class="absolute inset-0 md:-inset-4 bg-stone-200 rounded-lg transform translate-x-2 translate-y-2 opacity-50 transition duration-500 group-hover:translate-x-3 group-hover:translate-y-3">
@@ -45,7 +45,7 @@
             </div>
 
             {{-- 2. Content Section --}}
-            <div class="space-y-8" data-aos="fade-left">
+            <div class="space-y-8 lg:col-span-3" data-aos="fade-left">
                 
                 {{-- Section Label: Subtle Stone Colors --}}
                 <div class="inline-flex items-center gap-3 px-4 py-2 bg-stone-100 rounded-full">

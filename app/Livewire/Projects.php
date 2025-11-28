@@ -2,39 +2,39 @@
 
 namespace App\Livewire;
 
+use App\Models\Category;
+use App\Models\Project;
 use Livewire\Component;
 
 class Projects extends Component
 {
-    public $categories = [];
-    public $projects = [];
     public $activeCategory = 'all';
-
-
-    public function mount()
-    {
-        $json = json_decode(file_get_contents(resource_path('data/projects_data.json')), true);
-        $this->categories = $json['categories'];
-        $this->projects = $json['projects'];
-    }
-
 
     public function filter($slug)
     {
         $this->activeCategory = $slug;
     }
 
+    public function getCategoriesProperty()
+    {
+        return Category::orderBy('order')->get();
+    }
 
     public function getFilteredProjectsProperty()
     {
-        if ($this->activeCategory === 'all') {
-            return $this->projects;
+        $query = Project::with(['category', 'images'])
+            ->where('is_published', true)
+            ->orderBy('order');
+
+        if ($this->activeCategory !== 'all') {
+            $query->whereHas('category', function ($q) {
+                $q->where('slug', $this->activeCategory);
+            });
         }
 
-
-        $category = collect($this->categories)->firstWhere('slug', $this->activeCategory);
-        return collect($this->projects)->where('category_id', $category['id'])->values();
+        return $query->get();
     }
+
     public function render()
     {
         return view('livewire.projects.index');
