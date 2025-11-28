@@ -28,7 +28,7 @@ class GoogleAuthController extends Controller
             $googleUser = Socialite::driver('google')->user();
 
             // Check if the user is the admin
-            if ($googleUser->getEmail() !== env('ADMIN_EMAIL')) {
+            if (strtolower($googleUser->getEmail()) !== strtolower(config('services.admin.email'))) {
                 return redirect()->route('access.denied');
             }
 
