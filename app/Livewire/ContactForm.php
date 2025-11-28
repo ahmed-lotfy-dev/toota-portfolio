@@ -28,7 +28,7 @@ class ContactForm extends Component
 
         // Send email
         try {
-            Mail::to(config('mail.from.address'))->send(new ContactFormSubmitted($validatedData));
+            Mail::to(config('mail.contact_email', config('mail.from.address')))->send(new ContactFormSubmitted($validatedData));
         } catch (\Exception $e) {
             Log::error('Contact Form Email Error: ' . $e->getMessage());
             // Optionally flash an error message to the user, but for now we'll just log it

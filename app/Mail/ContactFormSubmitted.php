@@ -30,6 +30,7 @@ class ContactFormSubmitted extends Mailable
     {
         return new Envelope(
             subject: 'New Contact Form Submission',
+            replyTo: [$this->data['email']],
         );
     }
 
