@@ -15,8 +15,13 @@ class EnsureUserIsAdmin
      */
     public function handle(Request $request, Closure $next): Response
     {
-        // Get admin email from environment variable or use default
-        $adminEmail = config('app.admin_email', 'shaymaazaki88@gmail.com');
+        // Get admin email from config (which reads from ADMIN_EMAIL env variable)
+        $adminEmail = config('app.admin_email');
+
+        // Ensure ADMIN_EMAIL is configured
+        if (!$adminEmail) {
+            abort(500, 'Admin email not configured. Please set ADMIN_EMAIL environment variable.');
+        }
 
         // Check if user is authenticated and is the admin
         if (!$request->user() || $request->user()->email !== $adminEmail) {
