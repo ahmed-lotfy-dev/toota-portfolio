@@ -17,7 +17,7 @@ use Laravel\Fortify\Features;
 Route::get('/', action: Home::class)->name('home');
 Route::get('lang', [LanguageController::class, 'change'])->name("change.lang");
 
-Route::middleware(['auth', 'verified'])->prefix('dashboard')->group(function () {
+Route::middleware(['auth', 'verified', 'admin'])->prefix('dashboard')->group(function () {
     Route::get('/', Dashboard::class)->name('dashboard');
 
     Route::get('categories', App\Livewire\Dashboard\Categories::class)->name('categories.index')->name('categories');

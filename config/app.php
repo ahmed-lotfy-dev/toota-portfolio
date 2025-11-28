@@ -56,6 +56,19 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Admin Email
+    |--------------------------------------------------------------------------
+    |
+    | This email address is used to identify the administrator of the
+    | application. Only the user with this email address will have
+    | access to the dashboard and administrative functions.
+    |
+    */
+
+    'admin_email' => env('ADMIN_EMAIL', 'shaymaazaki88@gmail.com'),
+
+    /*
+    |--------------------------------------------------------------------------
     | Application Timezone
     |--------------------------------------------------------------------------
     |
