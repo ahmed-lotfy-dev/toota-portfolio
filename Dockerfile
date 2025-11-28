@@ -1,70 +1,57 @@
-# Stage 1: Build environment and Composer dependencies
-FROM php:8.4-cli AS builder
+# -------------------------------------------------------
+# 1) Composer Builder Stage
+# -------------------------------------------------------
+FROM composer:2 AS composer_builder
+WORKDIR /app
 
-# Install system dependencies and PHP extensions required for Laravel + MySQL/PostgreSQL support
-# Some dependencies are required for PHP extensions only in the build stage
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    curl \
-    unzip \
-    libpq-dev \
-    libonig-dev \
-    libssl-dev \
-    libxml2-dev \
-    libcurl4-openssl-dev \
-    libicu-dev \
-    libzip-dev \
-    && docker-php-ext-install -j$(nproc) \
+COPY composer.json composer.lock ./
+RUN composer install --no-dev --prefer-dist --no-interaction
+
+COPY . .
+RUN composer dump-autoload --optimize
+
+
+# -------------------------------------------------------
+# 2) Node Builder Stage (Vite)
+# -------------------------------------------------------
+FROM node:20-alpine AS node_builder
+WORKDIR /app
+
+COPY package.json package-lock.json ./
+RUN npm install --production=false
+
+COPY . .
+RUN npm run build
+
+
+# -------------------------------------------------------
+# 3) Production FrankenPHP Runtime
+# -------------------------------------------------------
+FROM dunglas/frankenphp:1.2
+
+# Install PHP extensions (official method)
+RUN install-php-extensions \
     pdo_mysql \
     pdo_pgsql \
-    pgsql \
+    gd \
+    zip \
     opcache \
     intl \
-    zip \
-    bcmath \
-    soap \
-    && pecl install redis \
-    && docker-php-ext-enable redis \
-    && apt-get autoremove -y && apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+    bcmath
 
-# Set the working directory inside the container
-WORKDIR /var/www
+WORKDIR /app
 
-# Copy the entire Laravel application code into the container
-COPY . /var/www
+# Copy app files
+COPY . .
 
-# Install Composer and dependencies
-RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer \
-    && composer install --no-dev --optimize-autoloader --no-interaction --no-progress --prefer-dist
+# Copy vendor + built assets
+COPY --from=composer_builder /app/vendor ./vendor
+COPY --from=node_builder /app/public/build ./public/build
 
-# Stage 2: Production environment
-FROM php:8.4-cli
+# Permissions
+RUN chmod -R 775 storage bootstrap/cache \
+    && chown -R www-data:www-data storage bootstrap/cache
 
-# Install client libraries required for php extensions in runtime
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    libpq-dev \
-    libicu-dev \
-    libzip-dev \
-    && apt-get autoremove -y && apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+EXPOSE 8080
 
-# Copy PHP extensions and libraries from the builder stage
-COPY --from=builder /usr/local/lib/php/extensions/ /usr/local/lib/php/extensions/
-COPY --from=builder /usr/local/etc/php/conf.d/ /usr/local/etc/php/conf.d/
-COPY --from=builder /usr/local/bin/docker-php-ext-* /usr/local/bin/
-
-# Use the default production configuration for PHP runtime arguments
-RUN mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini"
-
-# Copy the application code and dependencies from the build stage
-COPY --from=builder /var/www /var/www
-
-# Set working directory
-WORKDIR /var/www
-
-# Ensure correct permissions
-RUN chown -R www-data:www-data /var/www
-
-# Switch to the non-privileged user to run the application
-USER www-data
-
-# Default command: Provide a bash shell to allow running any command
-CMD ["bash"]
+CMD ["frankenphp", "run", "--config", "/app/frankenphp.php"]

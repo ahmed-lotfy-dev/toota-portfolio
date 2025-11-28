@@ -55,8 +55,11 @@ COPY --from=builder /app/public/build ./public/build
 COPY --from=builder /app .
 
 # FrankenPHP runs as user `frankenphp` by default.
-# Give this user ownership of the app directory, specifically for storage and cache.
-RUN chown -R frankenphp:frankenphp .
+# Create storage/cache dirs and ensure they are writable by the correct user.
+RUN mkdir -p /app/storage /app/bootstrap/cache && \
+    chown -R frankenphp:frankenphp /app/storage /app/bootstrap/cache
+
+# Switch to the non-root user
 USER frankenphp
 
 # Expose HTTP/HTTPS ports
