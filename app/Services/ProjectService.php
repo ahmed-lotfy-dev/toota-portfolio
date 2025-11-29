@@ -120,7 +120,10 @@ class ProjectService
         foreach ($images as $index => $imageFile) {
             try {
                 // Optimize the image
-                $image = \Intervention\Image\Laravel\Facades\Image::read($imageFile);
+                // Since the file might be on R2 (temp disk), we read it into memory first.
+                // Livewire's UploadedFile::get() retrieves the content.
+                $imageContent = $imageFile->get();
+                $image = \Intervention\Image\Laravel\Facades\Image::read($imageContent);
 
                 // Resize if width is greater than 2500px, maintaining aspect ratio
                 if ($image->width() > 2500) {
@@ -143,6 +146,8 @@ class ProjectService
                 logger()->warning('Image optimization failed: ' . $e->getMessage());
 
                 $filename = Str::slug(pathinfo($imageFile->getClientOriginalName(), PATHINFO_FILENAME)) . '-' . Str::random(6) . '.' . $imageFile->getClientOriginalExtension();
+                // We use storeAs with the 'r2' disk explicitly. 
+                // Since the temp file is already on 'r2' (if configured), this might be a copy operation.
                 $path = $imageFile->storeAs('projects/' . $project->slug, $filename, 'r2');
             }
 
