@@ -1,7 +1,7 @@
 [variables]
 FRANKENPHP_CONFIG = """
 php_ini upload_max_filesize=16M
-php_ini post_max_size=18M
+php_ini post_max_size=100M
 php_ini memory_limit=256M
 php_ini upload_tmp_dir=/tmp
 worker.enable_uploads=true
@@ -23,8 +23,7 @@ nixPkgs = [
 ]
 
 cmds = [
-    "mkdir -p .frankenphp/conf.d",
-    "cp php.ini .frankenphp/conf.d/uploads.ini"
+    "mkdir -p .frankenphp/conf.d"
 ]
 
 [phases.install]
