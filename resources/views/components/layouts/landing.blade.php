@@ -14,7 +14,7 @@
         rel="stylesheet">
 
         <title>{{ $title ?? 'Toota Art' }}</title>
-    @vite(entrypoints: ['resources/css/app.css', 'resources/js/app.js'])
+    @vite(entrypoints: ['resources/css/app.css', 'resources/js/app.js','resources/js/analytics.js',])
     @livewireStyles
 </head>
 
