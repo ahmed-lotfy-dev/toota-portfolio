@@ -7,9 +7,9 @@
 
         <div class="flex flex-col gap-3 sm:flex-row sm:items-center">
             <div class="flex gap-2 w-full sm:w-auto">
-                <button type="button" wire:click="{{ $showAddProjectModal ? 'hideAddProject' : 'showAddProject' }}"
+                <button type="button" wire:click="showProjectModal"
                     class="flex-1 sm:flex-none h-10 px-5 bg-blue-500 text-white font-semibold rounded hover:bg-blue-700">
-                    {{ $showAddProjectModal ? 'Cancel' : 'Add Project' }}
+                    Add Project
                 </button>
             </div>
 
@@ -67,20 +67,18 @@
                             </div>
                         </td>
                         <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">
-                            @if($project->images->isNotEmpty())
-                                <button wire:click="toggleProjectImages({{ $project->id }})" class="flex items-center text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300">
-                                    <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                                        @if($showProjectImages[$project->id] ?? false)
-                                            <path fill-rule="evenodd" d="M14.707 12.707a1 1 0 01-1.414 0L10 9.414l-3.293 3.293a1 1 0 01-1.414-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 010 1.414z" clip-rule="evenodd" />
-                                        @else
-                                            <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
-                                        @endif
-                                    </svg>
-                                    View ({{ $project->images->count() }})
-                                </button>
-                            @else
-                                <span class="text-gray-400 dark:text-gray-600">No Images</span>
-                            @endif
+                            <div class="flex -space-x-2 overflow-hidden">
+                                @forelse($project->images->take(3) as $image)
+                                    <img class="inline-block h-10 w-10 rounded-full ring-2 ring-white dark:ring-gray-800 object-cover" src="{{ $image->url }}" alt="Project Image">
+                                @empty
+                                    <span class="text-gray-400 dark:text-gray-600">No Images</span>
+                                @endforelse
+                                @if($project->images->count() > 3)
+                                    <span class="inline-flex items-center justify-center h-10 w-10 rounded-full ring-2 ring-white dark:ring-gray-800 bg-gray-100 dark:bg-gray-700 text-xs font-medium text-gray-500 dark:text-gray-300">
+                                        +{{ $project->images->count() - 3 }}
+                                    </span>
+                                @endif
+                            </div>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                             <button wire:click="edit({{ $project->id }})"
@@ -120,121 +118,13 @@
         </table>
     </div>
 
-    <!-- Modal -->
-    <div x-data="{ show: @entangle('showAddProjectModal') }"
-         x-show="show"
-         x-on:keydown.escape.window="show = false"
-         class="fixed inset-0 z-50 overflow-y-auto"
-         style="display: none;">
 
-        <!-- Backdrop -->
-        <div class="fixed inset-0 bg-black bg-opacity-50" @click="show = false"></div>
 
-        <!-- Modal Content -->
-        <div class="relative bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 w-full max-w-md mx-auto my-8" @click.stop>
-            <button wire:click="hideAddProject" class="absolute top-3 right-3 text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white text-2xl">&times;</button>
-            <h3 class="text-lg font-bold mb-4">{{ $form->project ? 'Edit Project' : 'Add New Project' }}</h3>
-            <form wire:submit.prevent="save" class="space-y-4">
-                <div>
-                    <label class="block mb-1">Title *</label>
-                    <input type="text" wire:model="form.title"
-                        class="w-full p-2 rounded border dark:bg-gray-700 dark:text-white @error('form.title') border-red-500 @enderror">
-                    @error('form.title')<div class="text-red-600 text-sm">{{ $message }}</div>@enderror
-                </div>
-                <div>
-                    <label class="block mb-1">Category *</label>
-                    <select wire:model="form.category_id"
-                        class="w-full p-2 rounded border dark:bg-gray-700 dark:text-white @error('form.category_id') border-red-500 @enderror">
-                        <option value="">Select Category</option>
-                        @foreach($categories as $cat)
-                            <option value="{{ $cat->id }}">{{ $cat->name }}</option>
-                        @endforeach
-                    </select>
-                    @error('form.category_id')<div class="text-red-600 text-sm">{{ $message }}</div>@enderror
-                </div>
-                <div>
-                    <label class="block mb-1">Description</label>
-                    <textarea wire:model="form.description"
-                        class="w-full p-2 rounded border dark:bg-gray-700 dark:text-white"></textarea>
-                </div>
-                <div class="flex gap-4">
-                    <label class="flex items-center">
-                        <input type="checkbox" wire:model="form.is_featured" class="mr-2">
-                        <span class="text-sm">Featured</span>
-                    </label>
-                    <label class="flex items-center">
-                        <input type="checkbox" wire:model="form.is_published" class="mr-2">
-                        <span class="text-sm">Published</span>
-                    </label>
-                </div>
-                <div>
-                    <label class="block mb-1">Upload New Images</label>
-                    <input type="file" wire:model="form.newImages" multiple
-                        class="w-full p-2 rounded border dark:bg-gray-700 dark:text-white">
-                    <div wire:loading wire:target="form.newImages" class="text-sm text-blue-600 mt-1">Uploading...</div>
-                    @error('form.newImages')<div class="text-red-600 text-sm mt-1">{{ $message }}</div>@enderror
-                    @error('form.newImages.*')<div class="text-red-600 text-sm mt-1">{{ $message }}</div>@enderror
+    <x-modal name="project-modal" title="Project Details">
+        <x-slot name="body">
+            <livewire:dashboard.forms.project-form-modal-content />
+        </x-slot>
+    </x-modal>
 
-                    {{-- Live preview for new images --}}
-                    @if ($form->newImages)
-                        <div class="mt-2 grid grid-cols-3 gap-4">
-                            @foreach ($form->newImages as $newImage)
-                                <img src="{{ $newImage->temporaryUrl() }}" class="w-full h-32 object-cover rounded">
-                            @endforeach
-                        </div>
-                    @endif
-                </div>
 
-                {{-- Display existing images --}}
-                @if ($form->project && $form->project->images->isNotEmpty())
-                    <div class="mt-4 grid grid-cols-3 gap-4">
-                        @foreach ($form->project->images as $image)
-                            <div class="relative group">
-                                <img src="{{ $image->url }}" alt="Project Image" class="w-full h-32 object-cover rounded">
-                                @if($image->is_primary)
-                                <span class="absolute top-1 left-1 px-2 py-0.5 bg-blue-500 text-white text-xs rounded-full">Primary</span>
-                                @endif
-                                <button type="button" wire:click="removeImage({{ $image->id }})" onclick="return confirm('Are you sure you want to delete this image? This action cannot be undone.');"
-                                    class="absolute top-1 right-1 bg-red-500 text-white rounded-full w-8 h-8 flex items-center justify-center text-base shadow-md">
-                                    &times;
-                                </button>
-                            </div>
-                        @endforeach
-                    </div>
-                @endif
-                <div class="flex gap-2">
-                    <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">{{ $form->project ? 'Save Changes' : 'Add' }}</button>
-                    <button type="button" wire:click="hideAddProject"
-                        class="px-4 py-2 bg-gray-400 rounded hover:bg-gray-500">Cancel</button>
-                </div>
-            </form>
-        </div>
-    </div>
-        
-        </div>
-@if($showAddCategoryModal)
-    <div class="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-30">
-        <div class="bg-white dark:bg-gray-800 rounded shadow-lg p-6 w-full max-w-md relative">
-            <button wire:click="hideAddCategory" class="absolute top-3 right-3 text-2xl">&times;</button>
-            <h3 class="text-lg font-bold mb-4">Add New Category</h3>
-            <form wire:submit.prevent="saveNewCategory" class="space-y-4">
-                <div>
-                    <label class="block mb-1">Name *</label>
-                    <input type="text" wire:model.defer="newCategoryName"
-                        class="w-full p-2 rounded border dark:bg-gray-700 dark:text-white">
-                    @error('newCategoryName')<div class="text-red-600 text-sm">{{ $message }}</div>@enderror
-                </div>
-                <div>
-                    <label class="block mb-1">Description</label>
-                    <textarea wire:model.defer="newCategoryDescription"
-                        class="w-full p-2 rounded border dark:bg-gray-700 dark:text-white"></textarea>
-                </div>
-                <div class="flex gap-2">
-                    <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">Add</button>
-                    <button type="button" wire:click="hideAddCategory"
-                        class="px-4 py-2 bg-gray-400 rounded hover:bg-gray-500">Cancel</button>
-                </div>
-            </form>
-        </div>
-    </div>
-@endif
+</div>

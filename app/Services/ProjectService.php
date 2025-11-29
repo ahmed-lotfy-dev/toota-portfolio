@@ -118,9 +118,33 @@ class ProjectService
         $isFirstUpload = $project->images()->doesntExist();
 
         foreach ($images as $index => $imageFile) {
-            // Store the image in 'projects/{project_slug}' folder on the 'r2' disk.
-            // The store() method returns the path to the stored file.
-            $path = $imageFile->store('projects/' . $project->slug, 'r2');
+            try {
+                // Optimize the image
+                $image = \Intervention\Image\Laravel\Facades\Image::read($imageFile);
+
+                // Resize if width is greater than 2500px, maintaining aspect ratio
+                if ($image->width() > 2500) {
+                    $image->scale(width: 2500);
+                }
+
+                // Encode to WebP with 90% quality
+                $encoded = $image->toWebp(quality: 90);
+
+                // Generate filename with .webp extension
+                $filename = Str::slug(pathinfo($imageFile->getClientOriginalName(), PATHINFO_FILENAME)) . '-' . Str::random(6) . '.webp';
+                
+                // Store the optimized image directly to R2
+                $path = 'projects/' . $project->slug . '/' . $filename;
+                Storage::disk('r2')->put($path, (string) $encoded);
+
+            } catch (\Exception $e) {
+                // Fallback: If optimization fails (e.g., missing GD driver), store original file
+                // Log the error but don't stop the upload
+                logger()->warning('Image optimization failed: ' . $e->getMessage());
+
+                $filename = Str::slug(pathinfo($imageFile->getClientOriginalName(), PATHINFO_FILENAME)) . '-' . Str::random(6) . '.' . $imageFile->getClientOriginalExtension();
+                $path = $imageFile->storeAs('projects/' . $project->slug, $filename, 'r2');
+            }
 
             // The first image of the first upload batch automatically becomes the primary.
             $is_primary = ($isFirstUpload && $index === 0);
@@ -149,5 +173,21 @@ class ProjectService
                 $newPrimary->update(['is_primary' => true]);
             }
         }
+    }
+    /**
+     * Set a specific image as the primary image for its project.
+     *
+     * @param ProjectImage $image The image to set as primary.
+     * @return void
+     */
+    public function setPrimaryImage(ProjectImage $image): void
+    {
+        $project = $image->project;
+
+        // Unset primary for all other images of this project
+        $project->images()->where('id', '!=', $image->id)->update(['is_primary' => false]);
+
+        // Set this image as primary
+        $image->update(['is_primary' => true]);
     }
 }

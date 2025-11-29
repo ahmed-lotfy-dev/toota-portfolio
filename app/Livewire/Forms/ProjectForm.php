@@ -25,15 +25,25 @@ class ProjectForm extends Form
             'description' => 'nullable|string',
             'is_featured' => 'boolean',
             'is_published' => 'boolean',
-            'newImages.*' => 'nullable|image|max:2048', // Validate each image in the array
+            'newImages' => 'nullable|array|max:10', // Limit number of files
+            'newImages.*' => 'nullable|image|max:15360', // Validate each image in the array
         ];
     }
 
     public function messages()
     {
         return [
+            'newImages.max' => 'You can upload a maximum of 10 images at once.',
             'newImages.*.image' => 'Each file must be an image.',
-            'newImages.*.max' => 'Each image must not be greater than 2MB.',
+            'newImages.*.max' => 'Each image must not be greater than 15MB.',
+        ];
+    }
+
+    public function attributes()
+    {
+        return [
+            'newImages' => 'images',
+            'newImages.*' => 'image',
         ];
     }
 

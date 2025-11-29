@@ -2,82 +2,61 @@
 
 namespace App\Livewire\Dashboard;
 
-use App\Livewire\Forms\ProjectForm;
-use App\Models\Category;
-use App\Models\Project;
-use App\Models\ProjectImage;
-use App\Services\ProjectService;
 use Livewire\Component;
 use Livewire\Attributes\Layout;
-use Livewire\WithFileUploads;
-use Illuminate\Support\Str;
+use Livewire\WithPagination;
+use App\Models\Project;
+use App\Services\ProjectService;
 
 #[Layout('components.layouts.dashboard')]
 class Projects extends Component
 {
-    use WithFileUploads;
+    use WithPagination;
 
-    public ProjectForm $form;
-
-    public $projects;
-    public $categories;
-    public $showProjectImages = [];
-
-    public $showAddProjectModal = false;
-    public $showAddCategoryModal = false;
-
-    public $newCategoryName = '';
-    public $newCategoryDescription = '';
+    protected $paginationTheme = 'tailwind';
+    public $paginate_count = 10;
+    
+    // Listen for events from ProjectFormModalContent
+    protected $listeners = [
+        'projectSaved' => 'loadProjectsAndCloseModal',
+        'closeModal' => 'resetModalState'
+    ];
 
     public function mount()
     {
-        $this->categories = Category::orderBy('name')->get();
-        $this->loadProjects();
+        // Initial setup for projects, if any
     }
 
-    public function loadProjects()
+    public function updatedPaginateCount()
     {
-        $this->projects = Project::with('category', 'images')->orderBy('order')->get();
+        $this->resetPage();
     }
 
-    public function save(ProjectService $projectService)
+    public function loadProjectsAndCloseModal()
     {
-        $this->form->validate();
-        $projectData = $this->form->all();
-
-        try {
-            if ($this->form->project) {
-                $projectService->update($this->form->project, $projectData, $this->form->newImages);
-                session()->flash('message', 'Project updated successfully.');
-            } else {
-                $projectService->create($projectData, $this->form->newImages);
-                session()->flash('message', 'Project created successfully.');
-            }
-
-            $this->hideAddProject();
-        } catch (\Exception $e) {
-            logger()->error('Project save failed: ' . $e->getMessage());
-            $this->addError('form.newImages', 'An error occurred during the process. Please try again.');
-        }
-
-        $this->loadProjects();
+        // This will trigger a re-render of the projects table
+        $this->resetPage();
+        session()->flash('message', 'Project saved successfully.'); // Display success message
     }
 
-    public function removeImage(ProjectImage $image, ProjectService $projectService)
+    public function resetModalState()
     {
-        try {
-            $projectService->deleteImage($image);
-            session()->flash('message', 'Image removed successfully.');
-            if ($this->form->project) {
-                $this->edit($this->form->project->id);
-            }
-        } catch (\Exception $e) {
-            logger()->error('Image deletion failed: ' . $e->getMessage());
-            session()->flash('message', 'Failed to delete image.');
-        }
-        $this->loadProjects();
+        // Reset any modal-related state if necessary
+        // The shared modal already handles its own closing logic
     }
 
+    public function edit(Project $project)
+    {
+        $this->dispatch('editProjectForm', $project->id); // Dispatch event to form component
+        $this->dispatch('open-modal', name: 'project-modal');
+    }
+    
+    public function showProjectModal()
+    {
+        $this->dispatch('resetProjectForm'); // Reset form for new project
+        $this->dispatch('open-modal', name: 'project-modal');
+    }
+    
     public function delete(Project $project, ProjectService $projectService)
     {
         try {
@@ -87,80 +66,35 @@ class Projects extends Component
             logger()->error('Project deletion failed: ' . $e->getMessage());
             session()->flash('message', 'Failed to delete project.');
         }
-        $this->loadProjects();
-    }
-
-    public function edit($id)
-    {
-        $project = Project::with('images')->find($id);
-        $this->form->setProject($project);
-        $this->showAddProjectModal = true;
+        $this->resetPage(); // Reset pagination after deleting project
     }
 
     public function toggleFeatured($id)
     {
         $project = Project::find($id);
         $project->update(['is_featured' => !$project->is_featured]);
-        $this->loadProjects();
+        $this->resetPage(); // Reset pagination after toggling featured status
     }
 
     public function togglePublished($id)
     {
         $project = Project::find($id);
         $project->update(['is_published' => !$project->is_published]);
-        $this->loadProjects();
-    }
-
-    public function showAddProject()
-    {
-        $this->form->resetForm();
-        $this->showAddProjectModal = true;
-    }
-
-    public function hideAddProject()
-    {
-        $this->showAddProjectModal = false;
-        $this->form->resetForm();
-    }
-
-    public function showAddCategory()
-    {
-        $this->showAddCategoryModal = true;
-    }
-
-    public function hideAddCategory()
-    {
-        $this->showAddCategoryModal = false;
-        $this->reset(['newCategoryName', 'newCategoryDescription']);
-    }
-
-    public function saveNewCategory()
-    {
-        $this->validate([
-            'newCategoryName' => 'required|min:2',
-            'newCategoryDescription' => 'nullable|string',
-        ]);
-
-        $category = Category::create([
-            'name' => $this->newCategoryName,
-            'slug' => Str::slug($this->newCategoryName),
-            'description' => $this->newCategoryDescription,
-            'order' => Category::max('order') + 1,
-        ]);
-
-        $this->categories = Category::orderBy('name')->get();
-        $this->form->category_id = $category->id;
-        $this->hideAddCategory();
-        session()->flash('message', 'Category added!');
+        $this->resetPage(); // Reset pagination after toggling published status
     }
 
     public function toggleProjectImages($projectId)
     {
         $this->showProjectImages[$projectId] = !($this->showProjectImages[$projectId] ?? false);
     }
+    
+    public $showProjectImages = []; // Still needed for displaying existing images
 
     public function render()
     {
-        return view('livewire.dashboard.projects');
+        $projects = Project::with('category', 'images')->orderBy('order')->get();
+        return view('livewire.dashboard.projects', [
+            'projects' => $projects,
+        ]);
     }
 }

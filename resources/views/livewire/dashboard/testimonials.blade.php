@@ -66,47 +66,11 @@
         </table>
     </div>
 
-    {{-- Modal --}}
-    @if($showModal)
-    <div class="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-30">
-        <div class="bg-white dark:bg-gray-800 rounded shadow-lg p-6 w-full max-w-md relative">
-            <button wire:click="hideModal" class="absolute top-3 right-3 text-2xl text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white">&times;</button>
-            <h3 class="text-lg font-bold mb-4 text-gray-900 dark:text-white">
-                {{ $form->testimonial ? 'Edit Testimonial' : 'Add New Testimonial' }}
-            </h3>
-            <form wire:submit.prevent="save" class="space-y-4">
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Name *</label>
-                    <input type="text" wire:model="form.name" 
-                        class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white @error('form.name') border-red-500 @enderror">
-                    @error('form.name')<div class="text-red-600 text-sm">{{ $message }}</div>@enderror
-                </div>
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Title (Optional)</label>
-                    <input type="text" wire:model="form.title" 
-                        class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white @error('form.title') border-red-500 @enderror">
-                    @error('form.title')<div class="text-red-600 text-sm">{{ $message }}</div>@enderror
-                </div>
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Testimonial *</label>
-                    <textarea wire:model="form.body" rows="3" 
-                        class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white @error('form.body') border-red-500 @enderror"></textarea>
-                    @error('form.body')<div class="text-red-600 text-sm">{{ $message }}</div>@enderror
-                </div>
-                <div class="flex items-center">
-                    <input type="checkbox" wire:model="form.is_published" id="is_published" class="mr-2">
-                    <label for="is_published" class="text-sm text-gray-700 dark:text-gray-300">Published</label>
-                </div>
-                <div class="flex gap-2">
-                    <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition">
-                        {{ $form->testimonial ? 'Save Changes' : 'Add' }}
-                    </button>
-                    <button type="button" wire:click="hideModal" class="px-4 py-2 bg-gray-300 dark:bg-gray-600 text-gray-700 dark:text-gray-200 rounded-md hover:bg-gray-400 dark:hover:bg-gray-500 transition">
-                        Cancel
-                    </button>
-                </div>
-            </form>
-        </div>
-    </div>
-    @endif
+
+
+    <x-modal name="testimonial-modal" title="Testimonial Details">
+        <x-slot name="body">
+            <livewire:dashboard.forms.testimonial-form-modal-content />
+        </x-slot>
+    </x-modal>
 </div>
