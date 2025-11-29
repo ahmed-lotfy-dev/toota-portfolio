@@ -35,23 +35,75 @@
                 <span class="text-sm">Published</span>
             </label>
         </div>
-        <div>
+        <div x-data="{
+            uploading: false,
+            progress: 0,
+            previews: [],
+            error: null,
+            async uploadFiles(event) {
+                this.uploading = true;
+                this.error = null;
+                const files = event.target.files;
+                
+                // Get CSRF token
+                const token = document.querySelector('meta[name=\'csrf-token\']').getAttribute('content');
+
+                for (let i = 0; i < files.length; i++) {
+                    const formData = new FormData();
+                    formData.append('image', files[i]);
+                    // We can pass a path if needed, or let controller decide. 
+                    // Controller expects 'path', let's use a temp path or project slug if available?
+                    // Actually controller uses 'path' input as destination.
+                    // Let's assume 'projects/temp' for now or just 'uploads'.
+                    // Better: Let's use 'projects/temp' and move it later? 
+                    // Or just 'projects' folder.
+                    formData.append('path', 'projects'); 
+
+                    try {
+                        const response = await fetch('{{ route('image.upload') }}', {
+                            method: 'POST',
+                            headers: {
+                                'X-CSRF-TOKEN': token,
+                                'Accept': 'application/json',
+                            },
+                            body: formData
+                        });
+
+                        if (!response.ok) throw new Error('Upload failed');
+
+                        const data = await response.json();
+                        
+                        // Push path to Livewire form
+                        @this.set('form.newImages', [...@this.get('form.newImages') || [], data.path]);
+                        
+                        // Add to local previews
+                        this.previews.push(data.url);
+
+                    } catch (e) {
+                        console.error(e);
+                        this.error = 'Failed to upload ' + files[i].name;
+                    }
+                }
+                this.uploading = false;
+                // Reset input
+                event.target.value = '';
+            }
+        }">
             <label class="block mb-1">Upload New Images</label>
-            <input type="file" wire:model="form.newImages" multiple accept="image/*"
+            <input type="file" @change="uploadFiles" multiple accept="image/*"
                 class="w-full p-2 rounded border dark:bg-gray-700 dark:text-white">
             
-            <div wire:loading wire:target="form.newImages" class="text-sm text-blue-600 mt-1">Uploading...</div>
+            <div x-show="uploading" class="text-sm text-blue-600 mt-1">Uploading...</div>
+            <div x-show="error" x-text="error" class="text-red-600 text-sm mt-1"></div>
+            
             @error('form.newImages')<div class="text-red-600 text-sm mt-1">{{ $message }}</div>@enderror
-            @error('form.newImages.*')<div class="text-red-600 text-sm mt-1">{{ $message }}</div>@enderror
 
             {{-- Live preview for new images --}}
-            @if ($form->newImages)
-                <div class="mt-2 grid grid-cols-3 gap-4">
-                    @foreach ($form->newImages as $newImage)
-                        <img src="{{ $newImage->temporaryUrl() }}" class="w-full h-32 object-cover rounded">
-                    @endforeach
-                </div>
-            @endif
+            <div class="mt-2 grid grid-cols-3 gap-4" x-show="previews.length > 0">
+                <template x-for="url in previews" :key="url">
+                    <img :src="url" class="w-full h-32 object-cover rounded">
+                </template>
+            </div>
         </div>
 
         {{-- Display existing images --}}

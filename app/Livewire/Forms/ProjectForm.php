@@ -26,7 +26,7 @@ class ProjectForm extends Form
             'is_featured' => 'boolean',
             'is_published' => 'boolean',
             'newImages' => 'nullable|array|max:10', // Limit number of files
-            'newImages.*' => 'nullable|image|max:15360', // Validate each image in the array
+            'newImages.*' => 'required|string', // Validate each image path
         ];
     }
 
