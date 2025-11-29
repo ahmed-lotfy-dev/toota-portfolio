@@ -70,13 +70,8 @@ class ProjectService
      */
     public function delete(Project $project): void
     {
-        // We iterate through the project's images and delete them one by one.
-        // This ensures that our logic for deleting from storage is triggered for each image.
-        foreach ($project->images as $image) {
-            $this->deleteImage($image);
-        }
-
-        // After all images are gone, delete the project record itself.
+        // The Project model's deleting event handles the deletion of images from storage.
+        // The database cascade delete handles the deletion of image records.
         $project->delete();
     }
 

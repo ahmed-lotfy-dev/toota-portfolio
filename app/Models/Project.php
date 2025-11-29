@@ -38,9 +38,19 @@ class Project extends Model
             ->orderBy('order');
     }
 
-    // Optional: fallback helper
     public function getMainImageAttribute()
     {
         return $this->primaryImage ?: $this->images->first();
+    }
+
+    protected static function booted()
+    {
+        static::deleting(function ($project) {
+            foreach ($project->images as $image) {
+                if ($image->image_path) {
+                    \Illuminate\Support\Facades\Storage::disk('r2')->delete($image->image_path);
+                }
+            }
+        });
     }
 }
