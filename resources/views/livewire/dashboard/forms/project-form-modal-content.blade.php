@@ -1,5 +1,5 @@
 <div>
-    <form wire:submit.prevent="save" class="space-y-4">
+        <form wire:submit.prevent="save" enctype="multipart/form-data" class="space-y-4">
         <div>
             <label class="block mb-1">Title *</label>
             <input type="text" wire:model="form.title"
