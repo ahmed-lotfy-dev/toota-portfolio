@@ -21,4 +21,4 @@ cmds = [
 ]
 
 [start]
-cmd = 'php -d upload_max_filesize=50M -d post_max_size=50M artisan serve --host=0.0.0.0 --port=$PORT'
+cmd = 'PHP_INI_SCAN_DIR=:/app php artisan serve --host=0.0.0.0 --port=$PORT'
