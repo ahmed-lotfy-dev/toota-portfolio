@@ -1,5 +1,5 @@
 <!-- resources/views/components/landing/faq.blade.php -->
-<section id="faq" class="w-full bg-[#FDFCF8] py-24 px-6 md:px-12">
+<section id="faq" class="w-full bg-[#FDFCF8] py-20 px-6 md:px-12">
     <div class="max-w-4xl mx-auto">
         <div class="text-center mb-16">
             <span class="text-stone-500 uppercase tracking-[0.2em] text-xs font-medium mb-2 block">{{ __('faq.subtitle') }}</span>
@@ -21,10 +21,12 @@
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4"></path></svg>
                     </span>
                 </button>
-                <div x-show="open === 1" x-collapse class="pt-4">
-                    <p class="text-stone-600 text-sm leading-relaxed">
-                        {{ __('faq.a1') }}
-                    </p>
+                <div x-show="open === 1" x-collapse class="overflow-hidden transition-all duration-300 ease-in-out">
+                    <div class="pt-4">
+                        <p class="text-stone-600 text-sm leading-relaxed">
+                            {{ __('faq.a1') }}
+                        </p>
+                    </div>
                 </div>
             </div>
 
@@ -39,10 +41,12 @@
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4"></path></svg>
                     </span>
                 </button>
-                <div x-show="open === 2" x-collapse class="pt-4">
-                    <p class="text-stone-600 text-sm leading-relaxed">
-                        {{ __('faq.a2') }}
-                    </p>
+                <div x-show="open === 2" x-collapse class="overflow-hidden transition-all duration-300 ease-in-out">
+                    <div class="pt-4">
+                        <p class="text-stone-600 text-sm leading-relaxed">
+                            {{ __('faq.a2') }}
+                        </p>
+                    </div>
                 </div>
             </div>
 
@@ -57,10 +61,12 @@
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4"></path></svg>
                     </span>
                 </button>
-                <div x-show="open === 3" x-collapse class="pt-4">
-                    <p class="text-stone-600 text-sm leading-relaxed">
-                        {{ __('faq.a3') }}
-                    </p>
+                <div x-show="open === 3" x-collapse class="overflow-hidden transition-all duration-300 ease-in-out">
+                    <div class="pt-4">
+                        <p class="text-stone-600 text-sm leading-relaxed">
+                            {{ __('faq.a3') }}
+                        </p>
+                    </div>
                 </div>
             </div>
 
@@ -75,7 +81,7 @@
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4"></path></svg>
                     </span>
                 </button>
-                <div x-show="open === 4" x-collapse class="pt-4">
+                <div x-show="open === 4" x-collapse class="overflow-hidden transition-all duration-300 ease-in-out">
                     <p class="text-stone-600 text-sm leading-relaxed">
                         {{ __('faq.a4') }}
                     </p>

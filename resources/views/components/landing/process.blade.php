@@ -1,5 +1,5 @@
 <!-- resources/views/components/landing/process.blade.php -->
-<section id="process" class="w-full bg-[#FDFCF8] py-24 px-6 md:px-12">
+<section id="process" class="w-full bg-[#FDFCF8] py-20 px-6 md:px-12">
     <div class="max-w-4xl mx-auto text-center">
         <span class="text-stone-500 uppercase tracking-[0.2em] text-xs font-medium mb-2 block">{{ __('process.subtitle') }}</span>
         <h2 class="text-4xl md:text-5xl text-stone-900 leading-tight mb-16" ">

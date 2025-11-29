@@ -9,24 +9,33 @@ use Livewire\Form;
 class ProjectForm extends Form
 {
     public ?Project $project = null;
-
-    #[Rule('required|min:3')]
+    
     public $title = '';
-
-    #[Rule('required|exists:categories,id')]
     public $category_id = '';
-
-    #[Rule('nullable|string')]
     public $description = '';
-
-    #[Rule('boolean')]
     public $is_featured = false;
-
-    #[Rule('boolean')]
     public $is_published = true;
-
-    #[Rule('nullable|array')]
     public $newImages = [];
+
+    public function rules()
+    {
+        return [
+            'title' => 'required|min:3',
+            'category_id' => 'required|exists:categories,id',
+            'description' => 'nullable|string',
+            'is_featured' => 'boolean',
+            'is_published' => 'boolean',
+            'newImages.*' => 'nullable|image|max:2048', // Validate each image in the array
+        ];
+    }
+
+    public function messages()
+    {
+        return [
+            'newImages.*.image' => 'Each file must be an image.',
+            'newImages.*.max' => 'Each image must not be greater than 2MB.',
+        ];
+    }
 
     public function setProject(Project $project)
     {

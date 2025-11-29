@@ -1,6 +1,6 @@
 {{-- resources/views/components/about-artist.blade.php --}}
 <section id="about"
-    class="relative py-24 px-6 md:px-12 overflow-hidden bg-[#FDFCF8] transition-colors duration-500">
+    class="relative py-20 px-6 md:px-12 overflow-hidden bg-[#FDFCF8] transition-colors duration-500">
     
     {{-- Decorative background element (Subtle, non-distracting) --}}
     <div class="absolute inset-0 -z-10 opacity-5">

@@ -1,4 +1,4 @@
-<section id="gallery" class="w-full min-h-screen bg-[#FDFCF8] py-24 px-6 md:px-12 relative">
+<section id="gallery" class="w-full bg-[#FDFCF8] py-20 px-6 md:px-12 relative">
     <div class="absolute top-0 left-1/2 -translate-x-1/2 w-px h-24 bg-linear-to-b from-transparent to-stone-300">
     </div>
     <div class="max-w-7xl mx-auto mb-16 flex flex-col md:flex-row justify-between items-end gap-8">
