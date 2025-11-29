@@ -1,5 +1,6 @@
 [variables]
 NODE_OPTIONS = "--max-old-space-size=4096"
+PHP_INI_SCAN_DIR = ":/app"
 
 [phases.setup]
 nixPkgs = ['php84', 'php84Extensions.intl', 'php84Extensions.mbstring', 'php84Extensions.pdo', 'php84Extensions.pdo_mysql', 'php84Extensions.pdo_pgsql', 'php84Extensions.gd', 'php84Extensions.fileinfo', 'nodejs_22']
@@ -21,4 +22,4 @@ cmds = [
 ]
 
 [start]
-cmd = 'PHP_INI_SCAN_DIR=:/app php artisan serve --host=0.0.0.0 --port=$PORT'
+cmd = 'php artisan serve --host=0.0.0.0 --port=$PORT'
