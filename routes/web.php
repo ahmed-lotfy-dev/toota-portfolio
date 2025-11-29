@@ -28,6 +28,7 @@ Route::middleware(['auth', 'verified'])->prefix('dashboard')->group(function () 
     Route::get('categories', App\Livewire\Dashboard\Categories::class)->name('categories.index')->name('categories');
     Route::get('projects', App\Livewire\Dashboard\Projects::class)->name('projects.index')->name('projects');
     Route::post('presigned-url', [PresignedUrlController::class, 'store'])->name('presigned-url.store');
+    Route::post('upload-image', [App\Http\Controllers\ImageUploadController::class, 'store'])->name('image.upload');
 
     Route::get('profile', Profile::class)->name('profile.edit');
     Route::get('password', Password::class)->name('user-password.edit');
