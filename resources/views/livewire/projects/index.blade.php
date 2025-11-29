@@ -80,10 +80,12 @@
     @endif
 
 
-    <div class="mt-16 text-center">
-        <a href="#"
-            class="inline-block border border-stone-300 px-8 py-3 text-sm text-stone-600 uppercase tracking-widest hover:bg-stone-900 hover:text-white hover:border-stone-900 transition-all duration-300">
-            View All Archives
-        </a>
-    </div>
+    @if ($limit < $totalProjects && $limit < 12)
+        <div class="mt-16 text-center">
+            <button type="button" wire:click="loadMore"
+                class="inline-block border border-stone-300 px-8 py-3 text-sm text-stone-600 uppercase tracking-widest hover:bg-stone-900 hover:text-white hover:border-stone-900 transition-all duration-300">
+                Load More Projects
+            </button>
+        </div>
+    @endif
 </section>

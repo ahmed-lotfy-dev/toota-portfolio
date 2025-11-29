@@ -9,10 +9,22 @@ use Livewire\Component;
 class Projects extends Component
 {
     public $activeCategory = 'all';
+    public $limit = 6;
+    public $totalProjects;
+
+    public function mount()
+    {
+        $this->totalProjects = Project::where('is_published', true)->count();
+    }
 
     public function filter($slug)
     {
         $this->activeCategory = $slug;
+    }
+
+    public function loadMore()
+    {
+        $this->limit = 12;
     }
 
     public function getCategoriesProperty()
@@ -32,7 +44,7 @@ class Projects extends Component
             });
         }
 
-        return $query->get();
+        return $query->limit($this->limit)->get();
     }
 
     public function render()
