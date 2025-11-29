@@ -44,4 +44,4 @@ cmds = [
 ]
 
 [start]
-cmd = "frankenphp run --workers=4 public/index.php"
+cmd = "frankenphp run --workers=3 public/index.php"
