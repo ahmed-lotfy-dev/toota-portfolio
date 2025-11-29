@@ -1,6 +1,6 @@
 [variables]
 NODE_OPTIONS = "--max-old-space-size=4096"
-PHP_INI_SCAN_DIR = ":/app"
+FRANKENPHP_CONFIG = "php_ini upload_max_filesize 16M\nphp_ini post_max_size 18M\nphp_ini memory_limit 256M"
 
 [phases.setup]
 nixPkgs = ['php84', 'php84Extensions.intl', 'php84Extensions.mbstring', 'php84Extensions.pdo', 'php84Extensions.pdo_mysql', 'php84Extensions.pdo_pgsql', 'php84Extensions.gd', 'php84Extensions.fileinfo', 'nodejs_22']
