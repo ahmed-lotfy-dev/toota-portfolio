@@ -7,7 +7,7 @@
 
         <div class="flex flex-col gap-3 sm:flex-row sm:items-center">
             <div class="flex gap-2 w-full sm:w-auto">
-                <button type="button" wire:click="toggleAddProject"
+                <button type="button" wire:click="{{ $showAddProjectModal ? 'hideAddProject' : 'showAddProject' }}"
                     class="flex-1 sm:flex-none h-10 px-5 bg-blue-500 text-white font-semibold rounded hover:bg-blue-700">
                     {{ $showAddProjectModal ? 'Cancel' : 'Add Project' }}
                 </button>
@@ -99,14 +99,10 @@
                                 <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
                                     @foreach($project->images->sortBy('order') as $image)
                                         <div class="relative group">
-                                            <img src="{{ Storage::disk('r2')->url($image->image_path) }}" alt="{{ $image->caption ?? 'Project Image' }}" class="w-full h-32 object-cover rounded shadow">
+                                            <img src="{{ $image->url }}" alt="{{ $image->caption ?? 'Project Image' }}" class="w-full h-32 object-cover rounded shadow">
                                             @if($image->is_primary)
                                                 <span class="absolute top-1 left-1 px-2 py-0.5 bg-blue-500 text-white text-xs rounded-full">Primary</span>
                                             @endif
-                                            <button type="button" wire:click="removeImage({{ $image->id }})" onclick="return confirm('Are you sure you want to delete this image? This action cannot be undone.');"
-                                                class="absolute top-2 right-2 bg-red-500 text-white w-8 h-8 flex items-center justify-center rounded-full text-base shadow-md">
-                                                &times;
-                                            </button>
                                         </div>
                                     @endforeach
                                 </div>
@@ -124,54 +120,65 @@
         </table>
     </div>
 
-    @if($showAddProjectModal)
-    <div class="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-30">
-        <div class="bg-white dark:bg-gray-800 rounded shadow-lg p-6 w-full max-w-md relative">
-            <button wire:click="hideAddProject" class="absolute top-3 right-3 text-2xl">&times;</button>
-            <h3 class="text-lg font-bold mb-4">{{ $editingId ? 'Edit Project' : 'Add New Project' }}</h3>
+    <!-- Modal -->
+    <div x-data="{ show: @entangle('showAddProjectModal') }"
+         x-show="show"
+         x-on:keydown.escape.window="show = false"
+         class="fixed inset-0 z-50 overflow-y-auto"
+         style="display: none;">
+
+        <!-- Backdrop -->
+        <div class="fixed inset-0 bg-black bg-opacity-50" @click="show = false"></div>
+
+        <!-- Modal Content -->
+        <div class="relative bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 w-full max-w-md mx-auto my-8" @click.stop>
+            <button wire:click="hideAddProject" class="absolute top-3 right-3 text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white text-2xl">&times;</button>
+            <h3 class="text-lg font-bold mb-4">{{ $form->project ? 'Edit Project' : 'Add New Project' }}</h3>
             <form wire:submit.prevent="save" class="space-y-4">
                 <div>
                     <label class="block mb-1">Title *</label>
-                    <input type="text" wire:model="title"
-                        class="w-full p-2 rounded border dark:bg-gray-700 dark:text-white @error('title') border-red-500 @enderror">
-                    @error('title')<div class="text-red-600 text-sm">{{ $message }}</div>@enderror
+                    <input type="text" wire:model="form.title"
+                        class="w-full p-2 rounded border dark:bg-gray-700 dark:text-white @error('form.title') border-red-500 @enderror">
+                    @error('form.title')<div class="text-red-600 text-sm">{{ $message }}</div>@enderror
                 </div>
                 <div>
                     <label class="block mb-1">Category *</label>
-                    <select wire:model="category_id"
-                        class="w-full p-2 rounded border dark:bg-gray-700 dark:text-white @error('category_id') border-red-500 @enderror">
+                    <select wire:model="form.category_id"
+                        class="w-full p-2 rounded border dark:bg-gray-700 dark:text-white @error('form.category_id') border-red-500 @enderror">
                         <option value="">Select Category</option>
                         @foreach($categories as $cat)
                             <option value="{{ $cat->id }}">{{ $cat->name }}</option>
                         @endforeach
                     </select>
-                    @error('category_id')<div class="text-red-600 text-sm">{{ $message }}</div>@enderror
+                    @error('form.category_id')<div class="text-red-600 text-sm">{{ $message }}</div>@enderror
                 </div>
                 <div>
                     <label class="block mb-1">Description</label>
-                    <textarea wire:model="description"
+                    <textarea wire:model="form.description"
                         class="w-full p-2 rounded border dark:bg-gray-700 dark:text-white"></textarea>
                 </div>
                 <div class="flex gap-4">
                     <label class="flex items-center">
-                        <input type="checkbox" wire:model="is_featured" class="mr-2">
+                        <input type="checkbox" wire:model="form.is_featured" class="mr-2">
                         <span class="text-sm">Featured</span>
                     </label>
                     <label class="flex items-center">
-                        <input type="checkbox" wire:model="is_published" class="mr-2">
+                        <input type="checkbox" wire:model="form.is_published" class="mr-2">
                         <span class="text-sm">Published</span>
                     </label>
                 </div>
                 <div>
                     <label class="block mb-1">Upload New Images</label>
-                    <input type="file" wire:model="newImages" multiple
+                    <input type="file" wire:model="form.newImages" multiple
                         class="w-full p-2 rounded border dark:bg-gray-700 dark:text-white">
-                    @error('newImages.*')<div class="text-red-600 text-sm">{{ $message }}</div>@enderror
+                    <div wire:loading wire:target="form.newImages" class="text-sm text-blue-600 mt-1">Uploading...</div>
+                    @error('form.newImages')<div class="text-red-600 text-sm mt-1">{{ $message }}</div>@enderror
+                    @error('form.newImages.*')<div class="text-red-600 text-sm mt-1">{{ $message }}</div>@enderror
 
                     {{-- Live preview for new images --}}
-                    @if ($newImages)
+                    @if ($form->newImages)
                         <div class="mt-2 grid grid-cols-3 gap-4">
-                            @foreach ($newImages as $newImage)
+                            @foreach ($form->newImages as $newImage)
                                 <img src="{{ $newImage->temporaryUrl() }}" class="w-full h-32 object-cover rounded">
                             @endforeach
                         </div>
@@ -179,12 +186,15 @@
                 </div>
 
                 {{-- Display existing images --}}
-                @if ($images)
+                @if ($form->project && $form->project->images->isNotEmpty())
                     <div class="mt-4 grid grid-cols-3 gap-4">
-                        @foreach ($images as $image)
+                        @foreach ($form->project->images as $image)
                             <div class="relative group">
-                                <img src="{{ Storage::disk('r2')->url($image['path']) }}" alt="Project Image" class="w-full h-32 object-cover rounded">
-                                <button type="button" wire:click="removeImage({{ $image['id'] }})" onclick="return confirm('Are you sure you want to delete this image? This action cannot be undone.');"
+                                <img src="{{ $image->url }}" alt="Project Image" class="w-full h-32 object-cover rounded">
+                                @if($image->is_primary)
+                                <span class="absolute top-1 left-1 px-2 py-0.5 bg-blue-500 text-white text-xs rounded-full">Primary</span>
+                                @endif
+                                <button type="button" wire:click="removeImage({{ $image->id }})" onclick="return confirm('Are you sure you want to delete this image? This action cannot be undone.');"
                                     class="absolute top-1 right-1 bg-red-500 text-white rounded-full w-8 h-8 flex items-center justify-center text-base shadow-md">
                                     &times;
                                 </button>
@@ -193,14 +203,13 @@
                     </div>
                 @endif
                 <div class="flex gap-2">
-                    <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">{{ $editingId ? 'Save Changes' : 'Add' }}</button>
+                    <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">{{ $form->project ? 'Save Changes' : 'Add' }}</button>
                     <button type="button" wire:click="hideAddProject"
                         class="px-4 py-2 bg-gray-400 rounded hover:bg-gray-500">Cancel</button>
                 </div>
             </form>
-                </div>
-            </div>
-        @endif
+        </div>
+    </div>
         
         </div>
 @if($showAddCategoryModal)

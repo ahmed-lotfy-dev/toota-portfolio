@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
 
 class ProjectImage extends Model
 {
@@ -21,5 +22,15 @@ class ProjectImage extends Model
     public function project()
     {
         return $this->belongsTo(Project::class);
+    }
+
+    /**
+     * Get the full URL for the image.
+     *
+     * @return string
+     */
+    public function getUrlAttribute()
+    {
+        return Storage::disk('r2')->url($this->image_path);
     }
 }

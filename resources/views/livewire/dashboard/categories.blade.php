@@ -4,7 +4,7 @@
             <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Categories</h1>
             <p class="text-gray-600 dark:text-gray-400">Manage your project categories</p>
         </div>
-        <button type="button" wire:click="showAddCategory" class="h-10 px-5 bg-blue-500 text-white font-bold rounded hover:bg-blue-700">Add Category</button>
+        <button type="button" wire:click="showModal" class="h-10 px-5 bg-blue-500 text-white font-bold rounded hover:bg-blue-700">Add Category</button>
     </div>
 
     @if (session()->has('message'))
@@ -12,50 +12,39 @@
             {{ session('message') }}
         </div>
     @endif
-
-    @if($showAddCategoryModal)
-        <div class="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-30">
-            <div class="bg-white dark:bg-gray-800 rounded shadow-lg p-6 w-full max-w-md relative">
-                <button wire:click="hideAddCategory" class="absolute top-3 right-3 text-2xl">&times;</button>
-                <h3 class="text-lg font-bold mb-4">Add New Category</h3>
-                <form wire:submit.prevent="saveNewCategory" class="space-y-4">
-                    <div>
-                        <label class="block mb-1">Name *</label>
-                        <input type="text" wire:model.defer="newCategoryName" class="w-full p-2 rounded border dark:bg-gray-700 dark:text-white">
-                        @error('newCategoryName')<div class="text-red-600 text-sm">{{ $message }}</div>@enderror
-                    </div>
-                    <div>
-                        <label class="block mb-1">Description</label>
-                        <textarea wire:model.defer="newCategoryDescription" class="w-full p-2 rounded border dark:bg-gray-700 dark:text-white"></textarea>
-                    </div>
-                    <div class="flex gap-2">
-                        <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">Add</button>
-                        <button type="button" wire:click="hideAddCategory" class="px-4 py-2 bg-gray-400 rounded hover:bg-gray-500">Cancel</button>
-                    </div>
-                </form>
-            </div>
+    @if (session()->has('error'))
+        <div class="mb-4 p-4 bg-red-50 border border-red-200 text-red-700 rounded-md dark:bg-red-900/20 dark:border-red-800 dark:text-red-400">
+            {{ session('error') }}
         </div>
     @endif
-    @if($editingId)
-    <div class="mb-6 p-6 bg-white dark:bg-gray-800 rounded-lg shadow">
-        <h2 class="text-lg font-semibold mb-4 text-gray-900 dark:text-white">Edit Category</h2>
-        <form wire:submit.prevent="save" class="space-y-4">
-            <div>
-                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Name *</label>
-                <input type="text" wire:model="name" class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white @error('name') border-red-500 @enderror">
-                @error('name') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
-            </div>
-            <div>
-                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Description</label>
-                <textarea wire:model="description" rows="3" class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white"></textarea>
-            </div>
-            <div class="flex gap-2">
-                <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition">Update</button>
-                <button type="button" wire:click="cancelEdit" class="px-4 py-2 bg-gray-300 dark:bg-gray-600 text-gray-700 dark:text-gray-200 rounded-md hover:bg-gray-400 dark:hover:bg-gray-500 transition">Cancel</button>
-            </div>
-        </form>
+
+    <!-- Unified Add/Edit Modal -->
+    <div x-data="{ show: @entangle('showCategoryModal') }"
+         x-show="show"
+         x-on:keydown.escape.window="show = false"
+         style="display: none;"
+         class="fixed inset-0 z-50 overflow-y-auto">
+        <div class="fixed inset-0 bg-black bg-opacity-50" @click="show = false"></div>
+        <div class="relative bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 w-full max-w-md mx-auto my-8" @click.stop>
+            <button wire:click="hideModal" class="absolute top-3 right-3 text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white text-2xl">&times;</button>
+            <h3 class="text-lg font-bold mb-4">{{ $form->category ? 'Edit Category' : 'Add New Category' }}</h3>
+            <form wire:submit.prevent="save" class="space-y-4">
+                <div>
+                    <label class="block mb-1">Name *</label>
+                    <input type="text" wire:model="form.name" class="w-full p-2 rounded border dark:bg-gray-700 dark:text-white @error('form.name') border-red-500 @enderror">
+                    @error('form.name')<div class="text-red-600 text-sm">{{ $message }}</div>@enderror
+                </div>
+                <div>
+                    <label class="block mb-1">Description</label>
+                    <textarea wire:model="form.description" class="w-full p-2 rounded border dark:bg-gray-700 dark:text-white"></textarea>
+                </div>
+                <div class="flex gap-2">
+                    <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">{{ $form->category ? 'Save Changes' : 'Add' }}</button>
+                    <button type="button" wire:click="hideModal" class="px-4 py-2 bg-gray-400 rounded hover:bg-gray-500">Cancel</button>
+                </div>
+            </form>
+        </div>
     </div>
-    @endif
 
     <!-- Categories Table -->
     <div class="bg-white dark:bg-gray-800 rounded-lg shadow overflow-hidden">
@@ -90,7 +79,7 @@
                                 Edit
                             </button>
                             <button wire:click="delete({{ $category->id }})" 
-                                onclick="return confirm('Are you sure?')"
+                                onclick="return confirm('This action cannot be undone. Are you sure?')"
                                 class="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300">
                                 Delete
                             </button>

@@ -2,6 +2,7 @@
 
 namespace App\Livewire;
 
+use App\Models\Testimonial;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
 
@@ -10,6 +11,8 @@ class Home extends Component
 {
     public function render()
     {
-        return view('livewire.pages.home');
+        return view('livewire.pages.home', [
+            'testimonials' => Testimonial::where('is_published', true)->get(),
+        ]);
     }
 }

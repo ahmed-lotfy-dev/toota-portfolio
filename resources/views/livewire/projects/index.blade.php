@@ -40,11 +40,11 @@
         <div class="max-w-7xl mx-auto columns-1 md:columns-2 lg:columns-3 gap-8 space-y-8">
             @foreach ($this->filteredProjects as $project)
                 <a href="#" class="group block break-inside-avoid mb-8">
-                    <div class="relative overflow-hidden bg-stone-200">
+                    <div class="relative overflow-hidden bg-stone-200 object-fill max-h-70%">
                         <div class="overflow-hidden">
                             @if($project->main_image)
-                                <img src="{{ $project->main_image->image_path }}" alt="{{ $project->title }}"
-                                    class="w-full h-auto object-cover transform transition-transform duration-700 group-hover:scale-105 grayscale-10 group-hover:grayscale-0">
+                                <img src="{{ $project->main_image->url }}" alt="{{ $project->title }}"
+                                    class="w-full h-full object-cover transform transition-transform duration-700 group-hover:scale-105 grayscale-10 group-hover:grayscale-0">
                             @else
                                 <div class="w-full h-64 bg-stone-200 flex items-center justify-center text-stone-400">
                                     No Image

@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Dashboard;
 
+use App\Livewire\Forms\CategoryForm;
 use App\Models\Category;
 use Livewire\Component;
 use Livewire\Attributes\Layout;
@@ -10,18 +11,10 @@ use Illuminate\Support\Str;
 #[Layout('components.layouts.dashboard')]
 class Categories extends Component
 {
+    public CategoryForm $form;
+
     public $categories;
-    public $name = '';
-    public $description = '';
-    public $editingId = null;
-    public $showAddCategoryModal = false;
-    public $newCategoryName = '';
-    public $newCategoryDescription = '';
-    
-    protected $rules = [
-        'name' => 'required|min:2',
-        'description' => 'nullable|string',
-    ];
+    public $showCategoryModal = false;
 
     public function mount()
     {
@@ -35,74 +28,56 @@ class Categories extends Component
 
     public function save()
     {
-        $this->validate();
+        $this->form->validate();
 
-        if ($this->editingId) {
-            $category = Category::find($this->editingId);
-            $category->update([
-                'name' => $this->name,
-                'slug' => Str::slug($this->name),
-                'description' => $this->description,
+        if ($this->form->category) {
+            $this->form->category->update([
+                'name' => $this->form->name,
+                'slug' => Str::slug($this->form->name),
+                'description' => $this->form->description,
             ]);
             session()->flash('message', 'Category updated successfully.');
         } else {
             Category::create([
-                'name' => $this->name,
-                'slug' => Str::slug($this->name),
-                'description' => $this->description,
+                'name' => $this->form->name,
+                'slug' => Str::slug($this->form->name),
+                'description' => $this->form->description,
                 'order' => Category::max('order') + 1,
             ]);
             session()->flash('message', 'Category created successfully.');
         }
 
-        $this->reset(['name', 'description', 'editingId']);
+        $this->hideModal();
         $this->loadCategories();
     }
 
-    public function showAddCategory()
+    public function edit(Category $category)
     {
-        $this->showAddCategoryModal = true;
-    }
-    public function hideAddCategory()
-    {
-        $this->showAddCategoryModal = false;
-        $this->reset(['newCategoryName', 'newCategoryDescription']);
-    }
-    public function saveNewCategory()
-    {
-        $this->validate([
-            'newCategoryName' => 'required|min:2',
-            'newCategoryDescription' => 'nullable|string',
-        ]);
-        Category::create([
-            'name' => $this->newCategoryName,
-            'slug' => \Illuminate\Support\Str::slug($this->newCategoryName),
-            'description' => $this->newCategoryDescription,
-            'order' => Category::max('order') + 1,
-        ]);
-        $this->loadCategories();
-        $this->hideAddCategory();
-        session()->flash('message', 'Category added!');
+        $this->form->setCategory($category);
+        $this->showCategoryModal = true;
     }
 
-    public function edit($id)
+    public function delete(Category $category)
     {
-        $category = Category::find($id);
-        $this->editingId = $id;
-        $this->name = $category->name;
-        $this->description = $category->description;
-    }
-
-    public function cancelEdit()
-    {
-        $this->reset(['name', 'description', 'editingId']);
-    }
-
-    public function delete($id)
-    {
-        Category::find($id)->delete();
+        if ($category->projects()->count() > 0) {
+            session()->flash('error', 'Cannot delete a category that has projects assigned to it.');
+            return;
+        }
+        $category->delete();
         session()->flash('message', 'Category deleted successfully.');
         $this->loadCategories();
+    }
+    
+    public function showModal()
+    {
+        $this->form->resetForm();
+        $this->showCategoryModal = true;
+    }
+
+    public function hideModal()
+    {
+        $this->showCategoryModal = false;
+        $this->form->resetForm();
     }
 
     public function render()
