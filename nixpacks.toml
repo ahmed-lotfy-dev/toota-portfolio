@@ -12,6 +12,8 @@ nixPkgs = [
     'php84Extensions.gd',
     'php84Extensions.fileinfo',
     'nodejs_22'
+    "mkdir -p .frankenphp/conf.d",
+    "cp php.ini .frankenphp/conf.d/uploads.ini"
 ]
 
 [phases.install]
