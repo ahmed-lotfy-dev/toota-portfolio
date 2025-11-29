@@ -43,4 +43,4 @@ cmds = [
 ]
 
 [start]
-cmd = "frankenphp run --workers=3 public/index.php"
+cmd = "chmod -R 777 storage && frankenphp run --workers=3 public/index.php"
