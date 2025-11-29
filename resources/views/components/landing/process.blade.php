@@ -13,7 +13,7 @@
 
             <!-- Step 1 -->
             <div class="relative z-10 flex flex-col items-center text-center md:border-l-2 md:border-dotted">
-                <div class="w-16 h-16 rounded-full bg-white border-2 border-gray-300 flex items-center justify-center text-xl font-serif text-stone-600 md:mb-10 mb-10" ">01</div>
+                <div class="w-16 h-16 rounded-full bg-white border-2 border-gray-300 flex items-center justify-center text-xl font-serif text-stone-600 md:mb-10 my-10" ">01</div>
                 <h3 class="text-lg font-semibold text-stone-800 mb-7">{{ __('process.step1_title') }}</h3>
                 <p class="text-stone-600 text-sm leading-relaxed px-3">
                     {{ __('process.step1_description') }}
@@ -21,7 +21,7 @@
             </div>
 
             <!-- Step 2 -->
-            <div class="relative z-10 flex flex-col items-center text-center md:border-l-2 md:border-dotted border-t-2 border-dashed">
+            <div class="relative z-10 flex flex-col items-center text-center md:border-l-2 md:border-dotted ">
                 <div class="w-16 h-16 rounded-full bg-white border-2 border-gray-300 flex items-center justify-center text-xl font-serif text-stone-600 md:mb-10 my-10" ">02</div>
                 <h3 class="text-lg font-semibold text-stone-800 mb-7">{{ __('process.step2_title') }}</h3>
                 <p class="text-stone-600 text-sm leading-relaxed px-3">
@@ -30,7 +30,7 @@
             </div>
 
             <!-- Step 3 -->
-            <div class="relative z-10 flex flex-col items-center text-center border-t-2 border-dashed">
+            <div class="relative z-10 flex flex-col items-center text-center">
                 <div class="w-16 h-16 rounded-full bg-white border-2 border-gray-300 flex items-center justify-center text-xl font-serif text-stone-600 md:mb-10 my-10" ">03</div>
                 <h3 class="text-lg font-semibold text-stone-800 mb-7">{{ __('process.step3_title') }}</h3>
                 <p class="text-stone-600 text-sm leading-relaxed px-3">
