@@ -22,6 +22,12 @@ return [
         "description" => "Join our mailing list to get the latest projects and exclusive works directly to your inbox.",
         'placeholder' => 'Enter your email',
         "subscribe" => "Subscribe",
+        "validation" => [
+            "email_required" => "The email address is required.",
+            "email_email" => "Please enter a valid email address.",
+            "email_unique" => "You are already subscribed.",
+        ],
+        "success" => "Thank you for subscribing!",
     ],
 
     "social" => "Social Media",

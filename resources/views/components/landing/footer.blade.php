@@ -68,7 +68,7 @@
                 <h4 class="text-xs font-bold uppercase tracking-[0.2em] text-stone-500 mb-8">{{ __('footer.newsletter.title') }}</h4>
                 <p class="text-stone-400 text-sm mb-6 leading-relaxed">{{ __('footer.newsletter.description') }}</p>
                 
-                <livewire:newsletter-subscribe />
+                <livewire:landing.newsletter-subscribe />
             </div>
         </div>
 
