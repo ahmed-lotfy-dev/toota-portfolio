@@ -1,7 +1,7 @@
 <div x-init="window.scrollTo(0, 0)">
     <div class="container mx-auto px-4 py-6">
         <div class="my-4">
-            <a href="{{ url('/') }}" class="text-blue-500 hover:underline">&larr; Back to all projects</a>
+            <a href="{{ url('/') }}" class="text-blue-500 hover:underline">&larr; {{ __('projects.back_to_all') }}</a>
         </div>
         <h1 class="text-3xl font-bold mb-4 uppercase">{{ $project->title }}</h1>
         <div class="prose max-w-full mb-8 first-letter:uppercase">
