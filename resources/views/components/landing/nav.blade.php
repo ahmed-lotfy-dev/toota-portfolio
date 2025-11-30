@@ -28,23 +28,37 @@
                         class="absolute -bottom-2 left-1/2 -translate-x-1/2 w-0 h-px bg-stone-900 transition-all duration-300 group-hover:w-full"></span>
                 </a>
 
-                <a href="/projects"
+                <a href="/#projects"
                     class="text-xs uppercase tracking-[0.15em] font-medium text-stone-500 hover:text-stone-900 transition-colors duration-300 relative group">
                     {{ __('nav.projects') }}
                     <span
                         class="absolute -bottom-2 left-1/2 -translate-x-1/2 w-0 h-px bg-stone-900 transition-all duration-300 group-hover:w-full"></span>
                 </a>
 
-                <a href="/services"
+                <a href="/#services"
                     class="text-xs uppercase tracking-[0.15em] font-medium text-stone-500 hover:text-stone-900 transition-colors duration-300 relative group">
                     {{ __('nav.services') }}
                     <span
                         class="absolute -bottom-2 left-1/2 -translate-x-1/2 w-0 h-px bg-stone-900 transition-all duration-300 group-hover:w-full"></span>
                 </a>
 
-                <a href="/about"
+                <a href="/#about"
                     class="text-xs uppercase tracking-[0.15em] font-medium text-stone-500 hover:text-stone-900 transition-colors duration-300 relative group">
                     {{ __('nav.about') }}
+                    <span
+                        class="absolute -bottom-2 left-1/2 -translate-x-1/2 w-0 h-px bg-stone-900 transition-all duration-300 group-hover:w-full"></span>
+                </a>
+
+                <a href="/#process"
+                    class="text-xs uppercase tracking-[0.15em] font-medium text-stone-500 hover:text-stone-900 transition-colors duration-300 relative group">
+                    {{ __('nav.process') }}
+                    <span
+                        class="absolute -bottom-2 left-1/2 -translate-x-1/2 w-0 h-px bg-stone-900 transition-all duration-300 group-hover:w-full"></span>
+                </a>
+
+                <a href="/#faq"
+                    class="text-xs uppercase tracking-[0.15em] font-medium text-stone-500 hover:text-stone-900 transition-colors duration-300 relative group">
+                    {{ __('nav.faq') }}
                     <span
                         class="absolute -bottom-2 left-1/2 -translate-x-1/2 w-0 h-px bg-stone-900 transition-all duration-300 group-hover:w-full"></span>
                 </a>
@@ -117,14 +131,20 @@
             <a href="/" class="text-lg font-serif text-stone-900 hover:text-stone-600 transition">
                 {{ __('nav.home') }}
             </a>
-            <a href="/projects" class="text-lg font-serif text-stone-900 hover:text-stone-600 transition">
+            <a href="/#projects" class="text-lg font-serif text-stone-900 hover:text-stone-600 transition">
                 {{ __('nav.projects') }}
             </a>
-            <a href="/services" class="text-lg font-serif text-stone-900 hover:text-stone-600 transition">
+            <a href="/#services" class="text-lg font-serif text-stone-900 hover:text-stone-600 transition">
                 {{ __('nav.services') }}
             </a>
-            <a href="/about" class="text-lg font-serif text-stone-900 hover:text-stone-600 transition">
+            <a href="/#about" class="text-lg font-serif text-stone-900 hover:text-stone-600 transition">
                 {{ __('nav.about') }}
+            </a>
+            <a href="/#process" class="text-lg font-serif text-stone-900 hover:text-stone-600 transition">
+                {{ __('nav.process') }}
+            </a>
+            <a href="/#faq" class="text-lg font-serif text-stone-900 hover:text-stone-600 transition">
+                {{ __('nav.faq') }}
             </a>
             <a href="/dashboard"
                 class="text-sm uppercase tracking-widest text-stone-400 hover:text-stone-900 transition pt-4">
@@ -139,7 +159,7 @@
                     </button>
                 </form>
             @endauth
-            <a href="#contact"
+            <a href="/#contact"
                 class="w-full max-w-xs py-4 bg-stone-900 text-[#FDFCF8] uppercase tracking-widest text-sm hover:bg-stone-700 transition">
                 {{ __('nav.contact') }}
             </a>

@@ -5,6 +5,8 @@ return [
     "projects" => "Projects",
     "services" => "Services",
     "about" => "About",
+    "process" => "Process",
+    "faq" => "FAQ",
     "contact" => "Contact",
     "dashboard" => "Dashboard",
 ];
