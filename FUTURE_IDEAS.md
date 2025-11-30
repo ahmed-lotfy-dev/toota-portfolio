@@ -45,12 +45,17 @@ These features focus on improving the site's discoverability, performance, and a
 - **Value:** Granular control over search engine appearance and social media sharing, crucial for digital marketing.
 - **High-level Implementation:** Add nullable `seo_title`, `seo_description`, `og_image_url` fields to relevant models (e.g., `Project`, `Post`) and integrate these into dashboard forms and public-facing Blade templates.
 
-### 3.2. Automated Sitemap Generation
+### 3.2. Automated Sitemap Generation (Completed)
 - **Description:** Implement an automated process to generate an `sitemap.xml` file, which lists all public pages for search engine crawlers.
 - **Value:** Essential for optimal search engine indexing and discoverability.
 - **High-level Implementation:** Utilize a Laravel package (e.g., `spatie/laravel-sitemap`) and set up a scheduled task to regenerate the sitemap periodically.
 
-### 3.3. Dashboard Analytics
+### 3.3. Dashboard Analytics (Completed)
 - **Description:** Enhance the main dashboard view to display key performance indicators, such as project views, recent contact form submissions, and newsletter subscriber growth.
 - **Value:** Offers at-a-glance insights into website performance and audience engagement for the artist.
 - **High-level Implementation:** Requires tracking mechanisms (e.g., simple counters in the database, or integration with a lightweight analytics tool) and a Livewire component to display these metrics on the dashboard's main page.
+
+### 3.4. Google Analytics Integration
+- **Description:** Add more analytics to the dashboard home from Google.
+- **Value:** Provides deeper insights into user behavior, traffic sources, and audience demographics.
+- **High-level Implementation:** Integrate Google Analytics 4 (GA4) API to fetch and display key metrics (e.g., active users, sessions, bounce rate) directly on the dashboard.
