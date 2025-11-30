@@ -25,7 +25,7 @@
         <x-dashboard.dashboard-nav />
 
         <!-- Main Content -->
-        <main class="flex-1 bg-gray-50">
+        <main class="flex-1 bg-[#FDFCF8]">
             {{ $slot }}
         </main>
     </div>

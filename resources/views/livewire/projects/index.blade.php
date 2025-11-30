@@ -39,7 +39,7 @@
     @else
         <div class="max-w-7xl mx-auto columns-1 md:columns-2 lg:columns-3 gap-8 space-y-8">
             @foreach ($this->filteredProjects as $project)
-                <a href="#" class="group block break-inside-avoid mb-8">
+                <a href="{{ route('project.detail', ['slug' => $project->slug]) }}" class="group block break-inside-avoid mb-8">
                     <div class="relative overflow-hidden bg-stone-200 object-fill max-h-70%">
                         <div class="overflow-hidden">
                             @if($project->main_image)

@@ -19,9 +19,11 @@
 </head>
 
 <body class="bg-white text-gray-900">
+    <x-landing.nav />
     <main>
         {{ $slot }}
     </main>
+    <x-landing.footer />
     @livewireScripts
 </body>
 

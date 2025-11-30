@@ -1,31 +1,86 @@
-# [Project Name]
+# Toota Art - Portfolio & Gallery
 
-## Overview
-[Description of your project: What it is, what it does, and why it's useful. You can also mention the technologies used here, e.g., Laravel, Livewire, Alpine.js, Tailwind CSS.]
+A sophisticated, modern, and fully-featured portfolio website built with the TALL stack (Tailwind, Alpine.js, Livewire, Laravel). This project serves as a complete solution for artists to showcase their work, manage their portfolio, and engage with their audience. It features a beautiful, responsive public-facing gallery and a powerful, secure admin dashboard.
 
-## Features
-- Artist Website Landing Page to view projects contact socials and so on .
-- Dashboard for managing projects and upload images
-- Authentication for the dashboard to be protected
-- Authorisation for no body can create or edit the projects or the images or categories
-## Installation
+---
 
-To get a local copy up and running, follow these simple steps.
+### Showcase
+
+*(This is where you can embed screenshots of your application. Replace the placeholder links with your actual images.)*
+
+| Landing Page                               | Project Detail                               | Admin Dashboard                              |
+| ------------------------------------------ | -------------------------------------------- | -------------------------------------------- |
+| ![Landing Page](https://via.placeholder.com/400x300.png?text=Landing+Page+Screenshot) | ![Project Detail](https://via.placeholder.com/400x300.png?text=Project+Detail+Screenshot) | ![Admin Dashboard](https://via.placeholder.com/400x300.png?text=Dashboard+Screenshot) |
+
+---
+
+## ✨ Features
+
+### Public-Facing Website
+- **Dynamic Project Gallery:** A beautiful, responsive gallery to showcase projects, filterable by category.
+- **Project Detail Pages:** Each project has its own dedicated, SEO-friendly page with multiple images and a detailed description.
+- **Multi-Language Support:** Fully bilingual (English & Arabic) with a simple language switcher.
+- **Contact Form:** A seamless way for visitors to get in touch, integrated with email notifications.
+- **Newsletter Subscription:** A component for visitors to subscribe to a newsletter.
+- **Engaging UI/UX:** Built with modern design principles and smooth transitions.
+
+### Administrative Dashboard
+- **Secure Authentication:** Robust user authentication powered by Laravel Fortify, including Two-Factor Authentication (2FA) and Google OAuth login options.
+- **Full Project Management (CRUD):** A powerful interface to create, read, update, and delete projects.
+- **Image Management:** Easy drag-and-drop image uploads for projects, with support for primary images and custom ordering.
+- **Dynamic Content Management:** Manage project categories and testimonials directly from the dashboard.
+- **Project Status Control:** Toggle projects between `Published` and `Draft` states, and mark projects as `Featured`.
+- **User Profile Management:** Admins can manage their profile information, password, and security settings.
+
+---
+
+## 🚀 Technology Stack
+
+This project is built with a modern, efficient, and powerful technology stack.
+
+- **Backend:**
+  - **[Laravel 12](https://laravel.com/)**: A web application framework with expressive, elegant syntax.
+  - **[PHP 8.4](https://www.php.net/)**: A popular general-purpose scripting language that is especially suited to web development.
+- **Frontend:**
+  - **[Livewire 3](https://livewire.laravel.com/)**: A full-stack framework for Laravel that makes building dynamic interfaces simple, without leaving the comfort of PHP.
+  - **[Tailwind CSS](https://tailwindcss.com/)**: A utility-first CSS framework for rapidly building custom designs.
+  - **[Alpine.js](https://alpinejs.dev/)**: A rugged, minimal framework for composing JavaScript behavior in your markup.
+  - **[Vite](https://vitejs.dev/)**: A next-generation frontend tooling that provides a faster and leaner development experience.
+- **Database:**
+  - **PostgreSQL**: A powerful, open-source object-relational database system.
+- **External Services:**
+  - **Cloudflare R2**: For scalable and reliable object storage for project images.
+  - **Google OAuth**: For secure, passwordless authentication.
+
+---
+
+## 🏛️ Architecture Highlights
+
+- **Component-Based with Livewire:** The UI is built using reactive, stateful Livewire components, allowing for a Single Page Application (SPA) feel with the simplicity of a traditional server-rendered application.
+- **Separation of Concerns:** The project follows best practices for separating business logic, presentation, and data persistence, making the codebase clean and maintainable.
+- **Service Layer:** Business logic, such as project deletion (including its associated images in Cloudflare R2), is encapsulated within Service classes (`ProjectService`) to keep controllers and components lean.
+- **RESTful Principles:** The application design adheres to RESTful principles, with clean, predictable URL structures for resources like projects.
+- **Blade Components:** Reusable UI elements (like navigation, footers, and form inputs) are abstracted into Blade components for consistency and maintainability.
+
+---
+
+## 🏁 Getting Started
+
+Follow these instructions to get the project up and running on your local machine for development and testing purposes.
 
 ### Prerequisites
 
-Before you begin, ensure you have the following installed:
-- PHP (>= 8.2)
+- PHP >= 8.4
 - Composer
-- Node.js (>= 18) and npm/yarn
-- A database (e.g., MySQL, PostgreSQL, SQLite)
+- Node.js & npm
+- PostgreSQL (or another database of your choice, but you will need to configure it)
 
-### Steps
+### Installation
 
 1.  **Clone the repository:**
     ```bash
-    git clone https://github.com/[your-username]/[your-repo-name].git
-    cd [your-repo-name]
+    git clone https://github.com/your-username/toota-art.git
+    cd toota-art
     ```
 
 2.  **Install PHP dependencies:**
@@ -35,63 +90,52 @@ Before you begin, ensure you have the following installed:
 
 3.  **Install JavaScript dependencies:**
     ```bash
-    npm install # or yarn install
+    npm install
     ```
 
-4.  **Copy the environment file:**
+4.  **Set up your environment file:**
     ```bash
     cp .env.example .env
     ```
-
-5.  **Generate an application key:**
+    Next, generate your application key:
     ```bash
     php artisan key:generate
     ```
 
-6.  **Configure your `.env` file:**
-    Open the newly created `.env` file and update the database connection details and any other necessary environment variables.
+5.  **Configure your `.env` file:**
+    Open the `.env` file and update the database credentials (`DB_*`), Google OAuth credentials (`GOOGLE_*`), and Cloudflare R2 settings (`R2_*`).
 
-    ```dotenv
-    DB_CONNECTION=mysql
-    DB_HOST=127.0.0.1
-    DB_PORT=3306
-    DB_DATABASE=[your_database_name]
-    DB_USERNAME=[your_database_user]
-    DB_PASSWORD=[your_database_password]
-    ```
-
-7.  **Run database migrations and seed the database (optional):**
+6.  **Run database migrations:**
     ```bash
-    php artisan migrate --seed
+    php artisan migrate
     ```
 
-8.  **Compile front-end assets:**
+### Running the Application
+
+1.  **Build frontend assets and watch for changes:**
     ```bash
-    npm run dev # for development
-    # or
-    npm run build # for production
+    npm run dev
     ```
 
-9.  **Start the local development server:**
+2.  **Serve the application:**
+    Open another terminal window and run:
     ```bash
     php artisan serve
     ```
-
-    You can now access the application at `http://127.0.0.1:8000` (or the address shown in your terminal).
-
-## Usage
-[Explain how to use your application. Provide examples of common workflows or features.]
-
-## Screenshots and Presentation
-[You can add screenshots or links to a presentation here to visually demonstrate the project. For example:]
-- ![Dashboard Screenshot](https://via.placeholder.com/600x400?text=Dashboard+Screenshot)
-- [Link to a presentation/demo video]
-
-## Contributing
-[If you welcome contributions, explain how others can contribute to your project.]
-
-## License
-[Specify the license under which your project is distributed, e.g., MIT, Apache 2.0.]
+    Your application will be available at `http://localhost:8000`.
 
 ---
-**Note:** Remember to replace all bracketed placeholders `[like this]` with your project's actual information.
+
+## 🧪 Running Tests
+
+This project uses Pest for testing. To run the full test suite, use the following command:
+
+```bash
+./vendor/bin/pest
+```
+
+---
+
+## License
+
+This project is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).

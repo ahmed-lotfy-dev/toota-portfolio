@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\Route;
 use Laravel\Fortify\Features;
 
 Route::get('/', action: Home::class)->name('home');
+Route::get('project/{slug}', \App\Livewire\Pages\ProjectDetail::class)->name('project.detail');
 Route::get('lang', [LanguageController::class, 'change'])->name("change.lang");
 
 // Google OAuth routes

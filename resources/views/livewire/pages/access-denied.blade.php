@@ -1,7 +1,5 @@
 <x-layouts.landing>
     <div class="w-full min-h-screen flex flex-col">
-        <x-landing.nav />
-
         <div class="flex-grow min-h-screen bg-gradient-to-br from-stone-50 to-stone-100 flex items-center justify-center px-6">
             <div class="max-w-2xl w-full text-center">
                 
@@ -53,7 +51,5 @@
 
             </div>
         </div>
-
-        <x-landing.footer />
     </div>
 </x-layouts.landing>
