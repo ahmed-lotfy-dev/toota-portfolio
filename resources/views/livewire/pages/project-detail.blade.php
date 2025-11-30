@@ -3,8 +3,8 @@
         <div class="my-4">
             <a href="{{ url('/') }}" class="text-blue-500 hover:underline">&larr; Back to all projects</a>
         </div>
-        <h1 class="text-3xl font-bold mb-4">{{ $project->title }}</h1>
-        <div class="prose max-w-full mb-8">
+        <h1 class="text-3xl font-bold mb-4 uppercase">{{ $project->title }}</h1>
+        <div class="prose max-w-full mb-8 first-letter:uppercase">
             {!! $project->description !!}
         </div>
 
