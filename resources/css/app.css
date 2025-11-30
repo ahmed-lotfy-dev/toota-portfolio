@@ -94,7 +94,7 @@ select:focus[data-flux-control] {
         transform: translateX(0);
     }
     100% {
-        transform: translateX(calc(-100% - 2rem)); /* 2rem accounts for gap */
+        transform: translateX(calc(-100% - 2rem)); 
     }
 }
 
@@ -103,6 +103,6 @@ select:focus[data-flux-control] {
         transform: translateX(0);
     }
     100% {
-        transform: translateX(calc(100% + 2rem)); /* 2rem accounts for gap */
+        transform: translateX(calc(100% + 2rem)); 
     }
 }

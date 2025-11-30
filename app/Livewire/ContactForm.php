@@ -22,6 +22,19 @@ class ContactForm extends Component
         'message' => 'required|min:10',
     ];
 
+    public function messages()
+    {
+        return [
+            'name.required' => __('contact.validation.name_required'),
+            'name.min' => __('contact.validation.name_min'),
+            'email.required' => __('contact.validation.email_required'),
+            'email.email' => __('contact.validation.email_email'),
+            'message.required' => __('contact.validation.message_required'),
+            'message.min' => __('contact.validation.message_min'),
+            'phone.max' => __('contact.validation.phone_max'),
+        ];
+    }
+
     public function submitForm()
     {
         $validatedData = $this->validate();

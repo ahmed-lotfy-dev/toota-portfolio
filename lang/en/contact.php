@@ -33,4 +33,13 @@ return [
   'visit_us' => 'Visit Us',
   "success_message" => "Email sent successfully and I'll be contacting you to start the work.",
   "address" => "Gharbia, Egypt",
+  "validation" => [
+    "name_required" => "The name field is required.",
+    "name_min" => "The name must be at least :min characters.",
+    "email_required" => "The email field is required.",
+    "email_email" => "Please enter a valid email address.",
+    "message_required" => "The message field is required.",
+    "message_min" => "The message must be at least :min characters.",
+    "phone_max" => "The phone number must not be greater than :max characters.",
+  ],
 ];
