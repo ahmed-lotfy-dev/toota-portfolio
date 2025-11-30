@@ -149,17 +149,3 @@
 
 {{-- Spacer to prevent content overlap --}}
 <div class="h-24 bg-[#FDFCF8]"></div>
-
-
-<script>
-    window.addEventListener("beforeunload", () => {
-        localStorage.setItem("scrollPos", window.scrollY);
-    });
-
-    window.addEventListener("load", () => {
-        const scrollPos = localStorage.getItem("scrollPos");
-        if (scrollPos !== null) {
-            window.scrollTo(0, scrollPos);
-        }
-    });
-</script>

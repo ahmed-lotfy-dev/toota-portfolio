@@ -7,10 +7,10 @@
 
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
             @foreach($project->images as $image)
-                <div class="aspect-w-1 aspect-h-1">
+                <a href="{{ \Illuminate\Support\Facades\Storage::disk('r2')->url($image->image_path) }}" target="_blank" rel="noopener noreferrer" class="group block aspect-w-1 aspect-h-1">
                     <img src="{{ \Illuminate\Support\Facades\Storage::disk('r2')->url($image->image_path) }}"
-                        alt="{{ $project->title }}" class="object-cover w-full h-full rounded-lg">
-                </div>
+                         alt="{{ $project->title }}" class="object-cover w-full h-full rounded-lg transition-transform duration-300 group-hover:scale-105">
+                </a>
             @endforeach
         </div>
 
