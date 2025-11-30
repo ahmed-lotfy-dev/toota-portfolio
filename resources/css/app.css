@@ -74,3 +74,35 @@ select:focus[data-flux-control] {
 [x-cloak] {
     display: none !important;
 }
+
+@layer utilities {
+    .animate-scroll {
+        animation: scroll 40s linear infinite;
+    }
+    
+    .animate-scroll-reverse {
+        animation: scroll-reverse 40s linear infinite;
+    }
+
+    .pause-on-hover:hover {
+        animation-play-state: paused;
+    }
+}
+
+@keyframes scroll {
+    0% {
+        transform: translateX(0);
+    }
+    100% {
+        transform: translateX(calc(-100% - 2rem)); /* 2rem accounts for gap */
+    }
+}
+
+@keyframes scroll-reverse {
+    0% {
+        transform: translateX(0);
+    }
+    100% {
+        transform: translateX(calc(100% + 2rem)); /* 2rem accounts for gap */
+    }
+}
