@@ -3,6 +3,7 @@
     progress: 0,
     previews: [],
     error: null,
+    context: @entangle('context'),
     init() {
         // Initialize previews from the wire model if it has values (e.g. when validation fails and re-renders)
         // Note: This is a basic initialization. For full sync, we might need to fetch URLs for paths.
@@ -33,6 +34,9 @@
             const formData = new FormData();
             formData.append('image', files[i]);
             formData.append('path', 'projects'); 
+            if (this.context) {
+                formData.append('title', this.context);
+            } 
 
             try {
                 const response = await fetch('{{ route('image.upload') }}', {

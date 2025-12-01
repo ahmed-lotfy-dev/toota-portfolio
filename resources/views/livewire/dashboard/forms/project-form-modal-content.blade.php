@@ -36,7 +36,7 @@
             </label>
         </div>
         <div>
-            <livewire:components.image-uploader wire:model="form.newImages" />
+            <livewire:components.image-uploader wire:model="form.newImages" :context="$form->title" />
             @error('form.newImages')<div class="text-red-600 text-sm mt-1">{{ $message }}</div>@enderror
         </div>
 

@@ -2,6 +2,8 @@
 
 namespace App\Livewire\Dashboard\Forms;
 
+use App\Actions\Project\CreateProject;
+use App\Actions\Project\UpdateProject;
 use App\Livewire\Forms\ProjectForm;
 use App\Models\Category;
 use App\Models\ProjectImage;
@@ -9,7 +11,7 @@ use App\Models\Project;
 use App\Services\ProjectService;
 use Livewire\Component;
 use Livewire\WithFileUploads;
-use Illuminate\Support\Str; // Needed for slug generation if category creation is kept here temporarily
+use Illuminate\Support\Str;
 
 class ProjectFormModalContent extends Component
 {
@@ -40,17 +42,17 @@ class ProjectFormModalContent extends Component
         $this->dispatch('reset-image-uploader');
     }
 
-    public function save(ProjectService $projectService)
+    public function save(CreateProject $createProject, UpdateProject $updateProject)
     {
         $this->form->validate();
         $projectData = $this->form->only(['title', 'category_id', 'description', 'is_featured', 'is_published']);
 
         try {
             if ($this->form->project) {
-                $projectService->update($this->form->project, $projectData, $this->form->newImages);
+                $updateProject->handle($this->form->project, $projectData, $this->form->newImages);
                 session()->flash('message', 'Project updated successfully.');
             } else {
-                $projectService->create($projectData, $this->form->newImages);
+                $createProject->handle($projectData, $this->form->newImages);
                 session()->flash('message', 'Project created successfully.');
             }
 
@@ -77,7 +79,7 @@ class ProjectFormModalContent extends Component
             session()->flash('message', 'Failed to delete image.');
         }
     }
-    
+
     public function setPrimary(ProjectImage $image, ProjectService $projectService)
     {
         try {

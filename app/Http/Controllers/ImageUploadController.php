@@ -14,10 +14,15 @@ class ImageUploadController extends Controller
         $request->validate([
             'image' => 'required|image|max:15360', // 15MB
             'path' => 'required|string',
+            'title' => 'nullable|string|max:255',
         ]);
 
         $file = $request->file('image');
         $destinationPath = $request->input('path');
+        $title = $request->input('title');
+
+        /** @var \Illuminate\Filesystem\FilesystemAdapter $disk */
+        $disk = Storage::disk('r2');
 
         try {
             // Optimize the image
@@ -31,28 +36,44 @@ class ImageUploadController extends Controller
             // Encode to WebP with 90% quality
             $encoded = $image->toWebp(quality: 90);
 
-            // Generate filename with .webp extension
-            $filename = Str::slug(pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME)) . '-' . Str::random(6) . '.webp';
-            
+            // Generate filename
+            $originalName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
+            $sluggedName = Str::slug($originalName);
+
+            if ($title) {
+                $filename = Str::slug($title) . '-' . $sluggedName . '-' . Str::random(6) . '.webp';
+            } else {
+                $filename = $sluggedName . '-' . Str::random(6) . '.webp';
+            }
+
             // Store the optimized image directly to R2
             $fullPath = rtrim($destinationPath, '/') . '/' . $filename;
-            Storage::disk('r2')->put($fullPath, (string) $encoded);
+            $disk->put($fullPath, (string) $encoded);
 
             return response()->json([
                 'path' => $fullPath,
-                'url' => Storage::disk('r2')->url($fullPath),
+                'url' => $disk->url($fullPath),
             ]);
 
         } catch (\Exception $e) {
             // Fallback: If optimization fails, store original file
             logger()->warning('Image optimization failed: ' . $e->getMessage());
 
-            $filename = Str::slug(pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME)) . '-' . Str::random(6) . '.' . $file->getClientOriginalExtension();
+            $originalName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
+            $sluggedName = Str::slug($originalName);
+            $extension = $file->getClientOriginalExtension();
+
+            if ($title) {
+                $filename = Str::slug($title) . '-' . $sluggedName . '-' . Str::random(6) . '.' . $extension;
+            } else {
+                $filename = $sluggedName . '-' . Str::random(6) . '.' . $extension;
+            }
+
             $path = $file->storeAs($destinationPath, $filename, 'r2');
 
             return response()->json([
                 'path' => $path,
-                'url' => Storage::disk('r2')->url($path),
+                'url' => $disk->url($path),
             ]);
         }
     }

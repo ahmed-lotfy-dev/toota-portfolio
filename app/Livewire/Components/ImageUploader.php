@@ -11,6 +11,8 @@ class ImageUploader extends Component
     #[Modelable]
     public $images = [];
 
+    public $context = '';
+
     public function removeImage($index)
     {
         if (isset($this->images[$index])) {
