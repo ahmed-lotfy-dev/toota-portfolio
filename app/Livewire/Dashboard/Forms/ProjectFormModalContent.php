@@ -37,6 +37,7 @@ class ProjectFormModalContent extends Component
     public function resetForm()
     {
         $this->form->resetForm();
+        $this->dispatch('reset-image-uploader');
     }
 
     public function save(ProjectService $projectService)
