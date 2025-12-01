@@ -7,10 +7,9 @@
 
         <div class="flex flex-col gap-3 sm:flex-row sm:items-center">
             <div class="flex gap-2 w-full sm:w-auto">
-                <button type="button" wire:click="showProjectModal"
-                    class="flex-1 sm:flex-none h-10 px-5 bg-blue-500 text-white font-semibold rounded hover:bg-blue-700">
+                <x-ui.button wire:click="showProjectModal">
                     Add Project
-                </button>
+                </x-ui.button>
             </div>
 
         </div>
@@ -47,7 +46,8 @@
             </thead>
             <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
                 @forelse($projects as $project)
-                    <tr class="align-top"> {{-- Added align-top to prevent image section from pushing other content too high --}}
+                    <tr class="align-top"> {{-- Added align-top to prevent image section from pushing other content too high
+                        --}}
                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">
                             {{ $project->title }}
                         </td>
@@ -56,39 +56,40 @@
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm">
                             <div class="flex gap-2">
-                                <button wire:click="toggleFeatured({{ $project->id }})"
-                                    class="px-2 py-1 text-xs rounded {{ $project->is_featured ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400' : 'bg-gray-100 text-gray-600 dark:bg-gray-700 dark:text-gray-400' }}">
+                                <x-ui.button size="sm" variant="secondary" wire:click="toggleFeatured({{ $project->id }})">
                                     {{ $project->is_featured ? '★ Featured' : '☆ Feature' }}
-                                </button>
-                                <button wire:click="togglePublished({{ $project->id }})"
-                                    class="px-2 py-1 text-xs rounded {{ $project->is_published ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400' : 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400' }}">
+                                </x-ui.button>
+                                <x-ui.badge color="{{ $project->is_published ? 'green' : 'red' }}"
+                                    wire:click="togglePublished({{ $project->id }})" class="cursor-pointer">
                                     {{ $project->is_published ? 'Published' : 'Draft' }}
-                                </button>
+                                </x-ui.badge>
                             </div>
                         </td>
                         <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">
                             <div class="flex -space-x-2 overflow-hidden">
                                 @forelse($project->images->take(3) as $image)
-                                    <img class="inline-block h-10 w-10 rounded-full ring-2 ring-white dark:ring-gray-800 object-cover" src="{{ $image->url }}" alt="Project Image">
+                                    <img class="inline-block h-10 w-10 rounded-full ring-2 ring-white dark:ring-gray-800 object-cover"
+                                        src="{{ $image->url }}" alt="Project Image">
                                 @empty
                                     <span class="text-gray-400 dark:text-gray-600">No Images</span>
                                 @endforelse
                                 @if($project->images->count() > 3)
-                                    <span class="inline-flex items-center justify-center h-10 w-10 rounded-full ring-2 ring-white dark:ring-gray-800 bg-gray-100 dark:bg-gray-700 text-xs font-medium text-gray-500 dark:text-gray-300">
+                                    <span
+                                        class="inline-flex items-center justify-center h-10 w-10 rounded-full ring-2 ring-white dark:ring-gray-800 bg-gray-100 dark:bg-gray-700 text-xs font-medium text-gray-500 dark:text-gray-300">
                                         +{{ $project->images->count() - 3 }}
                                     </span>
                                 @endif
                             </div>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                            <button wire:click="edit({{ $project->id }})"
-                                class="text-blue-600 hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-300 mr-3">
+                            <x-ui.button variant="link" wire:click="edit({{ $project->id }})" class="mr-3">
                                 Edit
-                            </button>
-                            <button wire:click="delete({{ $project->id }})" onclick="return confirm('Are you sure?')"
-                                class="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300">
+                            </x-ui.button>
+                            <x-ui.button variant="link"
+                                class="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300"
+                                wire:click="delete({{ $project->id }})" onclick="return confirm('Are you sure?')">
                                 Delete
-                            </button>
+                            </x-ui.button>
                         </td>
                     </tr>
                     @if($showProjectImages[$project->id] ?? false)
@@ -97,9 +98,11 @@
                                 <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
                                     @foreach($project->images->sortBy('order') as $image)
                                         <div class="relative group">
-                                            <img src="{{ $image->url }}" alt="{{ $image->caption ?? 'Project Image' }}" class="w-full h-32 object-cover rounded shadow">
+                                            <img src="{{ $image->url }}" alt="{{ $image->caption ?? 'Project Image' }}"
+                                                class="w-full h-32 object-cover rounded shadow">
                                             @if($image->is_primary)
-                                                <span class="absolute top-1 left-1 px-2 py-0.5 bg-blue-500 text-white text-xs rounded-full">Primary</span>
+                                                <span
+                                                    class="absolute top-1 left-1 px-2 py-0.5 bg-blue-500 text-white text-xs rounded-full">Primary</span>
                                             @endif
                                         </div>
                                     @endforeach
@@ -120,11 +123,11 @@
 
 
 
-    <x-modal name="project-modal" title="Project Details">
+    <x-ui.modal name="project-modal" title="Project Details">
         <x-slot name="body">
             <livewire:dashboard.forms.project-form-modal-content />
         </x-slot>
-    </x-modal>
+    </x-ui.modal>
 
 
 </div>
