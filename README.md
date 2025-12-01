@@ -27,7 +27,15 @@ Artists need a platform that doesn't just store their work but **elevates** it. 
 
 ## ✨ Key Features
 
-### 1. 🖼️ Dynamic Portfolio Showcase
+### 1. 🔐 Secure Authentication & Access Control
+
+We prioritized security and ease of use for the artist.
+
+-   **Registration Closed**: Public registration is completely disabled to ensure **only the artist** can access the dashboard. No unauthorized users can create accounts.
+-   **Social Login (Google)**: Integrated using **Laravel Socialite**. The artist can log in with a single click using their Google account, eliminating the need to remember passwords.
+-   **Role-Based Access**: Strict middleware ensures that only authenticated users can access administrative routes.
+
+### 2. 🖼️ Dynamic Portfolio Showcase
 
 A visually stunning frontend that displays projects in a responsive grid.
 
@@ -37,7 +45,7 @@ A visually stunning frontend that displays projects in a responsive grid.
 
 > ![Screenshot: Portfolio Home Page](PLACEHOLDER_IMAGE_HOME_PAGE) > _The main landing page showcasing the art collection._
 
-### 2. 🎛️ Admin Dashboard
+### 3. 🎛️ Admin Dashboard
 
 A secure, feature-rich dashboard for managing all site content.
 
@@ -47,7 +55,7 @@ A secure, feature-rich dashboard for managing all site content.
 
 > ![Screenshot: Admin Dashboard](PLACEHOLDER_IMAGE_DASHBOARD) > _The centralized hub for managing your portfolio._
 
-### 3. ☁️ Smart Image Management
+### 4. ☁️ Smart Image Management
 
 Forget about slow uploads or broken images.
 
@@ -58,7 +66,15 @@ Forget about slow uploads or broken images.
 
 > ![Screenshot: Image Uploader](PLACEHOLDER_IMAGE_UPLOADER) > _Custom drag-and-drop uploader with preview and deletion capabilities._
 
-### 4. 🧩 Reusable UI Kit
+### 5. 🗺️ Automated SEO & Sitemaps
+
+Built to be found.
+
+-   **Automated Sitemaps**: Uses `spatie/laravel-sitemap` to automatically generate an XML sitemap (`sitemap.xml`) for all published projects.
+-   **Daily Regeneration**: The sitemap is regenerated daily to ensure search engines always have the latest content.
+-   **SEO-Friendly URLs**: All projects use slug-based URLs (e.g., `/project/my-awesome-art`) for better ranking.
+
+### 6. 🧩 Reusable UI Kit
 
 Built with maintainability in mind. The project uses a set of custom Blade components (`x-ui.*`) for consistent design across the application.
 
@@ -71,13 +87,15 @@ Built with maintainability in mind. The project uses a set of custom Blade compo
 
 We chose the **TALL Stack** for its perfect balance of developer experience and performance.
 
-| Technology        | Purpose           | Why we used it                                                                                                   |
-| :---------------- | :---------------- | :--------------------------------------------------------------------------------------------------------------- |
-| **Laravel 11**    | Backend Framework | The industry standard for PHP. Provides robust routing, security, and database management.                       |
-| **Livewire 3**    | Dynamic Frontend  | Allows us to build dynamic interfaces (like the dashboard) without the complexity of a separate SPA (React/Vue). |
-| **Alpine.js**     | Interactivity     | Adds lightweight JavaScript behavior (modals, dropdowns) directly in the HTML.                                   |
-| **Tailwind CSS**  | Styling           | Utility-first CSS for rapid, custom UI development without fighting framework defaults.                          |
-| **Cloudflare R2** | Storage           | S3-compatible object storage that eliminates egress fees and ensures fast global delivery.                       |
+| Technology            | Purpose           | Why we used it                                                                                                   |
+| :-------------------- | :---------------- | :--------------------------------------------------------------------------------------------------------------- |
+| **Laravel 11**        | Backend Framework | The industry standard for PHP. Provides robust routing, security, and database management.                       |
+| **Livewire 3**        | Dynamic Frontend  | Allows us to build dynamic interfaces (like the dashboard) without the complexity of a separate SPA (React/Vue). |
+| **Alpine.js**         | Interactivity     | Adds lightweight JavaScript behavior (modals, dropdowns) directly in the HTML.                                   |
+| **Tailwind CSS**      | Styling           | Utility-first CSS for rapid, custom UI development without fighting framework defaults.                          |
+| **Cloudflare R2**     | Storage           | S3-compatible object storage that eliminates egress fees and ensures fast global delivery.                       |
+| **Laravel Socialite** | Authentication    | Simplifies OAuth authentication with providers like Google.                                                      |
+| **Spatie Sitemap**    | SEO               | Automatically generates XML sitemaps to improve search engine indexing.                                          |
 
 ---
 
@@ -88,8 +106,9 @@ The project follows a clean, domain-driven structure:
 ```
 app/
 ├── Actions/           # Business logic (CreateProject, UpdateProject, DeleteProject)
+├── Console/           # Commands (GenerateSitemap)
 ├── Http/
-│   ├── Controllers/   # Request handling
+│   ├── Controllers/   # Request handling (GoogleAuthController, ImageUploadController)
 │   └── Livewire/      # Reactive components (Dashboard, Forms)
 ├── Models/            # Eloquent models (Project, Category)
 └── Services/          # External integrations
@@ -133,13 +152,15 @@ resources/
     php artisan key:generate
     ```
 
-    _Configure your database and Cloudflare R2 credentials in `.env`._
+    _Configure your database, Cloudflare R2, and Google Socialite credentials in `.env`._
 
-4.  **Run Migrations**
+4.  **Run Migrations & Seeders**
 
     ```bash
-    php artisan migrate
+    php artisan migrate --seed
     ```
+
+    _Note: The seeder creates an initial admin user based on your environment variables._
 
 5.  **Start Development Server**
     ```bash
