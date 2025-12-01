@@ -1,141 +1,160 @@
-# Toota Art - Portfolio & Gallery
+# 🎨 Toota Art Portfolio
 
-A sophisticated, modern, and fully-featured portfolio website built with the TALL stack (Tailwind, Alpine.js, Livewire, Laravel). This project serves as a complete solution for artists to showcase their work, manage their portfolio, and engage with their audience. It features a beautiful, responsive public-facing gallery and a powerful, secure admin dashboard.
+![Laravel](https://img.shields.io/badge/Laravel-11-FF2D20?style=for-the-badge&logo=laravel&logoColor=white)
+![Livewire](https://img.shields.io/badge/Livewire-3-4E56A6?style=for-the-badge&logo=livewire&logoColor=white)
+![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-3.4-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)
+![Alpine.js](https://img.shields.io/badge/Alpine.js-3.x-8BC0D0?style=for-the-badge&logo=alpine.js&logoColor=white)
 
----
-
-### Showcase
-
-*(This is where you can embed screenshots of your application. Replace the placeholder links with your actual images.)*
-
-| Landing Page                               | Project Detail                               | Admin Dashboard                              |
-| ------------------------------------------ | -------------------------------------------- | -------------------------------------------- |
-| ![Landing Page](https://via.placeholder.com/400x300.png?text=Landing+Page+Screenshot) | ![Project Detail](https://via.placeholder.com/400x300.png?text=Project+Detail+Screenshot) | ![Admin Dashboard](https://via.placeholder.com/400x300.png?text=Dashboard+Screenshot) |
+A high-performance, dynamic portfolio application designed to showcase artistic projects with elegance and speed. Built with a modern TALL stack (Tailwind, Alpine, Laravel, Livewire) and optimized for seamless content management.
 
 ---
 
-## ✨ Features
+## 🚀 Why & What
 
-### Public-Facing Website
-- **Dynamic Project Gallery:** A beautiful, responsive gallery to showcase projects, filterable by category.
-- **Project Detail Pages:** Each project has its own dedicated, SEO-friendly page with multiple images and a detailed description.
-- **Multi-Language Support:** Fully bilingual (English & Arabic) with a simple language switcher.
-- **Contact Form:** A seamless way for visitors to get in touch, integrated with email notifications.
-- **Newsletter Subscription:** A component for visitors to subscribe to a newsletter.
-- **Engaging UI/UX:** Built with modern design principles and smooth transitions.
+### The "Why"
 
-### Administrative Dashboard
-- **Secure Authentication:** Robust user authentication powered by Laravel Fortify, including Two-Factor Authentication (2FA) and Google OAuth login options.
-- **Full Project Management (CRUD):** A powerful interface to create, read, update, and delete projects.
-- **Image Management:** Easy drag-and-drop image uploads for projects, with support for primary images and custom ordering.
-- **Dynamic Content Management:** Manage project categories and testimonials directly from the dashboard.
-- **Project Status Control:** Toggle projects between `Published` and `Draft` states, and mark projects as `Featured`.
-- **User Profile Management:** Admins can manage their profile information, password, and security settings.
+Artists need a platform that doesn't just store their work but **elevates** it. Generic website builders often lack the performance or the specific customizability needed for a truly professional portfolio. Toota Art was built to solve this by providing a blazing-fast, SEO-optimized, and easy-to-manage solution.
+
+### The "What"
+
+**Toota Art** is a full-stack web application that serves as both a public-facing portfolio and a private content management system. It allows for:
+
+-   **Effortless Management**: A custom dashboard to manage projects, categories, and testimonials without touching code.
+-   **Optimized Performance**: Images are automatically optimized and served via Cloudflare R2 for instant loading.
+-   **Dynamic Experience**: Smooth transitions and interactive elements powered by Livewire and Alpine.js.
 
 ---
 
-## 🚀 Technology Stack
+## ✨ Key Features
 
-This project is built with a modern, efficient, and powerful technology stack.
+### 1. 🖼️ Dynamic Portfolio Showcase
 
-- **Backend:**
-  - **[Laravel 12](https://laravel.com/)**: A web application framework with expressive, elegant syntax.
-  - **[PHP 8.4](https://www.php.net/)**: A popular general-purpose scripting language that is especially suited to web development.
-- **Frontend:**
-  - **[Livewire 3](https://livewire.laravel.com/)**: A full-stack framework for Laravel that makes building dynamic interfaces simple, without leaving the comfort of PHP.
-  - **[Tailwind CSS](https://tailwindcss.com/)**: A utility-first CSS framework for rapidly building custom designs.
-  - **[Alpine.js](https://alpinejs.dev/)**: A rugged, minimal framework for composing JavaScript behavior in your markup.
-  - **[Vite](https://vitejs.dev/)**: A next-generation frontend tooling that provides a faster and leaner development experience.
-- **Database:**
-  - **PostgreSQL**: A powerful, open-source object-relational database system.
-- **External Services:**
-  - **Cloudflare R2**: For scalable and reliable object storage for project images.
-  - **Google OAuth**: For secure, passwordless authentication.
+A visually stunning frontend that displays projects in a responsive grid.
 
----
+-   **Filtering**: Filter projects by category instantly.
+-   **Detail View**: Rich project details with support for multiple images and descriptions.
+-   **Masonry Layout**: Adapts to different image aspect ratios.
 
-## 🏛️ Architecture Highlights
+> ![Screenshot: Portfolio Home Page](PLACEHOLDER_IMAGE_HOME_PAGE) > _The main landing page showcasing the art collection._
 
-- **Component-Based with Livewire:** The UI is built using reactive, stateful Livewire components, allowing for a Single Page Application (SPA) feel with the simplicity of a traditional server-rendered application.
-- **Separation of Concerns:** The project follows best practices for separating business logic, presentation, and data persistence, making the codebase clean and maintainable.
-- **Service Layer:** Business logic, such as project deletion (including its associated images in Cloudflare R2), is encapsulated within Service classes (`ProjectService`) to keep controllers and components lean.
-- **RESTful Principles:** The application design adheres to RESTful principles, with clean, predictable URL structures for resources like projects.
-- **Blade Components:** Reusable UI elements (like navigation, footers, and form inputs) are abstracted into Blade components for consistency and maintainability.
+### 2. 🎛️ Admin Dashboard
 
----
+A secure, feature-rich dashboard for managing all site content.
 
-## 🏁 Getting Started
+-   **Project Management**: Create, edit, and delete projects using dedicated Actions (`CreateProject`, `UpdateProject`, `DeleteProject`).
+-   **Status Control**: Toggle "Published" or "Featured" status with a single click.
+-   **Category & Testimonial Management**: Organize work and display social proof.
 
-Follow these instructions to get the project up and running on your local machine for development and testing purposes.
+> ![Screenshot: Admin Dashboard](PLACEHOLDER_IMAGE_DASHBOARD) > _The centralized hub for managing your portfolio._
 
-### Prerequisites
+### 3. ☁️ Smart Image Management
 
-- PHP >= 8.4
-- Composer
-- Node.js & npm
-- PostgreSQL (or another database of your choice, but you will need to configure it)
+Forget about slow uploads or broken images.
 
-### Installation
+-   **Cloudflare R2 Integration**: Images are stored securely in the cloud, not on the server.
+-   **Drag & Drop Uploader**: A custom-built Livewire component for easy multi-image uploads.
+-   **Auto-Optimization**: Images are converted to WebP and resized for performance.
+-   **Replace Strategy**: Updating a project automatically cleans up old images to prevent storage clutter.
 
-1.  **Clone the repository:**
-    ```bash
-    git clone https://github.com/your-username/toota-art.git
-    cd toota-art
-    ```
+> ![Screenshot: Image Uploader](PLACEHOLDER_IMAGE_UPLOADER) > _Custom drag-and-drop uploader with preview and deletion capabilities._
 
-2.  **Install PHP dependencies:**
-    ```bash
-    composer install
-    ```
+### 4. 🧩 Reusable UI Kit
 
-3.  **Install JavaScript dependencies:**
-    ```bash
-    npm install
-    ```
+Built with maintainability in mind. The project uses a set of custom Blade components (`x-ui.*`) for consistent design across the application.
 
-4.  **Set up your environment file:**
-    ```bash
-    cp .env.example .env
-    ```
-    Next, generate your application key:
-    ```bash
-    php artisan key:generate
-    ```
-
-5.  **Configure your `.env` file:**
-    Open the `.env` file and update the database credentials (`DB_*`), Google OAuth credentials (`GOOGLE_*`), and Cloudflare R2 settings (`R2_*`).
-
-6.  **Run database migrations:**
-    ```bash
-    php artisan migrate
-    ```
-
-### Running the Application
-
-1.  **Build frontend assets and watch for changes:**
-    ```bash
-    npm run dev
-    ```
-
-2.  **Serve the application:**
-    Open another terminal window and run:
-    ```bash
-    php artisan serve
-    ```
-    Your application will be available at `http://localhost:8000`.
+-   **Components**: Buttons, Inputs, Badges, Modals, and more.
+-   **Dark Mode**: Native support for dark mode styling.
 
 ---
 
-## 🧪 Running Tests
+## 🛠️ Tech Stack
 
-This project uses Pest for testing. To run the full test suite, use the following command:
+We chose the **TALL Stack** for its perfect balance of developer experience and performance.
 
-```bash
-./vendor/bin/pest
+| Technology        | Purpose           | Why we used it                                                                                                   |
+| :---------------- | :---------------- | :--------------------------------------------------------------------------------------------------------------- |
+| **Laravel 11**    | Backend Framework | The industry standard for PHP. Provides robust routing, security, and database management.                       |
+| **Livewire 3**    | Dynamic Frontend  | Allows us to build dynamic interfaces (like the dashboard) without the complexity of a separate SPA (React/Vue). |
+| **Alpine.js**     | Interactivity     | Adds lightweight JavaScript behavior (modals, dropdowns) directly in the HTML.                                   |
+| **Tailwind CSS**  | Styling           | Utility-first CSS for rapid, custom UI development without fighting framework defaults.                          |
+| **Cloudflare R2** | Storage           | S3-compatible object storage that eliminates egress fees and ensures fast global delivery.                       |
+
+---
+
+## 📂 Project Structure
+
+The project follows a clean, domain-driven structure:
+
+```
+app/
+├── Actions/           # Business logic (CreateProject, UpdateProject, DeleteProject)
+├── Http/
+│   ├── Controllers/   # Request handling
+│   └── Livewire/      # Reactive components (Dashboard, Forms)
+├── Models/            # Eloquent models (Project, Category)
+└── Services/          # External integrations
+resources/
+└── views/
+    ├── components/ui/ # Reusable UI Kit (Button, Input, Modal)
+    └── livewire/      # Page-specific views
 ```
 
 ---
 
-## License
+## ⚡ Getting Started
 
-This project is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+### Prerequisites
+
+-   PHP 8.2+
+-   Composer
+-   Node.js & NPM
+-   MySQL
+
+### Installation
+
+1.  **Clone the repository**
+
+    ```bash
+    git clone https://github.com/ahmed-lotfy-dev/toota-portfolio.git
+    cd toota-portfolio
+    ```
+
+2.  **Install Dependencies**
+
+    ```bash
+    composer install
+    npm install
+    ```
+
+3.  **Environment Setup**
+
+    ```bash
+    cp .env.example .env
+    php artisan key:generate
+    ```
+
+    _Configure your database and Cloudflare R2 credentials in `.env`._
+
+4.  **Run Migrations**
+
+    ```bash
+    php artisan migrate
+    ```
+
+5.  **Start Development Server**
+    ```bash
+    npm run dev
+    php artisan serve
+    ```
+
+---
+
+## 🔒 Security
+
+-   **Authentication**: Powered by Laravel Breeze/Jetstream.
+-   **Authorization**: Role-based access control for the dashboard.
+-   **Sanitization**: All inputs are validated and sanitized to prevent XSS and SQL injection.
+
+---
+
+Made with ❤️ by [Ahmed Lotfy](https://github.com/ahmed-lotfy-dev)
