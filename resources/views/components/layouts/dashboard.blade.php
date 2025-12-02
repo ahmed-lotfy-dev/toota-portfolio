@@ -13,23 +13,19 @@
         rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,100..700;1,100..700"
         rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@200;300;400;500;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@200;300;400;500;700;800;900&display=swap"
+        rel="stylesheet">
 
     <title>{{ $title ?? 'Toota Art Dashboard' }}</title>
     @vite(entrypoints: ['resources/css/app.css', 'resources/js/app.js'])
     @livewireStyles
 </head>
 
-<body class="bg-white text-gray-900">
-    <div class="flex min-h-screen">
-        <!-- Sidebar -->
-        <x-dashboard.dashboard-nav />
+<body class="min-h-screen bg-white text-gray-900 antialiased">
+    <x-dashboard.dashboard-nav>
+        {{ $slot }}
+    </x-dashboard.dashboard-nav>
 
-        <!-- Main Content -->
-        <main class="flex-1 bg-[#FDFCF8]">
-            {{ $slot }}
-        </main>
-    </div>
     @livewireScripts
 </body>
 
