@@ -12,7 +12,8 @@
         rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,100..700;1,100..700"
         rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@200;300;400;500;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@200;300;400;500;700;800;900&display=swap"
+        rel="stylesheet">
 
     <title>{{ $title ?? 'Toota Art' }}</title>
     @vite(entrypoints: ['resources/css/app.css', 'resources/js/app.js', 'resources/js/analytics.js',])
@@ -25,6 +26,7 @@
         {{ $slot }}
     </main>
     <x-landing.footer />
+    @fluxScripts
     @livewireScripts
 </body>
 
