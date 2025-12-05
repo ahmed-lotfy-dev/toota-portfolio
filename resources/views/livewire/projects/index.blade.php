@@ -57,20 +57,30 @@
 
 
                     <div class="mt-4 flex justify-between items-start">
-                        <div>
+                        <div class="flex-1" x-data="{ expanded: false, title: '{{ e($project->title) }}' }">
                             <h3 class="text-xl text-stone-800 italic group-hover:text-black transition-colors"
+                                :class="{ 'truncate overflow-hidden whitespace-nowrap': !expanded }"
                                 style="font-family: 'Playfair Display', serif;">
-                                {{ $project->title }}
+                                <span x-text="title"></span>
                             </h3>
                             <p class="text-stone-500 text-xs uppercase tracking-widest mt-1">
                                 {{ $project->category->name }}
                             </p>
+                            <button x-show="title.length > 50 && !expanded" @click.prevent="expanded = !expanded"
+                                class="text-sm text-stone-600 hover:text-stone-900 transition-colors mt-2 underline">
+                                Read More
+                            </button>
+                            <button x-show="expanded" @click.prevent="expanded = !expanded"
+                                class="text-sm text-stone-600 hover:text-stone-900 transition-colors mt-2 underline">
+                                Read Less
+                            </button>
                         </div>
                         <span
-                            class="opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300 text-stone-800">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                                stroke="currentColor" class="w-5 h-5">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+                            class="opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300 text-stone-800 ml-4">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
                             </svg>
                         </span>
                     </div>

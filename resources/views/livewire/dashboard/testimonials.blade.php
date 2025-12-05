@@ -39,15 +39,20 @@
             <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
                 @forelse($testimonials as $testimonial)
                     <tr>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">
-                            {{ $testimonial->name }}
+                        <td class="px-6 py-4 text-sm font-medium text-gray-900 dark:text-white">
+                            <div class="truncate" title="{{ $testimonial->name }}">
+                                {{ $testimonial->name }}
+                            </div>
                         </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
-                            {{ $testimonial->title }}
+                        <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">
+                            <div class="truncate" title="{{ $testimonial->title }}">
+                                {{ $testimonial->title }}
+                            </div>
                         </td>
-                        <td
-                            class="px-6 py-4 max-w-xs overflow-hidden text-ellipsis whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
-                            {{ $testimonial->body }}
+                        <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">
+                            <div class="truncate" title="{{ $testimonial->body }}">
+                                {{ $testimonial->body }}
+                            </div>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm">
                             <x-ui.badge color="{{ $testimonial->is_published ? 'green' : 'red' }}"

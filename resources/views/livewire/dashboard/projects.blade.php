@@ -48,11 +48,15 @@
                 @forelse($projects as $project)
                     <tr class="align-top"> {{-- Added align-top to prevent image section from pushing other content too high
                         --}}
-                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">
-                            {{ $project->title }}
+                        <td class="px-6 py-4 text-sm font-medium text-gray-900 dark:text-white">
+                            <div class="truncate max-w-xs" title="{{ $project->title }}">
+                                {{ $project->title }}
+                            </div>
                         </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
-                            {{ $project->category->name }}
+                        <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">
+                            <div class="truncate max-w-xs" title="{{ $project->category->name }}">
+                                {{ $project->category->name }}
+                            </div>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm">
                             <div class="flex gap-2">

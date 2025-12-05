@@ -86,16 +86,16 @@
 
                     <tr>
 
-                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">
-
-                            {{ $category->name }}
-
+                        <td class="px-6 py-4 text-sm font-medium text-gray-900 dark:text-white">
+                            <div class="truncate" title="{{ $category->name }}">
+                                {{ $category->name }}
+                            </div>
                         </td>
 
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
-
-                            {{ $category->slug }}
-
+                        <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">
+                            <div class="truncate" title="{{ $category->slug }}">
+                                {{ $category->slug }}
+                            </div>
                         </td>
 
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
