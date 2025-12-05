@@ -49,9 +49,11 @@
                     <tr class="align-top"> {{-- Added align-top to prevent image section from pushing other content too high
                         --}}
                         <td class="px-6 py-4 text-sm font-medium text-gray-900 dark:text-white">
-                            <div class="truncate max-w-xs" title="{{ $project->title }}">
-                                {{ $project->title }}
-                            </div>
+                            <a href="{{ route('dashboard.project.detail', ['project' => $project]) }}" class="hover:underline">
+                                <div class="truncate max-w-xs" title="{{ $project->title }}">
+                                    {{ $project->title }}
+                                </div>
+                            </a>
                         </td>
                         <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">
                             <div class="truncate max-w-xs" title="{{ $project->category->name }}">
@@ -126,12 +128,6 @@
     </div>
 
 
-
-    <x-ui.modal name="project-modal" title="Project Details">
-        <x-slot name="body">
-            <livewire:dashboard.forms.project-form-modal-content />
-        </x-slot>
-    </x-ui.modal>
 
 
 </div>

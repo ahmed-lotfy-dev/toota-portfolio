@@ -27,6 +27,11 @@
     </x-dashboard.dashboard-nav>
 
     @fluxScripts
+    <x-ui.modal name="project-modal" title="Project Details">
+        <x-slot name="body">
+            <livewire:dashboard.forms.project-form-modal-content />
+        </x-slot>
+    </x-ui.modal>
     @livewireScripts
 </body>
 

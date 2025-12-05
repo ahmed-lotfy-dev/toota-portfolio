@@ -30,7 +30,8 @@ Route::middleware(['auth', 'verified'])->prefix('dashboard')->group(function () 
     Route::get('/', Dashboard::class)->name('dashboard');
 
     Route::get('categories', Categories::class)->name('categories.index')->name('categories');
-    Route::get('projects', Projects::class)->name('projects.index')->name('projects');
+    Route::get('projects', Projects::class)->name('projects.index');
+    Route::get('projects/{project}', \App\Livewire\Dashboard\ProjectDetail::class)->name('dashboard.project.detail');
 
     Route::post('upload-image', [ImageUploadController::class, 'store'])->name('image.upload');
 
