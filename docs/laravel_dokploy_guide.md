@@ -11,10 +11,13 @@ Create a `Dockerfile` that explicitly installs `postgresql-client`:
 ```dockerfile
 FROM dunglas/frankenphp:php8.4
 
+# Install Composer
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+
 # Install pg_dump
 RUN apt-get update && apt-get install -y postgresql-client zip unzip
 
-# ... other setup steps (see Full Guide below) ...
+# ... (see Full Guide below) ...
 ```
 
 **Why this works:**
@@ -66,6 +69,9 @@ Create `Dockerfile` (replacing `nixpacks.toml` or `railpack.json`):
 ```dockerfile
 FROM dunglas/frankenphp:php8.4
 
+# Install Composer
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+
 # 1. Install System Dependencies (Includes pg_dump)
 RUN apt-get update && apt-get install -y \
     postgresql-client \
@@ -93,15 +99,22 @@ RUN mkdir -p /etc/apt/keyrings \
 
 # 4. Application Setup
 WORKDIR /app
-COPY . .
 
-# 5. Build
+# 5. Composer Dependencies (Cached Layer)
+COPY composer.json composer.lock ./
 ENV COMPOSER_ALLOW_SUPERUSER=1
 RUN composer install --optimize-autoloader --no-dev --no-scripts --no-interaction
-RUN npm ci && npm run build
+
+# 6. Node Dependencies (Cached Layer)
+COPY package.json package-lock.json ./
+RUN npm ci
+
+# 7. Copy Application Code & Build (Frequent Changes)
+COPY . .
+RUN npm run build
 RUN composer dump-autoload --optimize --no-scripts
 
-# 6. Permissions & Entrypoint
+# 8. Permissions & Entrypoint
 RUN chmod -R 777 storage bootstrap/cache
 RUN chmod +x docker-entrypoint.sh
 CMD ["./docker-entrypoint.sh"]
@@ -132,7 +145,7 @@ php artisan view:cache
 echo "✅ Runtime setup complete, starting FrankenPHP..."
 
 # Start FrankenPHP
-exec frankenphp run --workers=3 public/index.php
+exec frankenphp php-server
 ```
 
 Make executable: `chmod +x docker-entrypoint.sh`
@@ -359,20 +372,13 @@ Visit `https://your-domain.com/test_env.php` to check.
 
 ### 10. Quick Checklist
 
-- [ ] `nixpacks.toml` configured
-- [ ] **CRITICAL**: Environment variables set in Dokploy:
-  - `NIXPACKS_APT_PKGS=postgresql-client`
-  - `NIXPACKS_DEBIAN=1`
-- [ ] Application environment variables set (DB, R2, Email)
-- [ ] R2 bucket created and configured
-- [ ] Database connected
-- [ ] Deploy and verify `test_env.php` shows ✅ pg_dump
-- [ ] Test backup downloads
-- [ ] Test R2 uploads
-- [ ] Test email notifications
-- [ ] Delete `test_env.php` from production
+- [ ] **Dokploy**: Build Type set to **Dockerfile**
+- [ ] `Dockerfile` created with optimizations
+- [ ] `docker-entrypoint.sh` created and executable
+- [ ] Env variables set (DB, R2, Email)
+- [ ] Deploy and verify!
 
 ---
 
 **Last Updated:** 2024-12-10
-**Project:** Toota Art Portfolio
+**Status:** Verified Working (Dockerfile Method)

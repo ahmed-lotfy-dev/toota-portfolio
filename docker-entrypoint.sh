@@ -27,4 +27,4 @@ php artisan view:cache
 echo "✅ Runtime setup complete, starting FrankenPHP..."
 
 # Start FrankenPHP
-exec frankenphp run --workers=3 public/index.php
+exec frankenphp php-server
