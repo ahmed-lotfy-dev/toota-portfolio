@@ -36,6 +36,7 @@ cmds = [
 ]
 
 [phases.build]
+aptPkgs = ["postgresql-client", "zip", "unzip"]
 cmds = [
     "npm run build",
     "chmod -R 777 storage bootstrap/cache",
