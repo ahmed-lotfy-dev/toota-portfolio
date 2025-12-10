@@ -19,6 +19,7 @@ nixPkgs = [
     "php84Extensions.pdo_pgsql",
     "php84Extensions.gd",
     "php84Extensions.fileinfo",
+    "php84Extensions.zip",
     "nodejs_22"
 ]
 
