@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Storage;
 use App\Services\BackupSettings;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
+use Flux\Flux;
 use Spatie\Backup\BackupDestination\Backup;
 use Spatie\Backup\BackupDestination\BackupDestination;
 use Spatie\Backup\Tasks\Monitor\HealthCheckChecker;
@@ -94,7 +95,7 @@ class Backups extends Component
             return response()->download($zipPath)->deleteFileAfterSend(true);
         } catch (\Exception $e) {
             Log::error('Media Archive Failed: ' . $e->getMessage());
-            $this->dispatch('notify', message: 'Failed to create media archive: ' . $e->getMessage(), type: 'error');
+            Flux::toast(text: 'Failed to create media archive: ' . $e->getMessage(), variant: 'danger');
         } finally {
             $this->isArchivingMedia = false;
         }
@@ -106,13 +107,13 @@ class Backups extends Component
 
         try {
             // Run Spatie Backup for DB only to R2
-            Artisan::call('backup:run', ['--only-db' => true, '--only-to-disk' => 'r2', '--disable-notifications' => true]);
+            Artisan::call('backup:run', ['--only-db' => true, '--only-to-disk' => 'r2']);
 
             $this->refreshBackups();
-            $this->dispatch('notify', message: 'Database backup uploaded to Cloud (R2)!', type: 'success');
+            Flux::toast(text: 'Database backup uploaded to Cloud (R2)!', variant: 'success');
         } catch (\Exception $e) {
             Log::error('Cloud DB Backup Failed: ' . $e->getMessage());
-            $this->dispatch('notify', message: 'Backup failed: ' . $e->getMessage(), type: 'error');
+            Flux::toast(text: 'Backup failed: ' . $e->getMessage(), variant: 'danger');
         } finally {
             $this->isBackingUp = false;
         }
@@ -158,10 +159,10 @@ class Backups extends Component
             // Spatie config 'backup.name' usually determines subfolder.
             // Let's just notify success for now.
 
-            $this->dispatch('notify', message: 'Full Backup (Media+DB) uploaded to Cloud (R2)!', type: 'success');
+            Flux::toast(text: 'Full Backup (Media+DB) uploaded to Cloud (R2)!', variant: 'success');
         } catch (\Exception $e) {
             Log::error('Cloud Full Backup Failed: ' . $e->getMessage());
-            $this->dispatch('notify', message: 'Full Backup failed: ' . $e->getMessage(), type: 'error');
+            Flux::toast(text: 'Full Backup failed: ' . $e->getMessage(), variant: 'danger');
         } finally {
             $this->isBackingUp = false;
         }
@@ -172,7 +173,7 @@ class Backups extends Component
         // We shouldn't allow arbitrary file download, but here we trust the path comes from our valid list
         // Security check: ensure path is within our backup folders
         if (!Storage::disk($disk)->exists($path)) {
-            $this->dispatch('notify', message: 'File not found.', type: 'error');
+            Flux::toast(text: 'File not found.', variant: 'danger');
             return;
         }
 
@@ -189,13 +190,13 @@ class Backups extends Component
                 Storage::disk($disk)->delete($path);
 
                 $this->refreshBackups();
-                $this->dispatch('notify', message: 'Backup deleted successfully.', type: 'success');
+                Flux::toast(text: 'Backup deleted successfully.', variant: 'success');
             } else {
-                $this->dispatch('notify', message: 'File not found.', type: 'error');
+                Flux::toast(text: 'File not found.', variant: 'danger');
             }
         } catch (\Exception $e) {
             Log::error('Delete Backup Failed: ' . $e->getMessage());
-            $this->dispatch('notify', message: 'Failed to delete backup.', type: 'error');
+            Flux::toast(text: 'Failed to delete backup.', variant: 'danger');
         }
     }
 
@@ -210,7 +211,7 @@ class Backups extends Component
             return response()->download($tempPath)->deleteFileAfterSend(true);
         } catch (\Exception $e) {
             Log::error('SQL Dump Failed: ' . $e->getMessage());
-            $this->dispatch('notify', message: 'Failed to generate SQL dump: ' . $e->getMessage(), type: 'error');
+            Flux::toast(text: 'Failed to generate SQL dump: ' . $e->getMessage(), variant: 'danger');
         }
     }
 
@@ -235,7 +236,7 @@ class Backups extends Component
             return response()->download($zipPath)->deleteFileAfterSend(true);
         } catch (\Exception $e) {
             Log::error('Full Backup Failed: ' . $e->getMessage());
-            $this->dispatch('notify', message: 'Failed to create full backup: ' . $e->getMessage(), type: 'error');
+            Flux::toast(text: 'Failed to create full backup: ' . $e->getMessage(), variant: 'danger');
         } finally {
             $this->isArchivingMedia = false;
         }
@@ -274,7 +275,7 @@ class Backups extends Component
 
         $settings->save($this->schedule);
 
-        $this->dispatch('notify', message: 'Backup schedule updated successfully!', type: 'success');
+        Flux::toast(text: 'Backup schedule updated successfully!', variant: 'success');
     }
 
     protected function getDbDumper()
