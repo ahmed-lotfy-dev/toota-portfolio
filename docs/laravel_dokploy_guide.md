@@ -1,31 +1,26 @@
 # Laravel + Dokploy Deployment Guide
 
-> **SOLUTION**: Use `railpack.json` to define runtime dependencies like `postgresql-client`.
+> **SOLUTION**: Use a standard `Dockerfile` to guarantee dependencies.
 
 ---
 
-## Guaranteed Fix (Railpack)
+## Guaranteed Fix (Dockerfile)
 
-Create `railpack.json` in your project root:
+Create a `Dockerfile` that explicitly installs `postgresql-client`:
 
-```json
-{
-  "$schema": "https://schema.railpack.com",
-  "packages": {
-    "php": "8.4",
-    "node": "22"
-  },
-  "deploy": {
-    "startCommand": "./fix-production-build.sh && frankenphp run --workers=3 public/index.php",
-    "aptPackages": ["postgresql-client", "zip", "unzip"],
-    "inputs": [ { "step": "build", "include": ["."] } ]
-  }
-}
+```dockerfile
+FROM dunglas/frankenphp:php8.4
+
+# Install pg_dump
+RUN apt-get update && apt-get install -y postgresql-client zip unzip
+
+# ... other setup steps (see Full Guide below) ...
 ```
 
 **Why this works:**
-- `deploy.aptPackages` explicitly installs `postgresql-client` in the final runtime image.
-- This ensures `pg_dump` is always available for backups.
+- It uses the standard Debian package manager within a controlled Docker build.
+- No compilation from source on the server (avoids ARM64 build failures).
+- `postgresql-client` is baked into the image.
 
 ---
 
@@ -62,65 +57,61 @@ composer require league/flysystem-aws-s3-v3  # For R2
 ---
 
 ### 3. Railpack Configuration
+### 3. Dockerfile Configuration
 
-Create `railpack.json` (replacing `nixpacks.toml`):
+Create `Dockerfile` (replacing `nixpacks.toml` or `railpack.json`):
 
-```json
-{
-  "$schema": "https://schema.railpack.com",
-  "buildAptPackages": ["postgresql-client", "zip", "unzip", "bison", "re2c", "pkg-config", "autoconf", "build-essential", "libxml2-dev", "libsqlite3-dev", "libcurl4-openssl-dev", "libssl-dev", "zlib1g-dev", "libreadline-dev", "libonig-dev", "libzip-dev", "libpng-dev", "libjpeg-dev", "libfreetype6-dev", "libicu-dev", "libgd-dev", "libxslt1-dev"],
-  "packages": {
-    "php": "8.4",
-    "node": "22"
-  },
-  "steps": {
-    "install": {
-      "commands": [
-        "composer install --optimize-autoloader --no-dev --no-scripts --no-interaction",
-        "npm ci --include=dev || npm install --include=dev"
-      ]
-    },
-    "build": {
-      "inputs": [{ "step": "install" }],
-      "commands": [
-        "npm run build",
-        "mkdir -p .frankenphp/conf.d",
-        "chmod -R 777 storage bootstrap/cache",
-        "php artisan config:cache",
-        "php artisan route:cache",
-        "php artisan view:cache",
-        "php artisan storage:link"
-      ]
-    }
-  },
-  "deploy": {
-    "startCommand": "./fix-production-build.sh && frankenphp run --workers=3 public/index.php",
-    "aptPackages": ["postgresql-client", "zip", "unzip"],
-    "inputs": [
-      {
-        "step": "build",
-        "include": ["."]
-      }
-    ]
-  }
-}
+```dockerfile
+FROM dunglas/frankenphp:php8.4
+
+# 1. Install System Dependencies (Includes pg_dump)
+RUN apt-get update && apt-get install -y \
+    postgresql-client \
+    git \
+    zip \
+    unzip \
+    curl \
+    gnupg \
+    && rm -rf /var/lib/apt/lists/*
+
+# 2. Install PHP Extensions
+RUN install-php-extensions \
+    pdo_pgsql \
+    gd \
+    intl \
+    zip \
+    opcache
+
+# 3. Install Node.js (Version 22)
+RUN mkdir -p /etc/apt/keyrings \
+    && curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | gpg --dearmor -o /etc/apt/keyrings/nodesource.gpg \
+    && echo "deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_22.x nodistro main" | tee /etc/apt/sources.list.d/nodesource.list \
+    && apt-get update && apt-get install -y nodejs \
+    && npm install -g npm@latest
+
+# 4. Application Setup
+WORKDIR /app
+COPY . .
+
+# 5. Build
+ENV COMPOSER_ALLOW_SUPERUSER=1
+RUN composer install --optimize-autoloader --no-dev --no-scripts --no-interaction
+RUN npm ci && npm run build
+
+# 6. Permissions & Entrypoint
+RUN chmod -R 777 storage bootstrap/cache
+RUN chmod +x fix-production-build.sh
+CMD ["./fix-production-build.sh"]
 ```
 
 ---
 
 ### 4. Runtime Setup Script
 
-Create `fix-production-build.sh`:
+Update `fix-production-build.sh` to serve as the start command:
 
 ```bash
 #!/bin/bash
-
-# Install PostgreSQL client if missing
-if ! command -v pg_dump &> /dev/null; then
-    echo "🔧 Installing postgresql-client..."
-    apt-get update -qq && apt-get install -y -qq postgresql-client
-    echo "✅ PostgreSQL client installed"
-fi
 
 # Fix permissions
 chmod -R 777 storage bootstrap/cache
@@ -128,12 +119,13 @@ chmod -R 777 storage bootstrap/cache
 # Link storage
 php artisan storage:link || true
 
-echo "✅ Runtime setup complete"
+echo "✅ Runtime setup complete, starting FrankenPHP..."
+
+# Start FrankenPHP
+exec frankenphp run --workers=3 public/index.php
 ```
 
 Make executable: `chmod +x fix-production-build.sh`
-
-**CRITICAL**: DO NOT put `npm build` here - Node.js isn't available at runtime!
 
 ---
 
@@ -288,14 +280,11 @@ FILESYSTEM_DISK=r2
 
 #### pg_dump NOT found
 
-**CORRECT Solution** (Railpack):
+**CORRECT Solution** (Dockerfile):
 
-Use `railpack.json` with `deploy.aptPackages`:
-
-```json
-"deploy": {
-  "aptPackages": ["postgresql-client"]
-}
+Use the provided `Dockerfile` which includes:
+```dockerfile
+RUN apt-get update && apt-get install -y postgresql-client
 ```
 
 #### Bad Gateway
