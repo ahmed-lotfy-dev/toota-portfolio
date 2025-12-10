@@ -32,7 +32,7 @@
             <livewire:dashboard.forms.project-form-modal-content />
         </x-slot>
     </x-ui.modal>
-    <x-ui.notification />
+    <x-notification />
     @livewireScripts
 </body>
 
