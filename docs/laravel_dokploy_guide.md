@@ -68,7 +68,7 @@ Create `railpack.json` (replacing `nixpacks.toml`):
 ```json
 {
   "$schema": "https://schema.railpack.com",
-  "buildAptPackages": ["postgresql-client", "zip", "unzip", "bison", "re2c", "pkg-config", "autoconf", "build-essential", "libxml2-dev", "libsqlite3-dev"],
+  "buildAptPackages": ["postgresql-client", "zip", "unzip", "bison", "re2c", "pkg-config", "autoconf", "build-essential", "libxml2-dev", "libsqlite3-dev", "libcurl4-openssl-dev", "libssl-dev", "zlib1g-dev", "libreadline-dev", "libonig-dev", "libzip-dev", "libpng-dev", "libjpeg-dev", "libfreetype6-dev", "libicu-dev"],
   "packages": {
     "php": "8.4",
     "node": "22"
