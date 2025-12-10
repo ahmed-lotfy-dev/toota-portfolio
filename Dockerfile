@@ -41,9 +41,9 @@ RUN npm ci && npm run build
 
 # 8. Setup Permissions
 RUN chmod -R 777 storage bootstrap/cache
-RUN chmod +x fix-production-build.sh
+RUN chmod +x docker-entrypoint.sh
 
 # 9. Configure Entrypoint
 # We use the fix-production-build.sh as the starter, which allows runtime hooks
 # It MUST end with executing the frankenphp runner
-CMD ["./fix-production-build.sh"]
+CMD ["./docker-entrypoint.sh"]

@@ -100,15 +100,15 @@ RUN npm ci && npm run build
 
 # 6. Permissions & Entrypoint
 RUN chmod -R 777 storage bootstrap/cache
-RUN chmod +x fix-production-build.sh
-CMD ["./fix-production-build.sh"]
+RUN chmod +x docker-entrypoint.sh
+CMD ["./docker-entrypoint.sh"]
 ```
 
 ---
 
 ### 4. Runtime Setup Script
 
-Update `fix-production-build.sh` to serve as the start command:
+Update `docker-entrypoint.sh` to serve as the start command:
 
 ```bash
 #!/bin/bash
@@ -125,7 +125,7 @@ echo "✅ Runtime setup complete, starting FrankenPHP..."
 exec frankenphp run --workers=3 public/index.php
 ```
 
-Make executable: `chmod +x fix-production-build.sh`
+Make executable: `chmod +x docker-entrypoint.sh`
 
 ---
 
