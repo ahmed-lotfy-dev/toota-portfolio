@@ -26,5 +26,8 @@ php artisan view:cache
 
 echo "✅ Runtime setup complete, starting FrankenPHP..."
 
+# Start Supercronic in the background
+/usr/local/bin/supercronic -quiet /etc/supercronic/crontab &
+
 # Start FrankenPHP
 exec frankenphp run --config Caddyfile

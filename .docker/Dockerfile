@@ -13,7 +13,14 @@ RUN --mount=type=cache,target=/var/lib/apt/lists,sharing=locked \
     zip \
     unzip \
     curl \
-    gnupg
+    gnupg \
+    # Install supercronic for cron scheduling
+    && curl -L https://github.com/aptible/supercronic/releases/download/v0.1.20/supercronic-linux-amd64 -o /usr/local/bin/supercronic \
+    && chmod +x /usr/local/bin/supercronic
+
+# Copy crontab file
+COPY .docker/crontab.txt /etc/supercronic/crontab
+
 
 # 2. Install PHP Extensions
 RUN install-php-extensions \
