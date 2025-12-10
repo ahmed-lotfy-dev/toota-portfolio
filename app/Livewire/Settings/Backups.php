@@ -285,7 +285,7 @@ class Backups extends Component
         $connection = config('database.default');
         $config = config("database.connections.$connection");
 
-        return match ($connection) {
+        $dumper = match ($connection) {
             'pgsql' => PostgreSql::create()
                 ->setDbName($config['database'])
                 ->setUserName($config['username'])
@@ -302,6 +302,40 @@ class Backups extends Component
                 ->setDbName($config['database']),
             default => throw new \Exception("Unsupported database driver: $connection"),
         };
+
+        // Auto-detect binary path in Nix environments
+        if ($connection === 'pgsql') {
+            $pgDumpPath = $this->findBinary('pg_dump');
+            if ($pgDumpPath) {
+                $dumper->setDumpBinaryPath($pgDumpPath);
+            }
+        } elseif ($connection === 'mysql') {
+            $mysqldumpPath = $this->findBinary('mysqldump');
+            if ($mysqldumpPath) {
+                $dumper->setDumpBinaryPath($mysqldumpPath);
+            }
+        }
+
+        return $dumper;
+    }
+
+    protected function findBinary($binaryName)
+    {
+        // Try which command first
+        $path = trim(shell_exec("which $binaryName 2>/dev/null") ?? '');
+        if ($path && file_exists($path)) {
+            return $path;
+        }
+
+        // For Nixpacks/NixOS, search in /nix/store
+        if (file_exists('/nix/store')) {
+            $path = trim(shell_exec("find /nix/store -name $binaryName -type f 2>/dev/null | head -1") ?? '');
+            if ($path && file_exists($path)) {
+                return $path;
+            }
+        }
+
+        return null;
     }
 
     public function render()
