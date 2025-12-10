@@ -39,19 +39,17 @@ COPY package.json package-lock.json ./
 RUN --mount=type=cache,target=/root/.npm \
     npm ci
 
-# 7. Copy Application Code (Frequent Changes Layer)
+# 7. Copy Application Code & Configs
 COPY . .
+COPY .docker/Caddyfile /app/Caddyfile
+COPY .docker/php.ini /usr/local/etc/php/conf.d/custom.ini
 
 # 8. Build Frontend & Finalize
 RUN npm run build
 RUN composer dump-autoload --optimize --no-scripts
 
-# 8. Setup Permissions
+# 9. Setup Permissions & Entrypoint
 RUN chmod -R 777 storage bootstrap/cache
-RUN chmod +x docker-entrypoint.sh
-
-# 9. Configure Entrypoint
-# We use the fix-production-build.sh as the starter, which allows runtime hooks
-# It MUST end with executing the frankenphp runner
+RUN chmod +x .docker/entrypoint.sh
 EXPOSE 80
-CMD ["./docker-entrypoint.sh"]
+CMD ["./.docker/entrypoint.sh"]

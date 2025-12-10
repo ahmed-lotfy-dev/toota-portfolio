@@ -62,8 +62,12 @@ composer require league/flysystem-aws-s3-v3  # For R2
 ### 3. Railpack Configuration
 ### 3. Dockerfile Configuration
 
-**Important:** In your Dokploy Application Settings, change the **Build Type** to **Dockerfile** and ensure **App Port** is set to **80**.
-Also, ensure your `Caddyfile` (if you have one) is configured to listen on port 80, for example:
+**Important:** In your Dokploy Application Settings:
+1.  Change **Build Type** to **Dockerfile**.
+2.  Set **Dockerfile Path** to `.docker/Dockerfile`.
+3.  Set **App Port** to **80**.
+
+Create `.docker/Caddyfile` to configure port 80:
 
 ```caddyfile
 :80 {
@@ -124,23 +128,26 @@ COPY package.json package-lock.json ./
 RUN --mount=type=cache,target=/root/.npm \
     npm ci
 
-# 7. Copy Application Code & Build (Frequent Changes)
+# 7. Copy Application Code & Configs
 COPY . .
+COPY .docker/Caddyfile /app/Caddyfile
+COPY .docker/php.ini /usr/local/etc/php/conf.d/custom.ini
+
+# 8. Build Frontend & Finalize
 RUN npm run build
 RUN composer dump-autoload --optimize --no-scripts
 
-# 8. Permissions & Entrypoint
+# 9. Permissions & Entrypoint
 RUN chmod -R 777 storage bootstrap/cache
-RUN chmod +x docker-entrypoint.sh
+RUN chmod +x .docker/entrypoint.sh
 EXPOSE 80
-CMD ["./docker-entrypoint.sh"]
+CMD ["./.docker/entrypoint.sh"]
 ```
 
 ---
 
 ### 4. Runtime Setup Script
-
-Update `docker-entrypoint.sh` to serve as the start command:
+Create `.docker/entrypoint.sh` with the following content:
 
 ```bash
 #!/bin/bash
