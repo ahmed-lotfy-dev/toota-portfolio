@@ -117,6 +117,7 @@ RUN composer dump-autoload --optimize --no-scripts
 # 8. Permissions & Entrypoint
 RUN chmod -R 777 storage bootstrap/cache
 RUN chmod +x docker-entrypoint.sh
+EXPOSE 8000
 CMD ["./docker-entrypoint.sh"]
 ```
 
@@ -145,7 +146,7 @@ php artisan view:cache
 echo "✅ Runtime setup complete, starting FrankenPHP..."
 
 # Start FrankenPHP
-exec frankenphp php-server
+exec frankenphp php-server --listen :8000
 ```
 
 Make executable: `chmod +x docker-entrypoint.sh`

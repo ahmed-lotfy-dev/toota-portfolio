@@ -55,4 +55,5 @@ RUN chmod +x docker-entrypoint.sh
 # 9. Configure Entrypoint
 # We use the fix-production-build.sh as the starter, which allows runtime hooks
 # It MUST end with executing the frankenphp runner
+EXPOSE 8000
 CMD ["./docker-entrypoint.sh"]
