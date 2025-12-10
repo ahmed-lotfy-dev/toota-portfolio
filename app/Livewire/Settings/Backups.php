@@ -229,11 +229,29 @@ class Backups extends Component
     {
         try {
             $filename = 'backup-' . Carbon::now()->format('Y-m-d-H-i-s') . '.sql';
-            $tempPath = storage_path('app/' . $filename);
+            $tempLocalPath = tempnam(sys_get_temp_dir(), 'sql_dump_'); // Create a unique temp file
+            
+            // Dump to a local temporary file first
+            $this->getDbDumper()->dumpToFile($tempLocalPath);
 
-            $this->getDbDumper()->dumpToFile($tempPath);
+            $r2Path = 'sql-dumps/' . $filename; // Store in a specific folder on R2
+            
+            // Upload to R2
+            Storage::disk('r2')->put($r2Path, file_get_contents($tempLocalPath));
 
-            return response()->download($tempPath)->deleteFileAfterSend(true);
+            // Clean up the local temporary file
+            unlink($tempLocalPath);
+
+            // Generate a temporary signed URL for download from R2
+            $downloadUrl = Storage::disk('r2')->temporaryUrl($r2Path, now()->addMinutes(5), [
+                'ResponseContentDisposition' => 'attachment; filename="' . $filename . '"',
+            ]);
+
+            $this->dispatch('notify', message: 'SQL dump successfully generated and available for download!', type: 'success');
+            
+            // Redirect the user to the generated download URL
+            return $this->redirect($downloadUrl, navigate: true);
+
         } catch (\Exception $e) {
             Log::error('SQL Dump Failed: ' . $e->getMessage());
             $this->dispatch('notify', message: 'Failed to generate SQL dump: ' . $e->getMessage(), type: 'error');
@@ -245,20 +263,35 @@ class Backups extends Component
         $this->isArchivingMedia = true;
 
         try {
-            // 1. Generate SQL Dump
+            // 1. Generate SQL Dump to a temporary local file
             $sqlFilename = 'database.sql';
-            $sqlPath = storage_path('app/' . $sqlFilename);
-            $this->getDbDumper()->dumpToFile($sqlPath);
+            $sqlTempPath = tempnam(sys_get_temp_dir(), 'sql_dump_');
+            $this->getDbDumper()->dumpToFile($sqlTempPath);
 
-            // 2. Create Archive with SQL
-            $zipPath = $archiver->createArchive('full_backup_' . Carbon::now()->format('Y-m-d-H-i-s') . '.zip', $sqlPath);
+            // 2. Create Archive with SQL and Media locally
+            $zipFilename = 'full_backup_' . Carbon::now()->format('Y-m-d-H-i-s') . '.zip';
+            $zipTempPath = $archiver->createArchive($zipFilename, $sqlTempPath); // archiver handles deletion of sqlTempPath
 
-            // Cleanup SQL file
-            if (File::exists($sqlPath)) {
-                File::delete($sqlPath);
+            // 3. Upload to R2
+            $r2Path = 'full-backups/' . $zipFilename; // Store in a specific folder on R2
+            Storage::disk('r2')->put($r2Path, file_get_contents($zipTempPath));
+
+            // 4. Cleanup local temporary files
+            if (File::exists($sqlTempPath)) { // Just in case archiver didn't delete it
+                File::delete($sqlTempPath);
+            }
+            if (File::exists($zipTempPath)) {
+                File::delete($zipTempPath);
             }
 
-            return response()->download($zipPath)->deleteFileAfterSend(true);
+            // 5. Generate a temporary signed URL for download from R2
+            $downloadUrl = Storage::disk('r2')->temporaryUrl($r2Path, now()->addMinutes(5), [
+                'ResponseContentDisposition' => 'attachment; filename="' . $zipFilename . '"',
+            ]);
+
+            $this->dispatch('notify', message: 'Full backup successfully generated and available for download!', type: 'success');
+            return $this->redirect($downloadUrl, navigate: true);
+
         } catch (\Exception $e) {
             Log::error('Full Backup Failed: ' . $e->getMessage());
             $this->dispatch('notify', message: 'Failed to create full backup: ' . $e->getMessage(), type: 'error');
