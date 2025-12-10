@@ -1,0 +1,13 @@
+{
+	# FrankenPHP configuration
+	frankenphp
+	order php_server before file_server
+}
+
+:80 {
+	# Enable PHP handling
+	php_server
+	root * public/
+	encode zstd gzip
+	file_server
+}

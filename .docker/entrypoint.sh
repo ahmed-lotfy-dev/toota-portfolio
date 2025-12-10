@@ -27,4 +27,4 @@ php artisan view:cache
 echo "✅ Runtime setup complete, starting FrankenPHP..."
 
 # Start FrankenPHP
-exec frankenphp php-server --listen :8000
+exec frankenphp run --config Caddyfile

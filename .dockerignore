@@ -1,0 +1,15 @@
+.git
+.gitignore
+.env
+.env.*
+node_modules
+vendor
+storage
+tests
+docs
+README.md
+docker-entrypoint.sh
+Dockerfile
+fix-production-build.sh
+railpack.json
+nixpacks.toml

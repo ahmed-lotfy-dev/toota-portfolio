@@ -62,7 +62,17 @@ composer require league/flysystem-aws-s3-v3  # For R2
 ### 3. Railpack Configuration
 ### 3. Dockerfile Configuration
 
-**Important:** In your Dokploy Application Settings, change the **Build Type** (or Deployment Source) to **Dockerfile**.
+**Important:** In your Dokploy Application Settings, change the **Build Type** to **Dockerfile** and ensure **App Port** is set to **80**.
+Also, ensure your `Caddyfile` (if you have one) is configured to listen on port 80, for example:
+
+```caddyfile
+:80 {
+	php_server
+	root * public/
+	encode zstd gzip
+	file_server
+}
+```
 
 Create `Dockerfile` (replacing `nixpacks.toml` or `railpack.json`):
 
@@ -73,14 +83,15 @@ FROM dunglas/frankenphp:php8.4
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 # 1. Install System Dependencies (Includes pg_dump)
-RUN apt-get update && apt-get install -y \
+RUN --mount=type=cache,target=/var/lib/apt/lists,sharing=locked \
+    --mount=type=cache,target=/var/cache/apt,sharing=locked \
+    apt-get update && apt-get install -y --no-install-recommends \
     postgresql-client \
     git \
     zip \
     unzip \
     curl \
-    gnupg \
-    && rm -rf /var/lib/apt/lists/*
+    gnupg
 
 # 2. Install PHP Extensions
 RUN install-php-extensions \
@@ -91,7 +102,9 @@ RUN install-php-extensions \
     opcache
 
 # 3. Install Node.js (Version 22)
-RUN mkdir -p /etc/apt/keyrings \
+RUN --mount=type=cache,target=/var/lib/apt/lists,sharing=locked \
+    --mount=type=cache,target=/var/cache/apt,sharing=locked \
+    mkdir -p /etc/apt/keyrings \
     && curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | gpg --dearmor -o /etc/apt/keyrings/nodesource.gpg \
     && echo "deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_22.x nodistro main" | tee /etc/apt/sources.list.d/nodesource.list \
     && apt-get update && apt-get install -y nodejs \
@@ -100,14 +113,16 @@ RUN mkdir -p /etc/apt/keyrings \
 # 4. Application Setup
 WORKDIR /app
 
-# 5. Composer Dependencies (Cached Layer)
+# 5. Composer Dependencies (Cached Layer + BuildKit Cache)
 COPY composer.json composer.lock ./
 ENV COMPOSER_ALLOW_SUPERUSER=1
-RUN composer install --optimize-autoloader --no-dev --no-scripts --no-interaction
+RUN --mount=type=cache,target=/root/.composer/cache \
+    composer install --optimize-autoloader --no-dev --no-scripts --no-interaction
 
-# 6. Node Dependencies (Cached Layer)
+# 6. Node Dependencies (Cached Layer + BuildKit Cache)
 COPY package.json package-lock.json ./
-RUN npm ci
+RUN --mount=type=cache,target=/root/.npm \
+    npm ci
 
 # 7. Copy Application Code & Build (Frequent Changes)
 COPY . .
@@ -117,7 +132,7 @@ RUN composer dump-autoload --optimize --no-scripts
 # 8. Permissions & Entrypoint
 RUN chmod -R 777 storage bootstrap/cache
 RUN chmod +x docker-entrypoint.sh
-EXPOSE 8000
+EXPOSE 80
 CMD ["./docker-entrypoint.sh"]
 ```
 
@@ -146,7 +161,7 @@ php artisan view:cache
 echo "✅ Runtime setup complete, starting FrankenPHP..."
 
 # Start FrankenPHP
-exec frankenphp php-server --listen :8000
+exec frankenphp php-server
 ```
 
 Make executable: `chmod +x docker-entrypoint.sh`
