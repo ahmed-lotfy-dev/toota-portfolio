@@ -1,32 +1,19 @@
 #!/bin/bash
 
-# This script should be run by Dokploy's post-deploy hook
-# or manually in the container
+# This script runs AFTER container starts (runtime setup)
+# Do NOT build assets here - they're built during Nixpacks build phase
 
-# Install required system packages for backups
+# Install required system packages for backups (only if missing)
 if ! command -v pg_dump &> /dev/null; then
     echo "🔧 Installing postgresql-client..."
-    apt-get update -qq && apt-get install -y -qq postgresql-client zip unzip
+    apt-get update -qq && apt-get install -y -qq postgresql-client
     echo "✅ PostgreSQL client installed"
 fi
 
 # Fix permissions
 chmod -R 777 storage bootstrap/cache
 
-# Install dependencies
-npm ci --include=dev || npm install --include=dev
+# Link storage (safe to run multiple times)
+php artisan storage:link || true
 
-# Build assets
-npm run build
-
-# Clear and cache config/routes/views
-php artisan optimize:clear
-php artisan config:cache
-php artisan route:cache
-php artisan view:cache
-php artisan event:cache
-
-# Link storage
-php artisan storage:link
-
-echo "✅ Production setup complete"
+echo "✅ Runtime setup complete"
