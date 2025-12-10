@@ -1,5 +1,11 @@
 #!/bin/bash
 
+# Install required system packages for backups (if not already installed)
+if ! command -v pg_dump &> /dev/null; then
+    echo "Installing postgresql-client..."
+    apt-get update -qq && apt-get install -y -qq postgresql-client zip unzip
+fi
+
 # Fix permissions
 chmod -R 777 storage bootstrap/cache
 
