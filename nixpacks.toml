@@ -21,10 +21,7 @@ nixPkgs = [
     "php84Extensions.gd",
     "php84Extensions.fileinfo",
     "php84Extensions.zip",
-    "zip",
-    "unzip",
-    "mariadb-client",
-    "postgresql-client",
+    "postgresql",
     "nodejs_22"
 ]
 
