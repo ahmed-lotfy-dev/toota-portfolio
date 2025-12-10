@@ -17,7 +17,7 @@ class MediaArchiver
     $this->tempDir = storage_path('app/backup-media-' . Str::random(8));
   }
 
-  public function createArchive(string $zipFilename = 'media_backup.zip'): string
+  public function createArchive(string $zipFilename = 'media_backup.zip', ?string $sqlDumpPath = null): string
   {
     // 1. Prepare Directory
     if (!File::exists($this->tempDir)) {
@@ -30,6 +30,14 @@ class MediaArchiver
     $zip = new ZipArchive();
     if ($zip->open($zipPath, ZipArchive::CREATE | ZipArchive::OVERWRITE) !== true) {
       throw new \Exception("Could not create ZIP file at $zipPath");
+    }
+
+    // Add a readme file to ensure zip is never empty (ZipArchive won't create empty zip files)
+    $zip->addFromString('README.txt', "Media Archive for Toota Art Portfolio\nGenerated on " . date('Y-m-d H:i:s'));
+
+    // Include SQL Dump if provided
+    if ($sqlDumpPath && File::exists($sqlDumpPath)) {
+      $zip->addFile($sqlDumpPath, 'database.sql');
     }
 
     foreach ($projects as $project) {
@@ -68,6 +76,10 @@ class MediaArchiver
     }
 
     $zip->close();
+
+    if (!file_exists($zipPath)) {
+      throw new \Exception("Zip file was not created: $zipPath");
+    }
 
     return $zipPath;
   }
