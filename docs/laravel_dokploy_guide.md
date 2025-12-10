@@ -1,22 +1,31 @@
 # Laravel + Dokploy Deployment Guide
 
-> **SOLUTION**: Configure `nixpacks.toml` to run a setup script at startup to guarantee `pg_dump` is installed.
+> **SOLUTION**: Use `railpack.json` to define runtime dependencies like `postgresql-client`.
 
 ---
 
-## Guaranteed Fix (Startup Script)
+## Guaranteed Fix (Railpack)
 
-Modify your `nixpacks.toml` to run `fix-production-build.sh` before the server starts:
+Create `railpack.json` in your project root:
 
-```toml
-[start]
-cmd = "./fix-production-build.sh && frankenphp run --workers=3 public/index.php"
+```json
+{
+  "$schema": "https://schema.railpack.com",
+  "packages": {
+    "php": "8.4",
+    "node": "22"
+  },
+  "deploy": {
+    "startCommand": "./fix-production-build.sh && frankenphp run --workers=3 public/index.php",
+    "aptPackages": ["postgresql-client", "zip", "unzip"],
+    "inputs": [ { "step": "build", "include": ["."] } ]
+  }
+}
 ```
 
 **Why this works:**
-- It runs *every time* the container starts.
-- It executes the script inside the final runtime environment.
-- The script checks for `pg_dump` and installs it via `apt-get` if missing.
+- `deploy.aptPackages` explicitly installs `postgresql-client` in the final runtime image.
+- This ensures `pg_dump` is always available for backups.
 
 ---
 
@@ -52,60 +61,49 @@ composer require league/flysystem-aws-s3-v3  # For R2
 
 ---
 
-### 3. Nixpacks Configuration
+### 3. Railpack Configuration
 
-Create `nixpacks.toml`:
+Create `railpack.json` (replacing `nixpacks.toml`):
 
-```toml
-[variables]
-FRANKENPHP_CONFIG = """
-php_ini upload_max_filesize=16M
-php_ini post_max_size=100M
-php_ini memory_limit=256M
-php_ini upload_tmp_dir=/tmp
-worker.enable_uploads=true
-"""
-
-NODE_OPTIONS = "--max-old-space-size=4096"
-
-[phases.setup]
-aptPkgs = ["postgresql-client", "zip", "unzip"]
-
-nixPkgs = [
-    "php84",
-    "php84Extensions.intl",
-    "php84Extensions.mbstring",
-    "php84Extensions.pdo",
-    "php84Extensions.pdo_mysql",
-    "php84Extensions.pdo_pgsql",
-    "php84Extensions.gd",
-    "php84Extensions.fileinfo",
-    "php84Extensions.zip",
-    "postgresql-client",
-    "nodejs_22"
-]
-
-cmds = ["mkdir -p .frankenphp/conf.d"]
-
-[phases.install]
-cmds = [
-    "composer install --optimize-autoloader --no-dev --no-scripts --no-interaction",
-    "npm ci --include=dev || npm install --include=dev"
-]
-
-[phases.build]
-aptPkgs = ["postgresql-client", "zip", "unzip"]
-cmds = [
-    "npm run build",
-    "chmod -R 777 storage bootstrap/cache",
-    "php artisan config:cache",
-    "php artisan route:cache",
-    "php artisan view:cache",
-    "php artisan storage:link"
-]
-
-[start]
-cmd = "./fix-production-build.sh && frankenphp run --workers=3 public/index.php"
+```json
+{
+  "$schema": "https://schema.railpack.com",
+  "buildAptPackages": ["postgresql-client", "zip", "unzip"],
+  "packages": {
+    "php": "8.4",
+    "node": "22"
+  },
+  "steps": {
+    "install": {
+      "commands": [
+        "composer install --optimize-autoloader --no-dev --no-scripts --no-interaction",
+        "npm ci --include=dev || npm install --include=dev"
+      ]
+    },
+    "build": {
+      "inputs": [{ "step": "install" }],
+      "commands": [
+        "npm run build",
+        "mkdir -p .frankenphp/conf.d",
+        "chmod -R 777 storage bootstrap/cache",
+        "php artisan config:cache",
+        "php artisan route:cache",
+        "php artisan view:cache",
+        "php artisan storage:link"
+      ]
+    }
+  },
+  "deploy": {
+    "startCommand": "./fix-production-build.sh && frankenphp run --workers=3 public/index.php",
+    "aptPackages": ["postgresql-client", "zip", "unzip"],
+    "inputs": [
+      {
+        "step": "build",
+        "include": ["."]
+      }
+    ]
+  }
+}
 ```
 
 ---
@@ -290,15 +288,15 @@ FILESYSTEM_DISK=r2
 
 #### pg_dump NOT found
 
-**CORRECT Solution** (Startup Script):
+**CORRECT Solution** (Railpack):
 
-In `nixpacks.toml`, modify the start command:
-```toml
-[start]
-cmd = "./fix-production-build.sh && frankenphp run --workers=3 public/index.php"
+Use `railpack.json` with `deploy.aptPackages`:
+
+```json
+"deploy": {
+  "aptPackages": ["postgresql-client"]
+}
 ```
-
-Then **redeploy**. This forces the fix script to run on boot.
 
 #### Bad Gateway
 
