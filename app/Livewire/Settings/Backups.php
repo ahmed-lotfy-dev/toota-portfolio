@@ -309,16 +309,30 @@ class Backups extends Component
             default => throw new \Exception("Unsupported database driver: $connection"),
         };
 
-        // Auto-detect binary path in Nix environments
+        // Set binary path from config or auto-detect
         if ($connection === 'pgsql') {
-            $pgDumpPath = $this->findBinary('pg_dump');
-            if ($pgDumpPath) {
-                $dumper->setDumpBinaryPath($pgDumpPath);
+            // First, try to get from config
+            $configuredPath = $config['dump']['dump_binary_path'] ?? null;
+            if ($configuredPath) {
+                $dumper->setDumpBinaryPath($configuredPath);
+            } else {
+                // Fallback to auto-detection
+                $pgDumpPath = $this->findBinary('pg_dump');
+                if ($pgDumpPath) {
+                    $dumper->setDumpBinaryPath(dirname($pgDumpPath));
+                }
             }
         } elseif ($connection === 'mysql') {
-            $mysqldumpPath = $this->findBinary('mysqldump');
-            if ($mysqldumpPath) {
-                $dumper->setDumpBinaryPath($mysqldumpPath);
+            // First, try to get from config
+            $configuredPath = $config['dump']['dump_binary_path'] ?? null;
+            if ($configuredPath) {
+                $dumper->setDumpBinaryPath($configuredPath);
+            } else {
+                // Fallback to auto-detection
+                $mysqldumpPath = $this->findBinary('mysqldump');
+                if ($mysqldumpPath) {
+                    $dumper->setDumpBinaryPath(dirname($mysqldumpPath));
+                }
             }
         }
 
