@@ -99,6 +99,7 @@ COPY . .
 ENV COMPOSER_ALLOW_SUPERUSER=1
 RUN composer install --optimize-autoloader --no-dev --no-scripts --no-interaction
 RUN npm ci && npm run build
+RUN composer dump-autoload --optimize --no-scripts
 
 # 6. Permissions & Entrypoint
 RUN chmod -R 777 storage bootstrap/cache
@@ -120,6 +121,13 @@ chmod -R 777 storage bootstrap/cache
 
 # Link storage
 php artisan storage:link || true
+
+# backend optimization
+php artisan optimize:clear
+php artisan package:discover --ansi
+php artisan config:cache
+php artisan route:cache
+php artisan view:cache
 
 echo "✅ Runtime setup complete, starting FrankenPHP..."
 

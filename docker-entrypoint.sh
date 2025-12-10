@@ -17,6 +17,13 @@ chmod -R 777 storage bootstrap/cache
 # Link storage (safe to run multiple times)
 php artisan storage:link || true
 
+# backend optimization
+php artisan optimize:clear
+php artisan package:discover --ansi
+php artisan config:cache
+php artisan route:cache
+php artisan view:cache
+
 echo "✅ Runtime setup complete, starting FrankenPHP..."
 
 # Start FrankenPHP

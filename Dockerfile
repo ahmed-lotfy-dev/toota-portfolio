@@ -46,7 +46,7 @@ COPY . .
 
 # 8. Build Frontend & Finalize
 RUN npm run build
-RUN composer dump-autoload --optimize
+RUN composer dump-autoload --optimize --no-scripts
 
 # 8. Setup Permissions
 RUN chmod -R 777 storage bootstrap/cache
