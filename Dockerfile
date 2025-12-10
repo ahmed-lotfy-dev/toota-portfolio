@@ -1,5 +1,8 @@
 FROM dunglas/frankenphp:php8.4
 
+# Install Composer
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+
 # 1. Install System Dependencies
 # 'postgresql-client' is essential for backups (pg_dump)
 RUN apt-get update && apt-get install -y \
@@ -29,15 +32,21 @@ RUN mkdir -p /etc/apt/keyrings \
 # 4. Set working directory
 WORKDIR /app
 
-# 5. Copy application code
-COPY . .
-
-# 6. Install PHP Dependencies
+# 5. Composer Dependencies (Cached Layer)
+COPY composer.json composer.lock ./
 ENV COMPOSER_ALLOW_SUPERUSER=1
 RUN composer install --optimize-autoloader --no-dev --no-scripts --no-interaction
 
-# 7. Build Frontend Assets
-RUN npm ci && npm run build
+# 6. Node Dependencies (Cached Layer)
+COPY package.json package-lock.json ./
+RUN npm ci
+
+# 7. Copy Application Code (Frequent Changes Layer)
+COPY . .
+
+# 8. Build Frontend & Finalize
+RUN npm run build
+RUN composer dump-autoload --optimize
 
 # 8. Setup Permissions
 RUN chmod -R 777 storage bootstrap/cache

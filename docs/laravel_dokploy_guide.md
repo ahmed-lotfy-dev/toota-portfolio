@@ -59,6 +59,8 @@ composer require league/flysystem-aws-s3-v3  # For R2
 ### 3. Railpack Configuration
 ### 3. Dockerfile Configuration
 
+**Important:** In your Dokploy Application Settings, change the **Build Type** (or Deployment Source) to **Dockerfile**.
+
 Create `Dockerfile` (replacing `nixpacks.toml` or `railpack.json`):
 
 ```dockerfile
