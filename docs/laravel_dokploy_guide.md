@@ -1,25 +1,22 @@
 # Laravel + Dokploy Deployment Guide
 
-> **SOLUTION**: Add `postgresql-client` to `aptPkgs` in the `[phases.build]` section of `nixpacks.toml`.
+> **SOLUTION**: Configure `nixpacks.toml` to run a setup script at startup to guarantee `pg_dump` is installed.
 
 ---
 
-## Quick Fix (Configuration)
+## Guaranteed Fix (Startup Script)
 
-Ensure your `nixpacks.toml` includes `aptPkgs` in the `[phases.build]` section:
+Modify your `nixpacks.toml` to run `fix-production-build.sh` before the server starts:
 
 ```toml
-[phases.build]
-aptPkgs = ["postgresql-client", "zip", "unzip"]
-cmds = [
-    "npm run build",
-    # ... other commands
-]
+[start]
+cmd = "./fix-production-build.sh && frankenphp run --workers=3 public/index.php"
 ```
 
 **Why this works:**
-- Installing it in the build phase ensures the binary is present in the final image layer.
-- `aptPkgs` handles the installation via Debian's package manager automatically.
+- It runs *every time* the container starts.
+- It executes the script inside the final runtime environment.
+- The script checks for `pg_dump` and installs it via `apt-get` if missing.
 
 ---
 
@@ -108,7 +105,7 @@ cmds = [
 ]
 
 [start]
-cmd = "frankenphp run --workers=3 public/index.php"
+cmd = "./fix-production-build.sh && frankenphp run --workers=3 public/index.php"
 ```
 
 ---
@@ -293,15 +290,15 @@ FILESYSTEM_DISK=r2
 
 #### pg_dump NOT found
 
-**CORRECT Solution** (Nixpacks Config):
+**CORRECT Solution** (Startup Script):
 
-In `nixpacks.toml`:
+In `nixpacks.toml`, modify the start command:
 ```toml
-[phases.build]
-aptPkgs = ["postgresql-client", "zip", "unzip"]
+[start]
+cmd = "./fix-production-build.sh && frankenphp run --workers=3 public/index.php"
 ```
 
-Then **redeploy**. This installs the client during the build process, making it available in the final image.
+Then **redeploy**. This forces the fix script to run on boot.
 
 #### Bad Gateway
 

@@ -50,4 +50,4 @@ cmds = [
 ]
 
 [start]
-cmd = "frankenphp run --workers=3 public/index.php"
+cmd = "./fix-production-build.sh && frankenphp run --workers=3 public/index.php"
