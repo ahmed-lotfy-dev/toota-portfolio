@@ -15,7 +15,13 @@ RUN --mount=type=cache,target=/var/lib/apt/lists,sharing=locked \
     curl \
     gnupg
 
-# ... (extensions skipped)
+# 2. Install PHP Extensions
+RUN install-php-extensions \
+    pdo_pgsql \
+    gd \
+    intl \
+    zip \
+    opcache
 
 # 3. Install Node.js (Version 22) for frontend build
 RUN --mount=type=cache,target=/var/lib/apt/lists,sharing=locked \
