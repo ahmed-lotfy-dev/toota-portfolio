@@ -35,5 +35,6 @@ return [
     "contact.message.placeholder" => "رسالتك أو سبب التواصل",
     "contact.send_message" => "إرسال الرسالة",
     "contact.success_message" => "تم إرسال رسالتك بنجاح!",
+    "contact.error_message" => "تعذر إرسال الرسالة، يرجى المحاولة مرة أخرى لاحقاً.",
 
 ];

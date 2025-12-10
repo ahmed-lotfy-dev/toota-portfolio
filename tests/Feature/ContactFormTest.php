@@ -18,6 +18,9 @@ class ContactFormTest extends TestCase
     {
         Mail::fake();
 
+        $adminEmail = 'admin@example.com';
+        config(['mail.contact_email' => $adminEmail]);
+
         Livewire::test(ContactForm::class)
             ->set('name', 'John Doe')
             ->set('email', 'john@example.com')
@@ -25,10 +28,13 @@ class ContactFormTest extends TestCase
             ->set('message', 'This is a test message.')
             ->call('submitForm')
             ->assertHasNoErrors()
-            ->assertSee(__('messages.contact.success_message'));
+            ->assertDispatched('show-notification', [
+                'status' => 'success',
+                'message' => __('messages.contact.success_message'),
+            ]);
 
-        Mail::assertSent(ContactFormSubmitted::class, function ($mail) {
-            return $mail->hasTo(config('mail.from.address')) &&
+        Mail::assertSent(ContactFormSubmitted::class, function ($mail) use ($adminEmail) {
+            return $mail->hasTo($adminEmail) &&
                    $mail->data['name'] === 'John Doe' &&
                    $mail->data['email'] === 'john@example.com';
         });

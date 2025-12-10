@@ -39,25 +39,31 @@ class ContactForm extends Component
     {
         $validatedData = $this->validate();
 
-        // Send email
         try {
             Mail::to(config('mail.contact_email', config('mail.from.address')))->send(new ContactFormSubmitted($validatedData));
+
+            $this->dispatch('show-notification', [
+                'status' => 'success',
+                'message' => __('messages.contact.success_message'),
+            ]);
+
+            Log::info('Contact Form Submission:', [
+                'name' => $this->name,
+                'email' => $this->email,
+                'phone' => $this->phone,
+                'message' => $this->message,
+            ]);
+            
+            $this->reset(['name', 'email', 'phone', 'message']);
+
         } catch (\Exception $e) {
             Log::error('Contact Form Email Error: ' . $e->getMessage());
-            // Optionally flash an error message to the user, but for now we'll just log it
-            // and let the success message show (or handle it differently based on requirements)
+
+            $this->dispatch('show-notification', [
+                'status' => 'danger',
+                'message' => __('messages.contact.error_message'),
+            ]);
         }
-
-        Log::info('Contact Form Submission:', [
-            'name' => $this->name,
-            'email' => $this->email,
-            'phone' => $this->phone,
-            'message' => $this->message,
-        ]);
-
-        Session::flash('message', __('messages.contact.success_message'));
-
-        $this->reset(['name', 'email', 'phone', 'message']);
     }
 
     public function render()

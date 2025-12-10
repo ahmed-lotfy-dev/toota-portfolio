@@ -23,7 +23,6 @@ return [
   ],
 
   "send_message" => "Send Message",
-  "success_message" => "Your message has been sent successfully!",
   'label' => 'Contact Us',
   'subtitle' => 'We are here to answer your questions and assist you anytime.',
   'optional' => 'Optional',
@@ -32,6 +31,7 @@ return [
   'call_us' => 'Call Us',
   'visit_us' => 'Visit Us',
   "success_message" => "Email sent successfully and I'll be contacting you to start the work.",
+  "error_message" => "Could not send the message, please try again later.",
   "address" => "Gharbia, Egypt",
   "validation" => [
     "name_required" => "The name field is required.",

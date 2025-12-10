@@ -35,6 +35,7 @@ return [
     "contact.message.placeholder" => "Your message or reason for contact",
     "contact.send_message" => "Send Message",
     "contact.success_message" => "Email sent successfully and I'll be contacting you to start the work.",
+    "contact.error_message" => "Could not send the message, please try again later.",
 
     "services.heading" => "Our Services",
     "services.escape_masks.title" => "Escape Room Masks",
