@@ -15,6 +15,16 @@
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@200;300;400;500;700;800;900&display=swap"
         rel="stylesheet">
 
+    <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('favicon.png') }}">
+
+    <!-- Open Graph -->
+    <meta property="og:site_name" content="Toota Art">
+    <meta property="og:title" content="{{ $title ?? 'Toota Art' }}">
+    <meta property="og:description" content="{{ __('about.description') }}">
+    <meta property="og:image" content="{{ asset('og-image.png') }}">
+    <meta property="og:type" content="website">
+
     <title>{{ $title ?? 'Toota Art' }}</title>
     @vite(entrypoints: ['resources/css/app.css', 'resources/js/app.js', 'resources/js/analytics.js',])
     @livewireStyles
