@@ -15,6 +15,8 @@ use Spatie\Backup\BackupDestination\Backup;
 use Spatie\Backup\BackupDestination\BackupDestination;
 use Spatie\Backup\Tasks\Monitor\HealthCheckChecker;
 use Spatie\DbDumper\Databases\PostgreSql;
+use Spatie\DbDumper\Databases\MySql;
+use Spatie\DbDumper\Databases\Sqlite;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\File;
 
@@ -95,7 +97,7 @@ class Backups extends Component
             return response()->download($zipPath)->deleteFileAfterSend(true);
         } catch (\Exception $e) {
             Log::error('Media Archive Failed: ' . $e->getMessage());
-            Flux::toast(text: 'Failed to create media archive: ' . $e->getMessage(), variant: 'danger');
+            $this->dispatch('notify', message: 'Failed to create media archive: ' . $e->getMessage(), type: 'error');
         } finally {
             $this->isArchivingMedia = false;
         }
@@ -159,7 +161,7 @@ class Backups extends Component
             // Spatie config 'backup.name' usually determines subfolder.
             // Let's just notify success for now.
 
-            Flux::toast(text: 'Full Backup (Media+DB) uploaded to Cloud (R2)!', variant: 'success');
+            $this->dispatch('notify', message: 'Full Backup (Media+DB) uploaded to Cloud (R2)!', type: 'success');
         } catch (\Exception $e) {
             Log::error('Cloud Full Backup Failed: ' . $e->getMessage());
             Flux::toast(text: 'Full Backup failed: ' . $e->getMessage(), variant: 'danger');
@@ -173,7 +175,7 @@ class Backups extends Component
         // We shouldn't allow arbitrary file download, but here we trust the path comes from our valid list
         // Security check: ensure path is within our backup folders
         if (!Storage::disk($disk)->exists($path)) {
-            Flux::toast(text: 'File not found.', variant: 'danger');
+            $this->dispatch('notify', message: 'File not found.', type: 'error');
             return;
         }
 
@@ -190,13 +192,13 @@ class Backups extends Component
                 Storage::disk($disk)->delete($path);
 
                 $this->refreshBackups();
-                Flux::toast(text: 'Backup deleted successfully.', variant: 'success');
+                $this->dispatch('notify', message: 'Backup deleted successfully.', type: 'success');
             } else {
-                Flux::toast(text: 'File not found.', variant: 'danger');
+                $this->dispatch('notify', message: 'File not found.', type: 'error');
             }
         } catch (\Exception $e) {
             Log::error('Delete Backup Failed: ' . $e->getMessage());
-            Flux::toast(text: 'Failed to delete backup.', variant: 'danger');
+            $this->dispatch('notify', message: 'Failed to delete backup.', type: 'error');
         }
     }
 
@@ -211,7 +213,7 @@ class Backups extends Component
             return response()->download($tempPath)->deleteFileAfterSend(true);
         } catch (\Exception $e) {
             Log::error('SQL Dump Failed: ' . $e->getMessage());
-            Flux::toast(text: 'Failed to generate SQL dump: ' . $e->getMessage(), variant: 'danger');
+            $this->dispatch('notify', message: 'Failed to generate SQL dump: ' . $e->getMessage(), type: 'error');
         }
     }
 
@@ -236,7 +238,7 @@ class Backups extends Component
             return response()->download($zipPath)->deleteFileAfterSend(true);
         } catch (\Exception $e) {
             Log::error('Full Backup Failed: ' . $e->getMessage());
-            Flux::toast(text: 'Failed to create full backup: ' . $e->getMessage(), variant: 'danger');
+            $this->dispatch('notify', message: 'Failed to create full backup: ' . $e->getMessage(), type: 'error');
         } finally {
             $this->isArchivingMedia = false;
         }
@@ -275,19 +277,31 @@ class Backups extends Component
 
         $settings->save($this->schedule);
 
-        Flux::toast(text: 'Backup schedule updated successfully!', variant: 'success');
+        $this->dispatch('notify', message: 'Backup schedule updated successfully!', type: 'success');
     }
 
     protected function getDbDumper()
     {
-        $config = config('database.connections.pgsql');
+        $connection = config('database.default');
+        $config = config("database.connections.$connection");
 
-        return PostgreSql::create()
-            ->setDbName($config['database'])
-            ->setUserName($config['username'])
-            ->setPassword($config['password'])
-            ->setHost($config['host'] ?? '127.0.0.1')
-            ->setPort($config['port'] ?? 5432);
+        return match ($connection) {
+            'pgsql' => PostgreSql::create()
+                ->setDbName($config['database'])
+                ->setUserName($config['username'])
+                ->setPassword($config['password'])
+                ->setHost($config['host'] ?? '127.0.0.1')
+                ->setPort($config['port'] ?? 5432),
+            'mysql' => MySql::create()
+                ->setDbName($config['database'])
+                ->setUserName($config['username'])
+                ->setPassword($config['password'])
+                ->setHost($config['host'] ?? '127.0.0.1')
+                ->setPort($config['port'] ?? 3306),
+            'sqlite' => Sqlite::create()
+                ->setDbName($config['database']),
+            default => throw new \Exception("Unsupported database driver: $connection"),
+        };
     }
 
     public function render()
