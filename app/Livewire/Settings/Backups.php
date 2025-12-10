@@ -112,8 +112,23 @@ class Backups extends Component
     public function backupDbToCloud()
     {
         $this->isBackingUp = true;
+        
+        // Store original notification config
+        $originalNotificationConfig = config('backup.notifications.notifications');
 
         try {
+            // Temporarily disable mail notifications for this UI-triggered action
+            config([
+                'backup.notifications.notifications' => [
+                    \Spatie\Backup\Notifications\Notifications\BackupHasFailedNotification::class => [],
+                    \Spatie\Backup\Notifications\Notifications\UnhealthyBackupWasFoundNotification::class => [],
+                    \Spatie\Backup\Notifications\Notifications\CleanupHasFailedNotification::class => [],
+                    \Spatie\Backup\Notifications\Notifications\BackupWasSuccessfulNotification::class => [],
+                    \Spatie\Backup\Notifications\Notifications\HealthyBackupWasFoundNotification::class => [],
+                    \Spatie\Backup\Notifications\Notifications\CleanupWasSuccessfulNotification::class => [],
+                ],
+            ]);
+
             // Run Spatie Backup for DB only to R2
             Artisan::call('backup:run', ['--only-db' => true, '--only-to-disk' => 'r2']);
 
@@ -123,6 +138,8 @@ class Backups extends Component
             Log::error('Cloud DB Backup Failed: ' . $e->getMessage());
             Flux::toast(text: 'Backup failed: ' . $e->getMessage(), variant: 'danger');
         } finally {
+            // Restore original notification config to not affect cron jobs
+            config(['backup.notifications.notifications' => $originalNotificationConfig]);
             $this->isBackingUp = false;
         }
     }
@@ -341,20 +358,35 @@ class Backups extends Component
 
     protected function findBinary($binaryName)
     {
+        // Log the attempt to find the binary
+        Log::info("Attempting to find binary: {$binaryName}");
+
         // Try which command first
-        $path = trim(shell_exec("which $binaryName 2>/dev/null") ?? '');
+        $whichCommand = "which {$binaryName} 2>/dev/null";
+        Log::info("Executing command: {$whichCommand}");
+        $path = trim(shell_exec($whichCommand) ?? '');
+        Log::info("Result of 'which' command: '{$path}'");
+
         if ($path && file_exists($path)) {
+            Log::info("Binary found at: {$path}");
             return $path;
         }
 
         // For Nixpacks/NixOS, search in /nix/store
         if (file_exists('/nix/store')) {
-            $path = trim(shell_exec("find /nix/store -name $binaryName -type f 2>/dev/null | head -1") ?? '');
+            Log::info("Searching for binary in /nix/store");
+            $findCommand = "find /nix/store -name {$binaryName} -type f 2>/dev/null | head -1";
+            Log::info("Executing command: {$findCommand}");
+            $path = trim(shell_exec($findCommand) ?? '');
+            Log::info("Result of 'find' command: '{$path}'");
+
             if ($path && file_exists($path)) {
+                Log::info("Binary found at: {$path}");
                 return $path;
             }
         }
 
+        Log::warning("Binary '{$binaryName}' not found.");
         return null;
     }
 
