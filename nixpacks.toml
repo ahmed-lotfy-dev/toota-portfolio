@@ -10,6 +10,7 @@ worker.enable_uploads=true
 NODE_OPTIONS = "--max-old-space-size=4096"
 
 [phases.setup]
+aptPkgs = ["postgresql-client", "zip", "unzip"]
 nixPkgs = [
     "php84",
     "php84Extensions.intl",
