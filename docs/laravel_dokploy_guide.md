@@ -1,23 +1,25 @@
 # Laravel + Dokploy Deployment Guide
 
-> **SOLUTION**: Use Nixpacks environment variables to install PostgreSQL client automatically!
+> **SOLUTION**: Add `postgresql-client` to `aptPkgs` in the `[phases.build]` section of `nixpacks.toml`.
 
 ---
 
-## Quick Fix (Automatic Installation)
+## Quick Fix (Configuration)
 
-**In Dokploy Dashboard** → Your App → **Environment** tab, add these variables:
+Ensure your `nixpacks.toml` includes `aptPkgs` in the `[phases.build]` section:
 
-| Key | Value |
-|-----|-------|
-| `NIXPACKS_APT_PKGS` | `postgresql-client` |
-| `NIXPACKS_DEBIAN` | `1` |
-
-Then **redeploy**. This will automatically install `postgresql-client` at build time using Debian's apt package manager.
+```toml
+[phases.build]
+aptPkgs = ["postgresql-client", "zip", "unzip"]
+cmds = [
+    "npm run build",
+    # ... other commands
+]
+```
 
 **Why this works:**
-- `NIXPACKS_DEBIAN=1` → Forces Nixpacks to use Debian base image (enables apt)
-- `NIXPACKS_APT_PKGS=postgresql-client` → Installs PostgreSQL client tools via apt-get
+- Installing it in the build phase ensures the binary is present in the final image layer.
+- `aptPkgs` handles the installation via Debian's package manager automatically.
 
 ---
 
@@ -95,6 +97,7 @@ cmds = [
 ]
 
 [phases.build]
+aptPkgs = ["postgresql-client", "zip", "unzip"]
 cmds = [
     "npm run build",
     "chmod -R 777 storage bootstrap/cache",
@@ -290,27 +293,15 @@ FILESYSTEM_DISK=r2
 
 #### pg_dump NOT found
 
-**CORRECT Solution** (Environment Variables):
+**CORRECT Solution** (Nixpacks Config):
 
-In **Dokploy Dashboard** → Environment tab, add:
-```env
-NIXPACKS_APT_PKGS=postgresql-client
-NIXPACKS_DEBIAN=1
+In `nixpacks.toml`:
+```toml
+[phases.build]
+aptPkgs = ["postgresql-client", "zip", "unzip"]
 ```
 
-Then **redeploy**. This installs `postgresql-client` automatically at build time.
-
-**Quick Temporary Fix** (SSH):
-```bash
-apt-get update && apt-get install -y postgresql-client
-```
-(This resets on next deployment)
-
-**Why /nix/store doesn't exist:**
-Dokploy uses Nixpacks with a **Debian base**, not pure NixOS. This is why:
-- ✅ `aptPkgs` work
-- ❌ `nixPkgs` are ignored
-- Use environment variables (`NIXPACKS_APT_PKGS`) instead
+Then **redeploy**. This installs the client during the build process, making it available in the final image.
 
 #### Bad Gateway
 

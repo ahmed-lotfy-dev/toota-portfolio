@@ -9,6 +9,9 @@ worker.enable_uploads=true
 
 NODE_OPTIONS = "--max-old-space-size=4096"
 
+# Force Nixpacks to keep PostgreSQL client (pg_dump) in runtime
+NIXPACKS_RUNTIME_DEPS = "postgresql"
+
 [phases.setup]
 aptPkgs = ["postgresql-client", "zip", "unzip"]
 nixPkgs = [

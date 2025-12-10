@@ -131,7 +131,7 @@ class Backups extends Component
             $this->getDbDumper()->dumpToFile($sqlPath);
 
             // 2. Create Archive with SQL
-            $zipFilename = 'toota-full-backup-' . Carbon::now()->format('Y-m-d-H-i-s') . '.zip';
+            $zipFilename = 'full_backup_' . Carbon::now()->format('Y-m-d-H-i-s') . '.zip';
             $zipPath = $archiver->createArchive($zipFilename, $sqlPath);
 
             // 3. Upload to R2
