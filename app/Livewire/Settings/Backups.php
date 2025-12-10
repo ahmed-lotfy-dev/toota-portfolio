@@ -69,6 +69,7 @@ class Backups extends Component
             // Optionally set an error state or notify
             $this->backups = [];
         }
+        Log::info('Backups refreshed. Total backups found: ' . count($this->backups));
     }
 
     private function formatSize($bytes)
@@ -130,12 +131,14 @@ class Backups extends Component
             ]);
 
             // Run Spatie Backup for DB only to R2
+            Log::info('Attempting to run Spatie backup for DB only to R2.');
             Artisan::call('backup:run', ['--only-db' => true, '--only-to-disk' => 'r2']);
+            Log::info('Spatie backup for DB only to R2 command executed. Output: ' . Artisan::output());
 
             $this->refreshBackups();
             Flux::toast(text: 'Database backup uploaded to Cloud (R2)!', variant: 'success');
         } catch (\Exception $e) {
-            Log::error('Cloud DB Backup Failed: ' . $e->getMessage());
+            Log::error('Cloud DB Backup Failed: ' . $e->getMessage() . ' - Trace: ' . $e->getTraceAsString());
             Flux::toast(text: 'Backup failed: ' . $e->getMessage(), variant: 'danger');
         } finally {
             // Restore original notification config to not affect cron jobs
@@ -149,44 +152,41 @@ class Backups extends Component
         $this->isBackingUp = true;
 
         try {
+            Log::info('Starting full cloud backup process.');
+
             // 1. Generate SQL Dump
             $sqlPath = storage_path('app/database.sql');
+            Log::info('Generating SQL dump to temporary path: ' . $sqlPath);
             $this->getDbDumper()->dumpToFile($sqlPath);
+            Log::info('SQL dump generated.');
 
             // 2. Create Archive with SQL
             $zipFilename = 'full_backup_' . Carbon::now()->format('Y-m-d-H-i-s') . '.zip';
+            Log::info('Creating full archive (SQL + Media) at path: ' . $zipFilename);
             $zipPath = $archiver->createArchive($zipFilename, $sqlPath);
+            Log::info('Full archive created at: ' . $zipPath);
 
             // 3. Upload to R2
-            // We'll place it in the App Name folder to match Spatie's convention so it shows in the list
             $appName = config('backup.backup.name');
             $r2Path = $appName . '/' . $zipFilename;
+            Log::info('Uploading full archive to R2 at: ' . $r2Path);
 
             $fileStream = fopen($zipPath, 'r');
             Storage::disk('r2')->put($r2Path, $fileStream);
             fclose($fileStream);
+            Log::info('Full archive uploaded to R2.');
 
             // 4. Cleanup
+            Log::info('Starting local cleanup for full backup.');
             if (File::exists($sqlPath))
                 File::delete($sqlPath);
-            $archiver->cleanup(); // Ensure temp zip is gone (MediaArchiver cleans up temp dir) But wait, createArchive returns path inside temp dir.
-            // Actually MediaArchiver::cleanup() deletes the temp dir. 
-            // We should call cleanup AFTER uploading.
-
-            // Note: MediaArchiver creates a temp dir for the whole operation.
-            // We should verify if createArchive assumes we consume it immediately or if we need to manually trigger cleanup of the zip.
-            // The zip is inside $archiver->getTempPath().
-            // So calling cleanup() destroys the zip.
             $archiver->cleanup();
+            Log::info('Local cleanup for full backup completed.');
 
-            $this->refreshBackups(); // This might not list custom files unless we point Spatie to list them?
-            // Spatie lists files in configured backup destination. If we put it in 'backups/', ensure Spatie config points there or matches name.
-            // Spatie config 'backup.name' usually determines subfolder.
-            // Let's just notify success for now.
-
+            $this->refreshBackups();
             $this->dispatch('notify', message: 'Full Backup (Media+DB) uploaded to Cloud (R2)!', type: 'success');
         } catch (\Exception $e) {
-            Log::error('Cloud Full Backup Failed: ' . $e->getMessage());
+            Log::error('Cloud Full Backup Failed: ' . $e->getMessage() . ' - Trace: ' . $e->getTraceAsString());
             Flux::toast(text: 'Full Backup failed: ' . $e->getMessage(), variant: 'danger');
         } finally {
             $this->isBackingUp = false;
@@ -198,6 +198,7 @@ class Backups extends Component
         // We shouldn't allow arbitrary file download, but here we trust the path comes from our valid list
         // Security check: ensure path is within our backup folders
         if (!Storage::disk($disk)->exists($path)) {
+            Log::warning("Backup file not found on disk '{$disk}' at path '{$path}'.");
             $this->dispatch('notify', message: 'File not found.', type: 'error');
             return;
         }
@@ -340,6 +341,7 @@ class Backups extends Component
     {
         $connection = config('database.default');
         $config = config("database.connections.$connection");
+        Log::info("Attempting to get DB Dumper for connection '{$connection}'. Config: " . json_encode($config));
 
         $dumper = match ($connection) {
             'pgsql' => PostgreSql::create()
