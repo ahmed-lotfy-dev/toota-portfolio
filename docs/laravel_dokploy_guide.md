@@ -207,7 +207,7 @@ Make executable: `chmod +x docker-entrypoint.sh`
     'bucket' => env('CLOUDFLARE_R2_BUCKET'),
     'url' => env('CLOUDFLARE_R2_URL'),
     'endpoint' => env('CLOUDFLARE_R2_ENDPOINT'),
-    'use_path_style_endpoint' => false,
+    'use_path_style_endpoint' => false, // Set to false for R2
     'throw' => false,
 ],
 ```

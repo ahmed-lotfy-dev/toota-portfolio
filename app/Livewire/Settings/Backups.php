@@ -38,31 +38,37 @@ class Backups extends Component
 
     public function refreshBackups()
     {
-        // Get backups from R2
-        // We manually load configured disks to ensure R2 is included
-        $disks = config('backup.backup.destination.disks') ?? ['local'];
-        $backupName = config('backup.backup.name');
+        try {
+            // Get backups from R2
+            // We manually load configured disks to ensure R2 is included
+            $disks = config('backup.backup.destination.disks') ?? ['local'];
+            $backupName = config('backup.backup.name');
 
-        $backupDestinations = collect($disks)->map(function ($disk) use ($backupName) {
-            return \Spatie\Backup\BackupDestination\BackupDestination::create($disk, $backupName);
-        });
+            $backupDestinations = collect($disks)->map(function ($disk) use ($backupName) {
+                return \Spatie\Backup\BackupDestination\BackupDestination::create($disk, $backupName);
+            });
 
-        $this->backups = $backupDestinations
-            ->flatMap(function (BackupDestination $destination) {
-                return $destination->backups()->map(function (Backup $backup) use ($destination) {
-                    return [
-                        'path' => $backup->path(),
-                        'date' => $backup->date()->format('Y-m-d H:i:s'),
-                        'size' => $backup->sizeInBytes(),
-                        'size_formatted' => $this->formatSize($backup->sizeInBytes()),
-                        'disk' => $destination->diskName(),
-                        'exists' => $backup->exists(),
-                    ];
-                });
-            })
-            ->sortByDesc('date')
-            ->values()
-            ->toArray();
+            $this->backups = $backupDestinations
+                ->flatMap(function (BackupDestination $destination) {
+                    return $destination->backups()->map(function (Backup $backup) use ($destination) {
+                        return [
+                            'path' => $backup->path(),
+                            'date' => $backup->date()->format('Y-m-d H:i:s'),
+                            'size' => $backup->sizeInBytes(),
+                            'size_formatted' => $this->formatSize($backup->sizeInBytes()),
+                            'disk' => $destination->diskName(),
+                            'exists' => $backup->exists(),
+                        ];
+                    });
+                })
+                ->sortByDesc('date')
+                ->values()
+                ->toArray();
+        } catch (\Exception $e) {
+            Log::error('Failed to refresh backups: ' . $e->getMessage());
+            // Optionally set an error state or notify
+            $this->backups = [];
+        }
     }
 
     private function formatSize($bytes)
