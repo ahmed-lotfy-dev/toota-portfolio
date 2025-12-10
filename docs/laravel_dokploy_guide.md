@@ -212,6 +212,19 @@ Make executable: `chmod +x docker-entrypoint.sh`
 ],
 ```
 
+**config/database.php (Critical for Spatie Backup):**
+
+You must explicitly tell the backup package where `pg_dump` allows it to work in the Docker environment.
+
+```php
+'pgsql' => [
+    // ...
+    'dump' => [
+        'dump_binary_path' => '/usr/bin',
+    ],
+],
+```
+
 ---
 
 ### 6. Dynamic Database Dumper (Livewire Component)
