@@ -38,6 +38,7 @@ Route::middleware(['auth', 'verified'])->prefix('dashboard')->group(function () 
     Route::get('profile', Profile::class)->name('profile.edit');
     Route::get('password', Password::class)->name('user-password.edit');
     Route::get('appearance', Appearance::class)->name('appearance.edit');
+    Route::get('backups', \App\Livewire\Settings\Backups::class)->name('backups.index');
 
     Route::get('two-factor', TwoFactor::class)
         ->middleware(

@@ -44,106 +44,108 @@
     <!-- Categories Table -->
 
     <div class="bg-white dark:bg-gray-800 rounded-lg shadow overflow-hidden">
+        <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
 
-        <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-
-            <thead class="bg-gray-50 dark:bg-gray-900">
-
-                <tr>
-
-                    <th
-                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-
-                        Name</th>
-
-                    <th
-                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-
-                        Slug</th>
-
-                    <th
-                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-
-                        Projects</th>
-
-                    <th
-                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-
-                        Order</th>
-
-                    <th
-                        class="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-
-                        Actions</th>
-
-                </tr>
-
-            </thead>
-
-            <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
-
-                @forelse($categories as $category)
+                <thead class="bg-gray-50 dark:bg-gray-900">
 
                     <tr>
 
-                        <td class="px-6 py-4 text-sm font-medium text-gray-900 dark:text-white">
-                            <div class="truncate" title="{{ $category->name }}">
-                                {{ $category->name }}
-                            </div>
-                        </td>
+                        <th
+                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
 
-                        <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">
-                            <div class="truncate" title="{{ $category->slug }}">
-                                {{ $category->slug }}
-                            </div>
-                        </td>
+                            Name</th>
 
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                        <th
+                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
 
-                            {{ $category->projects_count }}
+                            Slug</th>
 
-                        </td>
+                        <th
+                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
 
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                            Projects</th>
 
-                            {{ $category->order }}
+                        <th
+                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
 
-                        </td>
+                            Order</th>
 
-                        <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                        <th
+                            class="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
 
-                            <x-ui.button variant="link" wire:click="edit({{ $category->id }})" class="mr-3">
-                                Edit
-                            </x-ui.button>
-
-                            <x-ui.button variant="link"
-                                class="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300"
-                                wire:click="delete({{ $category->id }})"
-                                onclick="return confirm('This action cannot be undone. Are you sure?')">
-                                Delete
-                            </x-ui.button>
-
-                        </td>
+                            Actions</th>
 
                     </tr>
 
-                @empty
+                </thead>
 
-                    <tr>
+                <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
 
-                        <td colspan="5" class="px-6 py-4 text-center text-gray-500 dark:text-gray-400">
+                    @forelse($categories as $category)
 
-                            No categories found. Create your first category above.
+                        <tr>
 
-                        </td>
+                            <td class="px-6 py-4 text-sm font-medium text-gray-900 dark:text-white">
+                                <div class="truncate" title="{{ $category->name }}">
+                                    {{ $category->name }}
+                                </div>
+                            </td>
 
-                    </tr>
+                            <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">
+                                <div class="truncate" title="{{ $category->slug }}">
+                                    {{ $category->slug }}
+                                </div>
+                            </td>
 
-                @endforelse
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
 
-            </tbody>
+                                {{ $category->projects_count }}
 
-        </table>
+                            </td>
+
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+
+                                {{ $category->order }}
+
+                            </td>
+
+                            <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+
+                                <x-ui.button variant="link" wire:click="edit({{ $category->id }})" class="mr-3">
+                                    Edit
+                                </x-ui.button>
+
+                                <x-ui.button variant="link"
+                                    class="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300"
+                                    wire:click="delete({{ $category->id }})"
+                                    onclick="return confirm('This action cannot be undone. Are you sure?')">
+                                    Delete
+                                </x-ui.button>
+
+                            </td>
+
+                        </tr>
+
+                    @empty
+
+                        <tr>
+
+                            <td colspan="5" class="px-6 py-4 text-center text-gray-500 dark:text-gray-400">
+
+                                No categories found. Create your first category above.
+
+                            </td>
+
+                        </tr>
+
+                    @endforelse
+
+                </tbody>
+
+            </table>
+
+        </div>
 
     </div>
 
