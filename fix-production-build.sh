@@ -1,9 +1,13 @@
 #!/bin/bash
 
-# Install required system packages for backups (if not already installed)
+# This script should be run by Dokploy's post-deploy hook
+# or manually in the container
+
+# Install required system packages for backups
 if ! command -v pg_dump &> /dev/null; then
-    echo "Installing postgresql-client..."
+    echo "🔧 Installing postgresql-client..."
     apt-get update -qq && apt-get install -y -qq postgresql-client zip unzip
+    echo "✅ PostgreSQL client installed"
 fi
 
 # Fix permissions
@@ -24,3 +28,5 @@ php artisan event:cache
 
 # Link storage
 php artisan storage:link
+
+echo "✅ Production setup complete"
