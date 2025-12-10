@@ -175,9 +175,22 @@ Build an audience with integrated newsletter functionality.
 -   **Export Capability**: Easy export of subscriber lists.
 -   **Privacy Compliant**: GDPR-ready with proper consent mechanisms.
 
+### 13. 🛡️ Data Preservation & Disaster Recovery
+
+A professional-grade backup system ensures that the artist's life work is never lost.
+
+-   **Instant Downloads**: Immediately export data in multiple formats:
+    -   **JSON**: Full content export (projects, categories, testimonials).
+    -   **Media Archive**: ZIP download of all project images, organized by project name.
+    -   **SQL Dump**: Raw PostgreSQL database dump.
+    -   **Full Backup**: Combined archive of database and full project data.
+-   **Cloud Backups (R2)**: Seamlessly upload backups to secure Cloudflare R2 storage with a single click.
+-   **Automated Scheduling**: "Set and Forget" scheduler with configurable frequency (Daily, Weekly, Monthly) and automatic retention management (e.g., keep last 7 days).
+-   **History Management**: View, download, and delete cloud backups directly from the dashboard.
+
 ---
 
-## �🛠️ Tech Stack
+## 🛠️ Tech Stack
 
 We chose the **TALL Stack** for its perfect balance of developer experience and performance.
 
