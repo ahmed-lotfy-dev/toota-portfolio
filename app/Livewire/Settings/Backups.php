@@ -397,7 +397,7 @@ class Backups extends Component
         Log::info("Attempting to find binary: {$binaryName}");
 
         // Try which command first
-        $whichCommand = "which {$binaryName} 2>/dev/null";
+        $whichCommand = "which " . escapeshellarg($binaryName) . " 2>/dev/null";
         Log::info("Executing command: {$whichCommand}");
         $path = trim(shell_exec($whichCommand) ?? '');
         Log::info("Result of 'which' command: '{$path}'");
@@ -410,7 +410,7 @@ class Backups extends Component
         // For Nixpacks/NixOS, search in /nix/store
         if (file_exists('/nix/store')) {
             Log::info("Searching for binary in /nix/store");
-            $findCommand = "find /nix/store -name {$binaryName} -type f 2>/dev/null | head -1";
+            $findCommand = "find /nix/store -name " . escapeshellarg($binaryName) . " -type f 2>/dev/null | head -1";
             Log::info("Executing command: {$findCommand}");
             $path = trim(shell_exec($findCommand) ?? '');
             Log::info("Result of 'find' command: '{$path}'");

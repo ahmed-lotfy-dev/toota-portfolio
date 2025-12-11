@@ -6,6 +6,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 use Laravel\Socialite\Facades\Socialite;
 use Illuminate\Support\Str;
 
@@ -40,9 +41,8 @@ class GoogleAuthController extends Controller
             if ($user) {
                 // Update existing user with Google ID if not set
                 if (!$user->google_id) {
-                    $user->update([
-                        'google_id' => $googleUser->getId(),
-                    ]);
+                    $user->google_id = $googleUser->getId();
+                    $user->save();
                 }
             } else {
                 // Create new user
@@ -62,8 +62,8 @@ class GoogleAuthController extends Controller
 
         } catch (\Exception $e) {
             // Log error for debugging
-            \Log::error('Google OAuth Error: ' . $e->getMessage());
-            
+            Log::error('Google OAuth Error: ' . $e->getMessage());
+
             return redirect()->route('access.denied');
         }
     }

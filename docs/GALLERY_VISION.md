@@ -9,7 +9,7 @@
 
 ### Existing Structure:
 - **Frontend Framework**: Laravel Livewire + Blade templates + Tailwind CSS
-- **Database**: SQLite (ready for expansion)
+- **Database**: PostgreSQL (production database with cloud backups)
 - **Authentication**: Laravel Fortify (user accounts, login, 2FA)
 - **Components**: Modular Blade components (Hero, About, Services, Footer, etc.)
 - **Placeholder Sections**: Hero, Projects, About, Services (all need content/images)

@@ -22,6 +22,13 @@ class ContactForm extends Component
         'message' => 'required|min:10',
     ];
 
+    protected function rules()
+    {
+        return array_merge($this->rules, [
+            'email' => 'required|email|throttle:5,1', // 5 submissions per minute per email
+        ]);
+    }
+
     public function messages()
     {
         return [
@@ -53,7 +60,7 @@ class ContactForm extends Component
                 'phone' => $this->phone,
                 'message' => $this->message,
             ]);
-            
+
             $this->reset(['name', 'email', 'phone', 'message']);
 
         } catch (\Exception $e) {

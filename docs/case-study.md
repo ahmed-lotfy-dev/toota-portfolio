@@ -2,7 +2,7 @@
 **A Performance-First Digital Gallery for Visual Artists**
 
 > **Role:** Full-Stack Developer
-> **Tech Stack:** Laravel 11, Livewire 3, Alpine.js, Tailwind CSS, Cloudflare R2
+> **Tech Stack:** Laravel 12, Livewire 3, Alpine.js, Tailwind CSS, Cloudflare R2
 > **Live Demo:** [toota-art.ahmedlotfy.site](https://toota-art.ahmedlotfy.site)
 
 ---
@@ -12,8 +12,9 @@ Professional artists need more than just a storage folder for their work; they n
 
 ## 1. Technical Architecture
 I chose the **TALL Stack (Tailwind, Alpine, Laravel, Livewire)** to deliver the speed of a Single Page App (SPA) with the SEO reliability of a traditional backend.
-*   **Frontend logic on the Server:** Using **Livewire 3** allowed me to build complex, interactive interfaces (like the drag-and-drop uploader) entirely in PHP, reducing the JavaScript bundle size significantly.
-*   **Database:** **PostgreSQL** for structured data, coupled with **Cloudflare R2** for object storage.
+*   **Frontend logic on the Server:** Using **Livewire 3** allowed me to build complex, interactive interfaces (like the drag-and-drop uploader and real-time backup dashboard) entirely in PHP, reducing the JavaScript bundle size significantly.
+*   **Database:** **PostgreSQL 13+** for structured data with advanced features, coupled with **Cloudflare R2** for object storage.
+*   **Deployment:** Deployed on **Dokploy** using a custom Dockerfile with FrankenPHP, ensuring `pg_dump` binary availability for production backups.
 *   **Smart Caching:** Implemented aggressive caching strategies for gallery pages to ensure instant load times even with heavy asset loads.
 
 ## 2. Solving Real Problems
@@ -25,8 +26,17 @@ Artists upload huge, unoptimized files. Serving these directly would kill perfor
 
 ### 🛡️ Data Sovereignty & Disaster Recovery
 A common fear for content creators is platform lock-in or data loss.
-*   **The Solution:** I engineered a comprehensive **Backup & Export Center**.
-*   **The Logic:** I leveraged `spatie/laravel-backup` for robust database snapshots but extended it with a custom **Media Archiver**. This service downloads thousands of project images and organizes them into a clean ZIP structure (folders named by "Project Title"), making the data human-readable offline. Combined with an automated scheduler (Daily/Weekly/Monthly) that pushes encrypted backups to a separate Cloudflare R2 bucket, the artist has total peace of mind.
+*   **The Solution:** I engineered a comprehensive **Backup & Export Center** with multi-layered redundancy.
+*   **The Logic:** I leveraged `spatie/laravel-backup` for robust database snapshots but extended it with custom services:
+    *   **MediaArchiver Service**: Downloads thousands of project images from R2 and organizes them into a clean ZIP structure (folders named by "Project Title"), making the data human-readable offline.
+    *   **DataExportService**: Generates structured JSON exports of all content (projects, categories, testimonials) for portability.
+    *   **PostgreSQL Dump Integration**: Custom dumper with intelligent `pg_dump` binary detection that works across Docker, Dokploy, and Nixpacks environments.
+    *   **Cloud Backup History**: Real-time dashboard displaying all R2 backups with size, date, and one-click download/delete functionality.
+    *   **Automated Scheduler**: Configurable frequency (Daily/Weekly/Monthly) with smart retention policies (keep daily for 16 days, weekly for 8 weeks, monthly for 4 months, yearly for 2 years).
+    *   **Dual-Destination Strategy**: Backups stored on both local disk and Cloudflare R2 bucket for geographic redundancy.
+    *   **Temporary Signed URLs**: Security-first approach using 5-minute expiring download links for sensitive backup files.
+
+Combined with email notifications for backup success/failure and automatic storage cleanup at 5GB threshold, the artist has total peace of mind without manual intervention.
 
 ### 🔐 Zero-Compromise Security
 Unlike typical social platforms, this is a dedicated professional portfolio.

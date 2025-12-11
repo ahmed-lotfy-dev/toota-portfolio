@@ -1,6 +1,6 @@
 # 🎨 Toota Art Portfolio
 
-![Laravel](https://img.shields.io/badge/Laravel-11-FF2D20?style=for-the-badge&logo=laravel&logoColor=white)
+![Laravel](https://img.shields.io/badge/Laravel-12-FF2D20?style=for-the-badge&logo=laravel&logoColor=white)
 ![Livewire](https://img.shields.io/badge/Livewire-3-4E56A6?style=for-the-badge&logo=livewire&logoColor=white)
 ![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-3.4-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)
 ![Alpine.js](https://img.shields.io/badge/Alpine.js-3.x-8BC0D0?style=for-the-badge&logo=alpine.js&logoColor=white)
@@ -179,14 +179,37 @@ Build an audience with integrated newsletter functionality.
 
 A professional-grade backup system ensures that the artist's life work is never lost.
 
--   **Instant Downloads**: Immediately export data in multiple formats:
-    -   **JSON**: Full content export (projects, categories, testimonials).
-    -   **Media Archive**: ZIP download of all project images, organized by project name.
-    -   **SQL Dump**: Raw PostgreSQL database dump.
-    -   **Full Backup**: Combined archive of database and full project data.
--   **Cloud Backups (R2)**: Seamlessly upload backups to secure Cloudflare R2 storage with a single click.
--   **Automated Scheduling**: "Set and Forget" scheduler with configurable frequency (Daily, Weekly, Monthly) and automatic retention management (e.g., keep last 7 days).
--   **History Management**: View, download, and delete cloud backups directly from the dashboard.
+#### **Instant Download Options**
+Export data immediately in multiple formats:
+-   **JSON Export**: Complete content export including all projects, categories, and testimonials in structured JSON format
+-   **Media Archive**: Automated ZIP creation of all project images, intelligently organized into folders by project title for easy offline access
+-   **SQL Dump**: Raw PostgreSQL database dump uploaded to R2 with temporary signed download URLs for secure access
+-   **Full Backup**: Combined archive containing both the complete database dump AND all media files in a single downloadable package
+
+#### **Cloud Backup System (R2 Integration)**
+Seamless backup to Cloudflare R2 object storage:
+-   **Database-Only Backups**: Quick PostgreSQL dumps using `spatie/laravel-backup` with `pg_dump` binary auto-detection
+-   **Full Cloud Backups**: Complete system backup including database + all media files uploaded directly to R2
+-   **Backup History Dashboard**: Real-time view of all cloud backups with file size, upload date, and storage location
+-   **Direct Management**: Download or delete any backup directly from R2 storage through the dashboard interface
+-   **Intelligent Binary Detection**: Automatically locates `pg_dump` in Docker/Dokploy environments including Nixpacks support
+
+#### **Automated Backup Scheduling**
+"Set and Forget" automation with granular control:
+-   **Configurable Frequency**: Schedule backups to run Daily, Weekly, or Monthly at a specific time
+-   **Smart Retention Policies**: Automatically clean up old backups while preserving important milestones
+    -   Keep all backups for the first 7 days
+    -   Keep daily backups for 16 days
+    -   Keep weekly backups for 8 weeks  
+    -   Keep monthly backups for 4 months
+    -   Keep yearly backups for 2 years
+-   **Email Notifications**: Automated alerts sent to admin email on backup success/failure via configured mail service
+-   **Storage Limits**: Automatic cleanup when storage exceeds 5GB threshold to prevent runaway costs
+
+#### **Disaster Recovery Features**
+-   **Multi-Disk Strategy**: Backups stored on both local disk and R2 cloud for redundancy
+-   **Temporary Signed URLs**: Secure time-limited download links (5-minute expiration) for sensitive backup files
+-   **PostgreSQL-Optimized**: Native support for PostgreSQL dumps with proper binary path configuration for production environments
 
 ---
 
@@ -196,7 +219,7 @@ We chose the **TALL Stack** for its perfect balance of developer experience and 
 
 | Technology            | Purpose           | Why we used it                                                                                                   |
 | :-------------------- | :---------------- | :--------------------------------------------------------------------------------------------------------------- |
-| **Laravel 11**        | Backend Framework | The industry standard for PHP. Provides robust routing, security, and database management with modern features.  |
+| **Laravel 12**        | Backend Framework | The industry standard for PHP. Provides robust routing, security, and database management with modern features.  |
 | **Livewire 3**        | Dynamic Frontend  | Allows us to build dynamic interfaces (like the dashboard) without the complexity of a separate SPA (React/Vue). |
 | **Alpine.js**         | Interactivity     | Adds lightweight JavaScript behavior (modals, dropdowns) directly in the HTML with minimal overhead.             |
 | **Tailwind CSS**      | Styling           | Utility-first CSS for rapid, custom UI development without fighting framework defaults.                          |
@@ -204,7 +227,7 @@ We chose the **TALL Stack** for its perfect balance of developer experience and 
 | **Laravel Socialite** | Authentication    | Simplifies OAuth authentication with providers like Google for seamless login.                                   |
 | **Laravel Fortify**   | Authentication    | Provides backend authentication features including 2FA, password reset, and email verification.                  |
 | **Spatie Sitemap**    | SEO               | Automatically generates XML sitemaps to improve search engine indexing.                                          |
-| **MySQL**             | Database          | Reliable, performant relational database for storing all application data.                                       |
+| **PostgreSQL**        | Database          | Reliable, performant relational database with advanced features for storing all application data.                 |
 
 ---
 
@@ -255,10 +278,10 @@ toota-art/
 
 ### Prerequisites
 
--   **PHP 8.2+** with required extensions (mbstring, xml, pdo, etc.)
+-   **PHP 8.4+** with required extensions (mbstring, xml, pdo, pdo_pgsql, gd, zip, intl, etc.)
 -   **Composer** for PHP dependency management
--   **Node.js 18+** & **NPM** for frontend asset compilation
--   **MySQL 8.0+** or compatible database
+-   **Node.js 22+** & **NPM** for frontend asset compilation
+-   **PostgreSQL 13+** (configured for production use with Dokploy deployment)
 -   **Cloudflare R2 Account** for image storage (or configure alternative S3-compatible storage)
 -   **Google OAuth Credentials** (optional, for social login)
 

@@ -13,7 +13,7 @@ class ImageUploadController extends Controller
     {
         $request->validate([
             'image' => 'required|image|max:15360', // 15MB
-            'path' => 'required|string',
+            'path' => 'required|string|regex:/^[a-zA-Z0-9\/_-]+$/', // Prevent path traversal
             'title' => 'nullable|string|max:255',
         ]);
 
