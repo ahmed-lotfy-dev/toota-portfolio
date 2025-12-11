@@ -8,17 +8,19 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 RUN --mount=type=cache,target=/var/lib/apt/lists,sharing=locked \
     --mount=type=cache,target=/var/cache/apt,sharing=locked \
     apt-get update && apt-get install -y --no-install-recommends \
+    gnupg \
+    lsb-release \
+    curl \
+    ca-certificates \
+    git \
+    zip \
+    unzip \
     # Add PostgreSQL APT repository
     && curl -sS https://www.postgresql.org/media/keys/ACCC4CF8.asc | gpg --dearmor | tee /etc/apt/trusted.gpg.d/apt.postgresql.org.gpg >/dev/null \
     && echo "deb http://apt.postgresql.org/pub/repos/apt/ $(lsb_release -cs)-pgdg main" | tee /etc/apt/sources.list.d/pgdg.list \
     && apt-get update \
     # Install postgresql-client-18 from the new repository
     && apt-get install -y --no-install-recommends postgresql-client-18 \
-    git \
-    zip \
-    unzip \
-    curl \
-    gnupg \
     # Install supercronic for cron scheduling
     && curl -L https://github.com/aptible/supercronic/releases/download/v0.1.20/supercronic-linux-amd64 -o /usr/local/bin/supercronic \
     && chmod +x /usr/local/bin/supercronic
