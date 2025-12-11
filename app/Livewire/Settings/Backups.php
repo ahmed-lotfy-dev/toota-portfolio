@@ -254,7 +254,7 @@ class Backups extends Component
             $this->dispatch('notify', message: 'SQL dump successfully generated and available for download!', type: 'success');
             
             // Redirect the user to the generated download URL
-            return $this->redirect($downloadUrl, navigate: true);
+            return $this->redirect($downloadUrl);
 
         } catch (\Exception $e) {
             Log::error('SQL Dump Failed: ' . $e->getMessage());
@@ -294,7 +294,7 @@ class Backups extends Component
             ]);
 
             $this->dispatch('notify', message: 'Full backup successfully generated and available for download!', type: 'success');
-            return $this->redirect($downloadUrl, navigate: true);
+            return $this->redirect($downloadUrl);
 
         } catch (\Exception $e) {
             Log::error('Full Backup Failed: ' . $e->getMessage());
