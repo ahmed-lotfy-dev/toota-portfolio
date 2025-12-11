@@ -91,6 +91,7 @@ class Backups extends Component
         return response()->streamDownload(function () use ($json) {
             echo $json;
         }, $filename);
+        $this->dispatch('notify', message: 'JSON export initiated successfully!', type: 'success');
     }
 
     public function downloadMediaArchive(MediaArchiver $archiver)
@@ -102,6 +103,7 @@ class Backups extends Component
             $filename = basename($zipPath);
 
             return response()->download($zipPath)->deleteFileAfterSend(true);
+            $this->dispatch('notify', message: 'Media archive download initiated!', type: 'success');
         } catch (\Exception $e) {
             Log::error('Media Archive Failed: ' . $e->getMessage());
             $this->dispatch('notify', message: 'Failed to create media archive: ' . $e->getMessage(), type: 'error');
@@ -207,6 +209,7 @@ class Backups extends Component
         $filesystem = Storage::disk($disk);
 
         return $filesystem->download($path);
+        $this->dispatch('notify', message: 'Backup download initiated!', type: 'success');
     }
 
     public function deleteBackup($disk, $path)
