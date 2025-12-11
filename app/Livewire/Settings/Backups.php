@@ -91,7 +91,6 @@ class Backups extends Component
         return response()->streamDownload(function () use ($json) {
             echo $json;
         }, $filename);
-        $this->dispatch('notify', message: 'JSON export initiated successfully!', type: 'success');
     }
 
     public function downloadMediaArchive(MediaArchiver $archiver)
@@ -103,10 +102,9 @@ class Backups extends Component
             $filename = basename($zipPath);
 
             return response()->download($zipPath)->deleteFileAfterSend(true);
-            $this->dispatch('notify', message: 'Media archive download initiated!', type: 'success');
         } catch (\Exception $e) {
             Log::error('Media Archive Failed: ' . $e->getMessage());
-            $this->dispatch('notify', message: 'Failed to create media archive: ' . $e->getMessage(), type: 'error');
+            $this->dispatch('show-notification', status: 'danger', message: 'Failed to create media archive: ' . $e->getMessage());
         } finally {
             $this->isArchivingMedia = false;
         }
@@ -115,7 +113,7 @@ class Backups extends Component
     public function backupDbToCloud()
     {
         $this->isBackingUp = true;
-        
+
         // Store original notification config
         $originalNotificationConfig = config('backup.notifications.notifications');
 
@@ -186,7 +184,7 @@ class Backups extends Component
             Log::info('Local cleanup for full backup completed.');
 
             $this->refreshBackups();
-            $this->dispatch('notify', message: 'Full Backup (Media+DB) uploaded to Cloud (R2)!', type: 'success');
+            $this->dispatch('show-notification', status: 'success', message: 'Full Backup (Media+DB) uploaded to Cloud (R2)!');
         } catch (\Exception $e) {
             Log::error('Cloud Full Backup Failed: ' . $e->getMessage() . ' - Trace: ' . $e->getTraceAsString());
             Flux::toast(text: 'Full Backup failed: ' . $e->getMessage(), variant: 'danger');
@@ -201,7 +199,7 @@ class Backups extends Component
         // Security check: ensure path is within our backup folders
         if (!Storage::disk($disk)->exists($path)) {
             Log::warning("Backup file not found on disk '{$disk}' at path '{$path}'.");
-            $this->dispatch('notify', message: 'File not found.', type: 'error');
+            $this->dispatch('show-notification', status: 'danger', message: 'File not found.');
             return;
         }
 
@@ -209,7 +207,6 @@ class Backups extends Component
         $filesystem = Storage::disk($disk);
 
         return $filesystem->download($path);
-        $this->dispatch('notify', message: 'Backup download initiated!', type: 'success');
     }
 
     public function deleteBackup($disk, $path)
@@ -219,13 +216,13 @@ class Backups extends Component
                 Storage::disk($disk)->delete($path);
 
                 $this->refreshBackups();
-                $this->dispatch('notify', message: 'Backup deleted successfully.', type: 'success');
+                $this->dispatch('show-notification', status: 'success', message: 'Backup deleted successfully.');
             } else {
-                $this->dispatch('notify', message: 'File not found.', type: 'error');
+                $this->dispatch('show-notification', status: 'danger', message: 'File not found.');
             }
         } catch (\Exception $e) {
             Log::error('Delete Backup Failed: ' . $e->getMessage());
-            $this->dispatch('notify', message: 'Failed to delete backup.', type: 'error');
+            $this->dispatch('show-notification', status: 'danger', message: 'Failed to delete backup.');
         }
     }
 
@@ -234,12 +231,12 @@ class Backups extends Component
         try {
             $filename = 'backup-' . Carbon::now()->format('Y-m-d-H-i-s') . '.sql';
             $tempLocalPath = tempnam(sys_get_temp_dir(), 'sql_dump_'); // Create a unique temp file
-            
+
             // Dump to a local temporary file first
             $this->getDbDumper()->dumpToFile($tempLocalPath);
 
             $r2Path = 'sql-dumps/' . $filename; // Store in a specific folder on R2
-            
+
             // Upload to R2
             Storage::disk('r2')->put($r2Path, file_get_contents($tempLocalPath));
 
@@ -251,14 +248,14 @@ class Backups extends Component
                 'ResponseContentDisposition' => 'attachment; filename="' . $filename . '"',
             ]);
 
-            $this->dispatch('notify', message: 'SQL dump successfully generated and available for download!', type: 'success');
-            
+            $this->dispatch('show-notification', status: 'success', message: 'SQL dump successfully generated and available for download!');
+
             // Redirect the user to the generated download URL
             return $this->redirect($downloadUrl);
 
         } catch (\Exception $e) {
             Log::error('SQL Dump Failed: ' . $e->getMessage());
-            $this->dispatch('notify', message: 'Failed to generate SQL dump: ' . $e->getMessage(), type: 'error');
+            $this->dispatch('show-notification', status: 'danger', message: 'Failed to generate SQL dump: ' . $e->getMessage());
         }
     }
 
@@ -293,12 +290,12 @@ class Backups extends Component
                 'ResponseContentDisposition' => 'attachment; filename="' . $zipFilename . '"',
             ]);
 
-            $this->dispatch('notify', message: 'Full backup successfully generated and available for download!', type: 'success');
+            $this->dispatch('show-notification', status: 'success', message: 'Full backup successfully generated and available for download!');
             return $this->redirect($downloadUrl);
 
         } catch (\Exception $e) {
             Log::error('Full Backup Failed: ' . $e->getMessage());
-            $this->dispatch('notify', message: 'Failed to create full backup: ' . $e->getMessage(), type: 'error');
+            $this->dispatch('show-notification', status: 'danger', message: 'Failed to create full backup: ' . $e->getMessage());
         } finally {
             $this->isArchivingMedia = false;
         }
@@ -337,7 +334,7 @@ class Backups extends Component
 
         $settings->save($this->schedule);
 
-        $this->dispatch('notify', message: 'Backup schedule updated successfully!', type: 'success');
+        $this->dispatch('show-notification', status: 'success', message: 'Backup schedule updated successfully!');
     }
 
     protected function getDbDumper()

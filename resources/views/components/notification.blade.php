@@ -17,7 +17,7 @@
             clearTimeout(timeout);
             timeout = setTimeout(() => {
                 show = false;
-            }, 5000);
+            }, 2000);
         });
     "
     x-show="show"
