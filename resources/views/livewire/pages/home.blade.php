@@ -1,5 +1,5 @@
 <div class="w-full min-h-screen flex flex-col ">
-  <x-landing.hero />
+  <x-hero />
   <livewire:projects />
   <x-landing.about />
   <x-landing.services />

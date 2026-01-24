@@ -19,26 +19,29 @@
 
         <div
             class="absolute top-[-5%] left-[-5%] md:left-[5%] md:top-[10%] w-48 md:w-64 aspect-3/4 bg-stone-200 shadow-2xl -rotate-6 border-8 border-white transform transition duration-1000 hover:rotate-0 hover:scale-105 hover:z-20 opacity-30 md:opacity-100">
-            <img src="https://images.unsplash.com/photo-1595418878648-2615a133df1f?q=80&w=800&auto=format&fit=crop"
-                alt="Mask Detail" class="w-full h-full object-cover grayscale-20 contrast-110">
+            <img src="{{ optional($heroImages[1])->image_url ?? 'https://images.unsplash.com/photo-1595418878648-2615a133df1f?q=80&w=800&auto=format&fit=crop' }}"
+                alt="{{ optional($heroImages[1])->label ?? 'Mask Detail' }}"
+                class="w-full h-full object-cover grayscale-20 contrast-110">
         </div>
 
         <div
             class="absolute bottom-[-5%] right-[-10%] md:right-[5%] md:bottom-[15%] w-56 md:w-80 aspect-video bg-stone-200 shadow-xl rotate-3 border-8 border-white transform transition duration-1000 hover:rotate-0 hover:scale-105 hover:z-20 opacity-30 md:opacity-100">
-            <img src="https://images.unsplash.com/photo-1576495149368-24eb224976c6?q=80&w=800&auto=format&fit=crop"
-                alt="Workshop Tools" class="w-full h-full object-cover sepia-[0.2]">
+            <img src="{{ optional($heroImages[2])->image_url ?? 'https://images.unsplash.com/photo-1576495149368-24eb224976c6?q=80&w=800&auto=format&fit=crop' }}"
+                alt="{{ optional($heroImages[2])->label ?? 'Workshop Tools' }}"
+                class="w-full h-full object-cover sepia-[0.2]">
         </div>
 
         <div
             class="absolute top-[5%] right-[-5%] md:right-[15%] md:top-[15%] w-32 md:w-48 aspect-square bg-stone-200 shadow-lg rotate-12 border-[6px] border-white transform transition duration-1000 hover:rotate-0 hover:scale-105 hover:z-20 opacity-20 md:opacity-90">
-            <img src="https://images.unsplash.com/photo-1542129202-b2d49c693427?q=80&w=800&auto=format&fit=crop"
-                alt="Finished Prop" class="w-full h-full object-cover">
+            <img src="{{ optional($heroImages[3])->image_url ?? 'https://images.unsplash.com/photo-1542129202-b2d49c693427?q=80&w=800&auto=format&fit=crop' }}"
+                alt="{{ optional($heroImages[3])->label ?? 'Finished Prop' }}" class="w-full h-full object-cover">
         </div>
 
         <div
             class="absolute bottom-[10%] left-[-8%] md:left-[12%] md:bottom-[10%] w-32 md:w-48 aspect-2/3 bg-stone-200 shadow-xl -rotate-12 border-[6px] border-white transform transition duration-1000 hover:rotate-0 hover:scale-105 hover:z-20 opacity-20 md:opacity-90">
-            <img src="https://images.unsplash.com/photo-1596280687154-1563f68340d1?q=80&w=800&auto=format&fit=crop"
-                alt="Artisan Hands" class="w-full h-full object-cover grayscale">
+            <img src="{{ optional($heroImages[4])->image_url ?? 'https://images.unsplash.com/photo-1596280687154-1563f68340d1?q=80&w=800&auto=format&fit=crop' }}"
+                alt="{{ optional($heroImages[4])->label ?? 'Artisan Hands' }}"
+                class="w-full h-full object-cover grayscale">
         </div>
 
         <div

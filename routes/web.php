@@ -5,6 +5,7 @@ use App\Http\Controllers\ImageUploadController;
 use App\Http\Controllers\LanguageController;
 use App\Livewire\Dashboard;
 use App\Livewire\Dashboard\Categories;
+use App\Livewire\Dashboard\HeroImages;
 use App\Livewire\Dashboard\Projects;
 use App\Livewire\Dashboard\Testimonials;
 use App\Livewire\Home;
@@ -52,6 +53,7 @@ Route::middleware(['auth', 'verified'])->prefix('dashboard')->group(function () 
         ->name('two-factor.show');
 
     Route::get('testimonials', Testimonials::class)->name('testimonials.index');
+    Route::get('hero-images', HeroImages::class)->name('hero-images.index');
 });
 
 // Fallback route for 404
