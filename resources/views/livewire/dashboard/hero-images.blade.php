@@ -114,14 +114,33 @@
                         @if($heroImages[$position])
                             <div class="flex flex-col items-center gap-2">
                                 <span class="text-[10px] font-bold uppercase tracking-widest text-stone-400">Aspect Ratio</span>
-                                <div class="inline-flex rounded-lg border border-stone-200 bg-stone-50 p-1">
+                                <div
+                                    class="inline-flex flex-wrap justify-center gap-1 rounded-lg border border-stone-200 bg-stone-50 p-1">
                                     <button wire:click="setRatioMode({{ $position }}, 'original')"
-                                        class="rounded-md px-3 py-1 text-xs font-medium transition {{ $heroImages[$position]->ratio_mode === 'original' ? 'bg-white text-stone-900 shadow-sm' : 'text-stone-500 hover:text-stone-700' }}">
+                                        class="rounded-md px-2 py-1 text-[10px] font-medium transition {{ $heroImages[$position]->ratio_mode === 'original' ? 'bg-white text-stone-900 shadow-sm' : 'text-stone-500 hover:text-stone-700' }}"
+                                        title="Use original image dimensions">
                                         Original
                                     </button>
                                     <button wire:click="setRatioMode({{ $position }}, 'preset')"
-                                        class="rounded-md px-3 py-1 text-xs font-medium transition {{ $heroImages[$position]->ratio_mode === 'preset' ? 'bg-white text-stone-900 shadow-sm' : 'text-stone-500 hover:text-stone-700' }}">
-                                        Preset
+                                        class="rounded-md px-2 py-1 text-[10px] font-medium transition {{ $heroImages[$position]->ratio_mode === 'preset' ? 'bg-white text-stone-900 shadow-sm' : 'text-stone-500 hover:text-stone-700' }}"
+                                        title="Use slot default (Portrait/Landscape/Square)">
+                                        Slot
+                                    </button>
+                                    <div class="mx-1 h-4 w-px bg-stone-200 self-center"></div>
+                                    <button wire:click="setRatioMode({{ $position }}, '1:1')"
+                                        class="rounded-md px-2 py-1 text-[10px] font-medium transition {{ $heroImages[$position]->ratio_mode === '1:1' ? 'bg-white text-stone-900 shadow-sm' : 'text-stone-500 hover:text-stone-700' }}"
+                                        title="Square (1:1)">
+                                        1:1
+                                    </button>
+                                    <button wire:click="setRatioMode({{ $position }}, '4:5')"
+                                        class="rounded-md px-2 py-1 text-[10px] font-medium transition {{ $heroImages[$position]->ratio_mode === '4:5' ? 'bg-white text-stone-900 shadow-sm' : 'text-stone-500 hover:text-stone-700' }}"
+                                        title="Portrait (4:5)">
+                                        4:5
+                                    </button>
+                                    <button wire:click="setRatioMode({{ $position }}, '16:9')"
+                                        class="rounded-md px-2 py-1 text-[10px] font-medium transition {{ $heroImages[$position]->ratio_mode === '16:9' ? 'bg-white text-stone-900 shadow-sm' : 'text-stone-500 hover:text-stone-700' }}"
+                                        title="Landscape (16:9)">
+                                        16:9
                                     </button>
                                 </div>
                             </div>

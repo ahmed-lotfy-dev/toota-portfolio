@@ -39,8 +39,15 @@ class HeroImage extends Model
             return (float) $this->aspect_ratio;
         }
 
-        // Context-aware defaults based on position (Presets)
-        // This is used if mode is 'preset' OR if 'original' has no metadata
+        // Specific Presets
+        if ($this->ratio_mode === '1:1')
+            return 1.0;
+        if ($this->ratio_mode === '4:5')
+            return 0.8;
+        if ($this->ratio_mode === '16:9')
+            return 1.7778;
+
+        // Context-aware Slot Defaults (The 'preset' mode)
         return match ($this->position) {
             1 => 0.75,   // Mask Detail (Portrait)
             2 => 1.7778, // Workshop Tools (Landscape)

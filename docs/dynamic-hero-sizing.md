@@ -69,11 +69,12 @@ public function getDynamicAspectRatioAttribute(): float
 ---
 
 ## 🎨 Step 4: The Dashboard UI
-In the dashboard, the artist now sees a toggle. 
+In the dashboard, the artist now sees a granular selection toggle. 
 - **Original**: Uses the auto-detected width/height of the upload.
-- **Preset**: Forces the image to fit the design's standard shape (e.g., Portrait for Slot 1).
+- **Slot**: Forces the image to fit the design's standard shape for that specific position.
+- **1:1, 4:5, 16:9**: Professional presets that work across any slot.
 
-This is the senior way: **Auto-detect first, but always provide a manual override for artistic intent.**
+This is the senior way: **Auto-detect the reality first, but always provide professional manual overrides for artistic intent.**
 
 ---
 
