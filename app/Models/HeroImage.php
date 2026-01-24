@@ -18,12 +18,14 @@ class HeroImage extends Model
         'width',
         'height',
         'aspect_ratio',
+        'ratio_mode',
     ];
 
     protected $casts = [
         'width' => 'integer',
         'height' => 'integer',
         'aspect_ratio' => 'decimal:4',
+        'ratio_mode' => 'string',
     ];
 
     public function getImageUrlAttribute(): string
@@ -33,11 +35,12 @@ class HeroImage extends Model
 
     public function getDynamicAspectRatioAttribute(): float
     {
-        if ($this->aspect_ratio) {
+        if ($this->ratio_mode === 'original' && $this->aspect_ratio) {
             return (float) $this->aspect_ratio;
         }
 
-        // Context-aware defaults based on position if metadata is missing
+        // Context-aware defaults based on position (Presets)
+        // This is used if mode is 'preset' OR if 'original' has no metadata
         return match ($this->position) {
             1 => 0.75,   // Mask Detail (Portrait)
             2 => 1.7778, // Workshop Tools (Landscape)

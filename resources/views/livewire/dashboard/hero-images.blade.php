@@ -100,7 +100,32 @@
                         <div class="flex-1 text-center md:text-left">
                             <h3 class="text-base font-bold text-stone-900">{{ $info['label'] }}</h3>
                             <p class="text-sm text-stone-500">{{ $info['desc'] }}</p>
+
+                            @if($heroImages[$position] && $heroImages[$position]->width)
+                                <div class="mt-2 flex items-center justify-center gap-2 md:justify-start">
+                                    <span class="rounded bg-stone-100 px-2 py-0.5 text-[10px] font-medium text-stone-600">
+                                        {{ $heroImages[$position]->width }} x {{ $heroImages[$position]->height }}
+                                    </span>
+                                </div>
+                            @endif
                         </div>
+
+                        <!-- Ratio Mode Selection -->
+                        @if($heroImages[$position])
+                            <div class="flex flex-col items-center gap-2">
+                                <span class="text-[10px] font-bold uppercase tracking-widest text-stone-400">Aspect Ratio</span>
+                                <div class="inline-flex rounded-lg border border-stone-200 bg-stone-50 p-1">
+                                    <button wire:click="setRatioMode({{ $position }}, 'original')"
+                                        class="rounded-md px-3 py-1 text-xs font-medium transition {{ $heroImages[$position]->ratio_mode === 'original' ? 'bg-white text-stone-900 shadow-sm' : 'text-stone-500 hover:text-stone-700' }}">
+                                        Original
+                                    </button>
+                                    <button wire:click="setRatioMode({{ $position }}, 'preset')"
+                                        class="rounded-md px-3 py-1 text-xs font-medium transition {{ $heroImages[$position]->ratio_mode === 'preset' ? 'bg-white text-stone-900 shadow-sm' : 'text-stone-500 hover:text-stone-700' }}">
+                                        Preset
+                                    </button>
+                                </div>
+                            </div>
+                        @endif
 
                         <!-- Actions -->
                         <div class="flex w-full shrink-0 flex-col gap-3 md:w-auto md:flex-row md:items-center">

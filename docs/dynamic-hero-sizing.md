@@ -47,21 +47,20 @@ This is the senior way: **Zero manual input from the user.** The system does the
 
 ---
 
-## 🔄 Step 3: The "Senior Fallback" (Model Logic)
-What about images uploaded before this feature existed? We implemented a position-aware fallback logic in the `HeroImage` model. 
-
-If the database doesn't have a specific ratio, the model "knows" what the default should be for that specific slot (e.g., Slot 1 is usually a portrait).
+## 🔄 Step 3: The "Senior Fallback" & User Choice
+We don't just force a ratio. We give the artist **Manual Control** over the visual structure. We added a `ratio_mode` to allow switching between the original capture and the slot's intended preset.
 
 ```php
 public function getDynamicAspectRatioAttribute(): float
 {
-    if ($this->aspect_ratio) {
+    if ($this->ratio_mode === 'original' && $this->aspect_ratio) {
         return (float) $this->aspect_ratio;
     }
 
+    // Default Slot Presets (Horizontal, Vertical, Square)
     return match ($this->position) {
-        1 => 0.75,   // Mask Detail Default
-        2 => 1.7778, // Tools Default
+        1 => 0.75,   
+        2 => 1.7778, 
         default => 1.0
     };
 }
@@ -69,7 +68,16 @@ public function getDynamicAspectRatioAttribute(): float
 
 ---
 
-## 🎨 Step 4: The Frontend (CLS Prevention)
+## 🎨 Step 4: The Dashboard UI
+In the dashboard, the artist now sees a toggle. 
+- **Original**: Uses the auto-detected width/height of the upload.
+- **Preset**: Forces the image to fit the design's standard shape (e.g., Portrait for Slot 1).
+
+This is the senior way: **Auto-detect first, but always provide a manual override for artistic intent.**
+
+---
+
+## 🏗️ Step 5: The Frontend (CLS Prevention)
 Finally, we used the modern CSS `aspect-ratio` property in our Blade component. 
 
 ```html

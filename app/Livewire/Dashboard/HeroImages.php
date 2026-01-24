@@ -69,6 +69,18 @@ class HeroImages extends Component
         session()->flash('message', 'Hero image updated successfully!');
     }
 
+    public function setRatioMode($position, $mode)
+    {
+        if ($this->heroImages[$position]) {
+            $this->heroImages[$position]->update([
+                'ratio_mode' => $mode,
+            ]);
+
+            $this->loadHeroImages();
+            session()->flash('message', 'Ratio mode updated successfully!');
+        }
+    }
+
     public function deleteImage($position)
     {
         if ($this->heroImages[$position]) {

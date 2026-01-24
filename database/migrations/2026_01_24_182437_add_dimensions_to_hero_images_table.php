@@ -14,6 +14,7 @@ return new class extends Migration {
             $table->integer('width')->nullable();
             $table->integer('height')->nullable();
             $table->decimal('aspect_ratio', 8, 4)->nullable();
+            $table->string('ratio_mode')->default('original'); // 'original' or 'preset'
         });
     }
 
@@ -23,7 +24,7 @@ return new class extends Migration {
     public function down(): void
     {
         Schema::table('hero_images', function (Blueprint $table) {
-            $table->dropColumn(['width', 'height', 'aspect_ratio']);
+            $table->dropColumn(['width', 'height', 'aspect_ratio', 'ratio_mode']);
         });
     }
 };
