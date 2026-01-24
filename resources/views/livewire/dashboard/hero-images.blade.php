@@ -29,8 +29,8 @@
 
             const data = await response.json();
             
-            // Call Livewire to save the path
-            await @this.call('saveImage', position, data.path);
+            // Call Livewire to save the path and dimensions
+            await @this.call('saveImage', position, data.path, data.width, data.height);
             
             // Reset input
             event.target.value = '';

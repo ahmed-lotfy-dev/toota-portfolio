@@ -15,10 +15,35 @@ class HeroImage extends Model
         'label',
         'image_path',
         'position',
+        'width',
+        'height',
+        'aspect_ratio',
+    ];
+
+    protected $casts = [
+        'width' => 'integer',
+        'height' => 'integer',
+        'aspect_ratio' => 'decimal:4',
     ];
 
     public function getImageUrlAttribute(): string
     {
         return \Illuminate\Support\Facades\Storage::disk('r2')->url($this->image_path);
+    }
+
+    public function getDynamicAspectRatioAttribute(): float
+    {
+        if ($this->aspect_ratio) {
+            return (float) $this->aspect_ratio;
+        }
+
+        // Context-aware defaults based on position if metadata is missing
+        return match ($this->position) {
+            1 => 0.75,   // Mask Detail (Portrait)
+            2 => 1.7778, // Workshop Tools (Landscape)
+            3 => 1.0,    // Finished Prop (Square)
+            4 => 0.6667, // Artisan Hands (Portrait)
+            default => 1.0
+        };
     }
 }

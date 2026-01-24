@@ -32,7 +32,7 @@ class HeroImages extends Component
         ];
     }
 
-    public function saveImage($position, $fullPath)
+    public function saveImage($position, $fullPath, $width = null, $height = null)
     {
         $labels = [
             1 => HeroImage::LABEL_MASK_DETAIL,
@@ -41,18 +41,26 @@ class HeroImages extends Component
             4 => HeroImage::LABEL_ARTISAN_HANDS,
         ];
 
+        $aspectRatio = ($width && $height) ? round($width / $height, 4) : null;
+
         // If replacing, delete the old file
         if ($this->heroImages[$position]) {
             Storage::disk('r2')->delete($this->heroImages[$position]->image_path);
 
             $this->heroImages[$position]->update([
                 'image_path' => $fullPath,
+                'width' => $width,
+                'height' => $height,
+                'aspect_ratio' => $aspectRatio,
             ]);
         } else {
             HeroImage::create([
                 'label' => $labels[$position],
                 'image_path' => $fullPath,
                 'position' => $position,
+                'width' => $width,
+                'height' => $height,
+                'aspect_ratio' => $aspectRatio,
             ]);
         }
 

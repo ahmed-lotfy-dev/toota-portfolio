@@ -67,6 +67,8 @@ class ImageUploadController extends Controller
             return response()->json([
                 'path' => $fullPath,
                 'url' => $disk->url($fullPath),
+                'width' => $image->width(),
+                'height' => $image->height(),
             ]);
 
         } catch (\Exception $e) {
@@ -85,9 +87,22 @@ class ImageUploadController extends Controller
 
             $path = $file->storeAs($destinationPath, $filename, 'r2');
 
+            // For fallback, we still want to try to get dimensions if possible
+            $width = null;
+            $height = null;
+            try {
+                $image = Image::read($file->getRealPath());
+                $width = $image->width();
+                $height = $image->height();
+            } catch (\Exception $dimError) {
+                // Ignore dimension errors in fallback
+            }
+
             return response()->json([
                 'path' => $path,
                 'url' => $disk->url($path),
+                'width' => $width,
+                'height' => $height,
             ]);
         }
     }
