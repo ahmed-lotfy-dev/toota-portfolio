@@ -26,15 +26,29 @@ class ImageUploadController extends Controller
 
         try {
             // Optimize the image
-            $image = Image::read($file);
+            $image = Image::read($file->getRealPath());
+            $image->orient();
+
+            // 2. Clear GPS data and Orientation flags but keep other technical metadata
+            $exif = $image->exif();
+            if ($exif instanceof \Intervention\Image\Interfaces\CollectionInterface) {
+                // Remove GPS (Privacy) and Orientation (Redundancy) tags
+                $filteredData = array_filter($exif->toArray(), function ($key) {
+                    $k = strtoupper((string) $key);
+                    return !str_starts_with($k, 'GPS') && !str_contains($k, 'ORIENTATION');
+                }, ARRAY_FILTER_USE_KEY);
+
+                // Create a new collection and set it back to the image
+                $image->setExif(new \Intervention\Image\Collection($filteredData));
+            }
 
             // Resize if width is greater than 2500px, maintaining aspect ratio
             if ($image->width() > 2500) {
                 $image->scale(width: 2500);
             }
 
-            // Encode to WebP with 90% quality
-            $encoded = $image->toWebp(quality: 90);
+            // Encode to WebP with 90% quality - strip: false to keep our filtered EXIF
+            $encoded = $image->toWebp(quality: 90, strip: true);
 
             // Generate filename
             $originalName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);

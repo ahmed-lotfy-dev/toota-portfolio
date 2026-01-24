@@ -14,7 +14,6 @@ class HeroImages extends Component
     use WithFileUploads;
 
     public $heroImages = [];
-    public $uploadImages = [];
 
     public function mount()
     {
@@ -33,14 +32,7 @@ class HeroImages extends Component
         ];
     }
 
-    public function updatedUploadImages($value, $key)
-    {
-        $this->validate([
-            "uploadImages.{$key}" => 'image|max:15360',
-        ]);
-    }
-
-    public function saveImage($position)
+    public function saveImage($position, $fullPath)
     {
         $labels = [
             1 => HeroImage::LABEL_MASK_DETAIL,
@@ -49,21 +41,7 @@ class HeroImages extends Component
             4 => HeroImage::LABEL_ARTISAN_HANDS,
         ];
 
-        $this->validate([
-            "uploadImages.{$position}" => 'required|image|max:15360',
-        ]);
-
-        $file = $this->uploadImages[$position];
-
-        $image = \Intervention\Image\Laravel\Facades\Image::read($file);
-        if ($image->width() > 2500) {
-            $image->scale(width: 2500);
-        }
-        $encoded = $image->toWebp(quality: 90);
-
-        $filename = 'hero-' . $position . '-' . \Illuminate\Support\Str::random(8) . '.webp';
-        $fullPath = 'hero-images/' . $filename;
-
+        // If replacing, delete the old file
         if ($this->heroImages[$position]) {
             Storage::disk('r2')->delete($this->heroImages[$position]->image_path);
 
@@ -78,9 +56,6 @@ class HeroImages extends Component
             ]);
         }
 
-        Storage::disk('r2')->put($fullPath, (string) $encoded);
-
-        $this->uploadImages[$position] = null;
         $this->loadHeroImages();
 
         session()->flash('message', 'Hero image updated successfully!');

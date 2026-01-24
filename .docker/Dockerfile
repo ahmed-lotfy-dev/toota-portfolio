@@ -33,6 +33,7 @@ COPY .docker/crontab.txt /etc/supercronic/crontab
 RUN install-php-extensions \
     pdo_pgsql \
     gd \
+    exif \
     intl \
     zip \
     opcache
