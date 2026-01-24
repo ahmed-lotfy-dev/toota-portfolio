@@ -58,6 +58,7 @@ Unlike typical social platforms, this is a dedicated professional portfolio.
 *   **True RTL Support:** A fully localized interface where layouts, typography, and navigation automatically flip for Arabic users, ensuring the site feels native in both languages.
 *   **Live Admin Dashboard:** A custom-built control panel allowing the artist to manage projects, toggle "Featured" status, and rearrange categories in real-time without touching a line of code.
 *   **Automated SEO:** Integrated \`spatie/laravel-sitemap\` to auto-generate sitemaps daily, ensuring every new artwork is instantly indexed by Google without manual submission.
+*   **Dynamic Hero Interface:** A specialized dashboard tab for managing the hero section's visual narrative. The artist can instantly swap out the 4 key placeholder images with auto-optimized WebP assets, keeping the landing page fresh without code deployments.
 *   **One-Click Resilience:** Instant dashboard actions to download full SQL dumps, JSON data exports, or complete media archives.
 
 ## 4. What I Learned
@@ -116,6 +117,7 @@ Targeting an artistic audience required a different mindset than standard e-comm
 *   **دعم حقيقي للغة العربية (RTL):** واجهة معربة بالكامل حيث تنقلب التخطيطات والخطوط والتنقل تلقائياً للمستخدمين العرب، مما يضمن أن الموقع يبدو أصلياً في كلتا اللغتين.
 *   **لوحة تحكم المشرف المباشرة:** لوحة تحكم مبنية خصيصاً تسمح للفنان بإدارة المشاريع، وتبديل حالة "مميز"، وإعادة ترتيب الفئات في الوقت الفعلي دون لمس سطر من الكود.
 *   **سيو (SEO) مؤتمت:** دمج \`spatie/laravel-sitemap\` لتوليد خرائط الموقع تلقائياً يومياً، مما يضمن أرشفة كل عمل فني جديد فوراً بواسطة Google دون تقديم يدوي.
+*   **واجهة الهيرو الديناميكية:** علامة تبويب مخصصة في لوحة التحكم لإدارة السرد البصري لقسم الهيرو. يمكن للفنان استبدال الصور الأربع الرئيسية فوراً بأصول محسنة بصيغة WebP تلقائياً، مما يحافظ على حيوية الصفحة المقصودة دون الحاجة لنشر كود جديد.
 *   **مرونة بنقرة واحدة:** إجراءات لوحة تحكم فورية لتنزيل تفريغ SQL كامل، أو تصديرات بيانات JSON، أو أرشيفات وسائط كاملة.
 
 ## 4. ماذا تعلمت
