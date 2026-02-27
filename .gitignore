@@ -25,3 +25,11 @@ yarn-error.log
 Gemini.md
 backup
 toota-art-react
+node_modules
+.next
+tsconfig.tsbuildinfo
+/docs
+/dist
+legacy-laravel
+/backups
+/scripts
