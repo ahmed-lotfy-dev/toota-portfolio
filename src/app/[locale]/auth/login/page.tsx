@@ -3,6 +3,8 @@ import { CredentialSignInForm } from "@/features/auth/CredentialSignInForm";
 import { getAdminSession, getSession } from "@/features/auth/guard";
 import { redirect } from "next/navigation";
 
+export const dynamic = "force-dynamic";
+
 type LoginPageProps = {
   params: Promise<{ locale: string }>;
   searchParams: Promise<{ callbackURL?: string }>;

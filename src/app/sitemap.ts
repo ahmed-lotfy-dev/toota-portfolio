@@ -11,14 +11,22 @@ function getBaseUrl() {
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = getBaseUrl();
-  const publishedProjects = await db.query.projects.findMany({
-    where: eq(projects.isPublished, true),
-    columns: {
-      slug: true,
-      updatedAt: true,
-      createdAt: true,
-    },
-  });
+  let publishedProjects: Array<{ slug: string; updatedAt: Date | null; createdAt: Date | null }> = [];
+
+  try {
+    publishedProjects = await db.query.projects.findMany({
+      where: eq(projects.isPublished, true),
+      columns: {
+        slug: true,
+        updatedAt: true,
+        createdAt: true,
+      },
+    });
+  } catch (error) {
+    // Build-time environments may not have DB access (e.g. Dokploy image build).
+    // Return static locale URLs and let project URLs be resolved at runtime deploys.
+    console.warn("sitemap: could not load project URLs from database", error);
+  }
 
   const staticUrls: MetadataRoute.Sitemap = locales.flatMap((locale) => ([
     {
