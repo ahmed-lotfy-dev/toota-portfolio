@@ -1,0 +1,168 @@
+{
+  "Home": {
+    "title": "Toota Art",
+    "description": "Portraying the soul of art in every creation",
+    "about": {
+      "subtitle": "The Art of Creation",
+      "title": "Crafting the extraordinary from the ordinary.",
+      "description1": "We specialize in the meticulous design and fabrication of hyper-realistic props, immersive escape room puzzles, and intricate artistic accessories.",
+      "description2": "Every piece is a testament to our dedication to detail, blending traditional craftsmanship with innovative techniques.",
+      "artist_image_alt": "Toota Art Artist Portrait",
+      "experience_years": "10+",
+      "experience_label": "Years Experience",
+      "label": "About The Artist",
+      "heading": "Crafting the extraordinary from the ordinary.",
+      "description": "We specialize in the meticulous design and fabrication of hyper-realistic props, immersive escape room puzzles, and intricate artistic accessories.\n\nEvery piece is a testament to our dedication to detail, blending traditional craftsmanship with innovative techniques.",
+      "stats": {
+        "projects": "500+",
+        "projects_label": "Projects Completed",
+        "exhibitions": "30+",
+        "exhibitions_label": "Global Exhibitions",
+        "clients": "150+",
+        "clients_label": "Satisfied Clients"
+      },
+      "cta_button": "Discover Our Story"
+    },
+    "services": {
+      "subtitle": "Our Expertise",
+      "title": "Mastering The Craft",
+      "label": "Our Expertise",
+      "heading": "Mastering The Craft",
+      "subheading": "From concept to creation, we bring imaginative visions to tangible reality with unmatched precision.",
+      "learn_more": "Learn More",
+      "contact_us": "Contact Us",
+      "escape_masks": {
+        "title": "Escape Masks",
+        "description": "Complex, interactive puzzles and thematic elements designed for puzzle-solvers."
+      },
+      "cinema_props": {
+        "title": "Cinema Props",
+        "description": "Bespoke, highly detailed props crafted for film, theater, and immersive experiences."
+      },
+      "costumes": {
+        "title": "Costumes",
+        "description": "Unique wearable art, masks, and bespoke items tailored to individual visions."
+      },
+      "educational_panels": {
+        "title": "Educational Panels",
+        "description": "Interactive, detailed panels designed to educate and engage audiences."
+      },
+      "other": {
+        "title": "Other",
+        "description": "Customized artistic solutions across various creative disciplines."
+      },
+      "custom_project": {
+        "title": "Have a Custom Project?",
+        "description": "Let's discuss how we can bring your unique vision to life."
+      }
+    },
+    "process": {
+      "subtitle": "Our Approach",
+      "title": "How We Create",
+      "step1_title": "Conceptualization",
+      "step1_description": "We begin by understanding your vision, translating ideas into detailed sketches and blueprints.",
+      "step2_title": "Fabrication",
+      "step2_description": "Using precise techniques and premium materials, we carefully bring the designs to life.",
+      "step3_title": "Refinement",
+      "step3_description": "Every detail is scrutinized, painted, and finished to ensure Absolute perfection."
+    },
+    "hero": {
+      "badge": "Handmade in the Studio",
+      "subtitle_suffix": "& Curated Oddities",
+      "cta_explore": "Explore Collection",
+      "cta_commission": "Request Commission",
+      "scroll": "Scroll"
+    },
+    "projects": {
+      "label": "Portfolio",
+      "heading": "Projects",
+      "all": "All",
+      "uncategorized": "Uncategorized",
+      "empty_title": "No Projects Yet",
+      "empty_desc": "We are currently curating our portfolio. Please check back soon for updates.",
+      "empty_filtered": "No projects found in this category."
+    },
+    "contact": {
+      "label": "Get in Touch",
+      "heading": "Let's Discuss Your Vision",
+      "description": "Whether you have a specific project in mind or need guidance on creative possibilities, we are here to collaborate.",
+      "name_label": "Name",
+      "name_placeholder": "John Doe",
+      "email_label": "Email",
+      "email_placeholder": "john@example.com",
+      "phone_label": "Phone (optional)",
+      "phone_placeholder": "+20 101 234 5678",
+      "message_label": "Message",
+      "message_placeholder": "Tell us about your project...",
+      "submit_idle": "Send Message",
+      "submit_loading": "Sending...",
+      "submit_success": "Message Sent ✓",
+      "submit_error": "Try Again"
+    },
+    "faq": {
+      "subtitle": "Curiosities",
+      "title": "Frequently Asked",
+      "q1": "Do you accept international commissions?",
+      "a1": "Yes, we ship our bespoke creations globally, ensuring careful packaging and secure delivery.",
+      "q2": "What materials do you typically work with?",
+      "a2": "We utilize a variety of mediums depending on the project, including resins, thermoplastics, woods, metals, and specialized clays.",
+      "q3": "How long does a custom prop usually take?",
+      "a3": "Timelines vary greatly based on complexity. A minor accessory might take two weeks, while a complex escape room puzzle could take several months.",
+      "q4": "Can you mass-produce items?",
+      "a4": "While we specialize in one-of-a-kind art pieces, we can facilitate small batch runs for specific projects."
+    },
+    "testimonials": {
+      "title": "Client Stories",
+      "subtitle": "Words from our partners and patrons."
+    },
+    "footer": {
+      "about_text": "Mastering the art of handcrafted creations, bringing imagination into reality through dedicated craftsmanship.",
+      "sitemap": "Sitemap",
+      "contact_info": "Enquiries",
+      "email_label": "Email",
+      "phone_label": "Phone",
+      "rights": "All rights reserved.",
+      "privacy_policy": "Privacy Policy",
+      "terms_of_service": "Terms of Service",
+      "newsletter": {
+        "title": "The Journal",
+        "description": "Subscribe to our occasionally dispatched missives covering new projects and artistic musings.",
+        "email_placeholder": "Email address",
+        "submit_idle": "Subscribe",
+        "submit_loading": "Submitting...",
+        "submit_success": "Subscribed successfully.",
+        "submit_already": "You are already subscribed."
+      }
+    }
+  },
+  "Navigation": {
+    "brand": "Toota Art",
+    "home": "Home",
+    "projects": "Projects",
+    "services": "Services",
+    "about": "About",
+    "process": "Process",
+    "faq": "FAQ",
+    "dashboard": "Dashboard",
+    "contact": "Contact"
+  },
+  "Auth": {
+    "signIn": "Sign In with Google",
+    "signOut": "Sign Out",
+    "unauthorized": "You are not authorized to access this section.",
+    "adminOnly": "Admin Access Only"
+  },
+  "Pages": {
+    "accessDenied": {
+      "title": "Access Denied",
+      "description": "Your account does not have access to this area. Please sign in with an authorized admin email.",
+      "go_home": "Go Home",
+      "sign_in": "Sign In"
+    },
+    "notFound": {
+      "title": "Page Not Found",
+      "description": "The page you are trying to reach does not exist, was moved, or is temporarily unavailable.",
+      "back_home": "Back to Home"
+    }
+  }
+}

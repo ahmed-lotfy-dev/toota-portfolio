@@ -1,0 +1,11 @@
+.git
+.gitignore
+.dockerignore
+node_modules
+.next
+legacy-laravel
+drizzle
+docs
+*.md
+.env*
+!.env.example

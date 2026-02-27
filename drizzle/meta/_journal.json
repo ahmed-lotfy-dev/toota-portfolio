@@ -1,0 +1,20 @@
+{
+  "version": "7",
+  "dialect": "postgresql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "7",
+      "when": 1772141439383,
+      "tag": "0000_aberrant_the_executioner",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1772232600000,
+      "tag": "0001_complete_nextjs_migration",
+      "breakpoints": true
+    }
+  ]
+}
