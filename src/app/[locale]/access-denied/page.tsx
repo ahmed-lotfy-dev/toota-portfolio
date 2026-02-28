@@ -1,4 +1,5 @@
 import { Link } from "@/i18n/navigation";
+import { SignOutAction } from "@/features/auth/SignOutAction";
 import { getTranslations } from "next-intl/server";
 
 export default async function AccessDeniedPage() {
@@ -24,6 +25,7 @@ export default async function AccessDeniedPage() {
         >
           {t("sign_in")}
         </Link>
+        <SignOutAction className="inline-flex items-center gap-2 rounded-xl border border-border px-4 py-2 text-sm font-semibold text-foreground hover:bg-accent disabled:opacity-60" />
       </div>
     </main>
   );

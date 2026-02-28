@@ -5,6 +5,8 @@ import { useTranslations, useLocale } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { usePathname } from "next/navigation";
 import { Menu, User } from "lucide-react";
+import { useSession } from "@/lib/auth-client";
+import { SignOutAction } from "@/features/auth/SignOutAction";
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
 import {
@@ -21,19 +23,24 @@ export function Nav() {
   const t = useTranslations("Navigation");
   const locale = useLocale();
   const currentPathname = usePathname();
+  const { data: session } = useSession();
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
   const toggleLocale = locale === "en" ? "ar" : "en";
 
+  // next-intl's Link automatically adds the locale prefix
+  // We just need to give it the pathname WITHOUT the current locale prefix
   const getToggleLink = () => {
-    if (!currentPathname) return `/${toggleLocale}`;
-    const segments = currentPathname.split("/");
-    if (segments.length > 1 && (segments[1] === "en" || segments[1] === "ar")) {
-      segments[1] = toggleLocale;
-      return segments.join("/");
+    if (!currentPathname) return "/";
+
+    // Remove the current locale from the beginning of the pathname if it exists
+    if (currentPathname.startsWith(`/${locale}`)) {
+      const stripped = currentPathname.replace(`/${locale}`, "");
+      return stripped === "" ? "/" : stripped;
     }
-    return `/${toggleLocale}${currentPathname}`;
+
+    return currentPathname;
   };
 
   useEffect(() => {
@@ -55,17 +62,23 @@ export function Nav() {
 
   const isDashboard = currentPathname?.includes("/dashboard");
   const isAuth = currentPathname?.includes("/auth");
+  const adminEmails = (process.env.NEXT_PUBLIC_ADMIN_EMAIL ?? "")
+    .split(",")
+    .map((email) => email.trim().toLowerCase())
+    .filter(Boolean);
+  const sessionEmail = session?.user?.email?.trim().toLowerCase();
+  const isAdminUser = Boolean(sessionEmail && adminEmails.includes(sessionEmail));
+  const showSignOutInsteadOfDashboard = Boolean(session && !isAdminUser);
 
   if (isDashboard || isAuth) return null;
 
   return (
     <>
       <nav
-        className={`fixed z-50 w-full border-b transition-all duration-300 ${
-          scrolled
+        className={`fixed z-50 w-full border-b transition-all duration-300 ${scrolled
             ? "border-border bg-background/90 backdrop-blur-md"
             : "border-transparent bg-background/60 backdrop-blur-sm"
-        }`}
+          }`}
       >
         <div className="mx-auto max-w-7xl px-6 md:px-12">
           <div className="flex h-24 items-center justify-between">
@@ -106,27 +119,26 @@ export function Nav() {
             </div>
 
             <div className="hidden items-center gap-6 rtl:space-x-reverse lg:flex">
-              <div className="flex items-center gap-2 font-sans text-xs font-bold tracking-widest text-muted-foreground">
+              <div className="flex items-center font-sans text-xs font-bold tracking-widest text-muted-foreground">
                 <Link
                   href={getToggleLink()}
-                  locale="en"
-                  className={`${locale === "en" ? "text-foreground" : "hover:text-foreground"} transition`}
+                  locale={toggleLocale as "en" | "ar"}
+                  className="hover:text-foreground transition uppercase"
                 >
-                  EN
-                </Link>
-                <span className="text-border">/</span>
-                <Link
-                  href={getToggleLink()}
-                  locale="ar"
-                  className={`${locale === "ar" ? "text-foreground" : "hover:text-foreground"} transition`}
-                >
-                  AR
+                  {toggleLocale}
                 </Link>
               </div>
 
-              <Link href="/dashboard" className="text-muted-foreground transition-colors hover:text-primary">
-                <User className="h-5 w-5" />
-              </Link>
+              {showSignOutInsteadOfDashboard ? (
+                <SignOutAction
+                  showLabel={false}
+                  className="text-muted-foreground transition-colors hover:text-primary disabled:opacity-60"
+                />
+              ) : (
+                <Link href="/dashboard" className="text-muted-foreground transition-colors hover:text-primary">
+                  <User className="h-5 w-5" />
+                </Link>
+              )}
 
               <motion.div whileHover={{ y: -2, scale: 1.02 }} transition={{ duration: 0.2 }}>
                 <Link
@@ -169,17 +181,28 @@ export function Nav() {
                     <div className="mb-4 flex items-center gap-3 text-sm font-bold uppercase tracking-wide text-muted-foreground">
                       <span>Language</span>
                       <SheetClose asChild>
-                        <Link href={getToggleLink()} className="rounded-lg border border-border px-3 py-1 text-foreground hover:bg-accent/20">
-                          {locale === "en" ? "AR" : "EN"}
+                        <Link
+                          href={getToggleLink()}
+                          locale={toggleLocale as "en" | "ar"}
+                          className="rounded-lg border border-border px-3 py-1 text-foreground hover:bg-accent/20 uppercase"
+                        >
+                          {toggleLocale}
                         </Link>
                       </SheetClose>
                     </div>
                     <div className="flex flex-col gap-3">
-                      <SheetClose asChild>
-                        <Link href="/dashboard" className="rounded-xl border border-border px-4 py-3 text-sm font-bold uppercase tracking-wide text-foreground hover:bg-accent/20">
-                          {t("dashboard") || "Dashboard"}
-                        </Link>
-                      </SheetClose>
+                      {showSignOutInsteadOfDashboard ? (
+                        <SignOutAction
+                          onDone={() => setIsOpen(false)}
+                          className="rounded-xl border border-border px-4 py-3 text-sm font-bold uppercase tracking-wide text-foreground hover:bg-accent/20 text-start inline-flex items-center gap-2"
+                        />
+                      ) : (
+                        <SheetClose asChild>
+                          <Link href="/dashboard" className="rounded-xl border border-border px-4 py-3 text-sm font-bold uppercase tracking-wide text-foreground hover:bg-accent/20">
+                            {t("dashboard") || "Dashboard"}
+                          </Link>
+                        </SheetClose>
+                      )}
                       <SheetClose asChild>
                         <motion.div whileHover={{ y: -2, scale: 1.01 }} transition={{ duration: 0.2 }}>
                           <Link href="/#contact" className="rounded-xl bg-primary px-4 py-3 text-center text-sm font-black uppercase tracking-wide text-primary-foreground shadow-[0_10px_30px_hsl(var(--primary)/0.25)] transition-colors hover:bg-accent">

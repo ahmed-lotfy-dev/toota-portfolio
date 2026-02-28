@@ -6,6 +6,7 @@ import { authClient } from "@/lib/auth-client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { useTranslations } from "next-intl";
 
 export function PasswordSettingsForm() {
   const [currentPassword, setCurrentPassword] = useState("");
@@ -14,6 +15,7 @@ export function PasswordSettingsForm() {
   const [status, setStatus] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [isSaving, setIsSaving] = useState(false);
+  const t = useTranslations("DashboardPassword");
 
   const resetFields = () => {
     setCurrentPassword("");
@@ -27,7 +29,7 @@ export function PasswordSettingsForm() {
     setError(null);
 
     if (newPassword !== confirmPassword) {
-      setError("New password and confirmation do not match.");
+      setError(t("messages.mismatch"));
       return;
     }
 
@@ -46,7 +48,7 @@ export function PasswordSettingsForm() {
           return;
         }
 
-        setStatus("Password changed successfully.");
+        setStatus(t("messages.success_change"));
         resetFields();
         return;
       }
@@ -61,7 +63,7 @@ export function PasswordSettingsForm() {
         return;
       }
 
-      setStatus("Password set successfully.");
+      setStatus(t("messages.success_set"));
       resetFields();
     } catch {
       setError("Failed to update password.");
@@ -73,23 +75,23 @@ export function PasswordSettingsForm() {
   return (
     <form onSubmit={onSubmit} className="space-y-6">
       <p className="text-sm text-muted-foreground">
-        If you signed up with Google only, leave current password empty to set one for the first time.
+        {t("info")}
       </p>
 
       <div className="space-y-2">
-        <Label htmlFor="current-password" className="text-foreground">Current password</Label>
+        <Label htmlFor="current-password" className="text-foreground">{t("fields.current")}</Label>
         <Input
           id="current-password"
           type="password"
           value={currentPassword}
           onChange={(event) => setCurrentPassword(event.target.value)}
           className="border-border bg-background text-foreground"
-          placeholder="Current password (optional for first setup)"
+          placeholder={t("placeholders.current")}
         />
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="new-password" className="text-foreground">New password</Label>
+        <Label htmlFor="new-password" className="text-foreground">{t("fields.new")}</Label>
         <Input
           id="new-password"
           type="password"
@@ -102,7 +104,7 @@ export function PasswordSettingsForm() {
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="confirm-password" className="text-foreground">Confirm new password</Label>
+        <Label htmlFor="confirm-password" className="text-foreground">{t("fields.confirm")}</Label>
         <Input
           id="confirm-password"
           type="password"
@@ -121,10 +123,10 @@ export function PasswordSettingsForm() {
         {isSaving ? (
           <>
             <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-            Saving...
+            {t("messages.saving")}
           </>
         ) : (
-          "Update Password"
+          t("messages.save")
         )}
       </Button>
     </form>

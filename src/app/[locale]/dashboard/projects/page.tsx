@@ -13,6 +13,7 @@ import { Button } from "@/components/ui/button"
 import { PlusCircle } from "lucide-react";
 import { Link } from "@/i18n/navigation";
 import { ProjectActions } from "@/features/dashboard/components/ProjectActions";
+import { getTranslations } from "next-intl/server";
 
 export default async function DashboardProjectsPage({ params }: { params: Promise<{ locale: string }> }) {
   await params;
@@ -23,19 +24,21 @@ export default async function DashboardProjectsPage({ params }: { params: Promis
     }
   });
 
+  const t = await getTranslations("DashboardProjects");
+
   return (
     <div className="flex flex-col gap-12">
       <div className="flex items-center justify-between">
         <div className="flex flex-col gap-1 border-l-2 border-border pl-6">
-          <h1 className="text-4xl font-black text-foreground tracking-tighter uppercase">Projects</h1>
+          <h1 className="text-4xl font-black text-foreground tracking-tighter uppercase">{t("title")}</h1>
           <p className="text-muted-foreground text-sm font-bold tracking-tight uppercase">
-            Total {projectList.length} masterpieces in your portfolio.
+            {t("description", { count: projectList.length })}
           </p>
         </div>
         <Button asChild className="h-12 rounded-2xl bg-primary px-6 font-bold text-primary-foreground hover:bg-primary/90 transition-all">
           <Link href="/dashboard/projects/new">
             <PlusCircle className="mr-2 h-4 w-4" />
-            New Creation
+            {t("new_creation")}
           </Link>
         </Button>
       </div>
@@ -44,11 +47,11 @@ export default async function DashboardProjectsPage({ params }: { params: Promis
         <Table>
           <TableHeader className="bg-muted/50">
             <TableRow className="border-border hover:bg-transparent">
-              <TableHead className="text-muted-foreground font-bold tracking-widest uppercase text-[10px] py-6 pl-8">Title</TableHead>
-              <TableHead className="text-muted-foreground font-bold tracking-widest uppercase text-[10px] py-6">Category</TableHead>
-              <TableHead className="text-muted-foreground font-bold tracking-widest uppercase text-[10px] py-6">Status</TableHead>
-              <TableHead className="text-muted-foreground font-bold tracking-widest uppercase text-[10px] py-6">Created</TableHead>
-              <TableHead className="text-muted-foreground font-bold tracking-widest uppercase text-[10px] py-6 text-right pr-8">Actions</TableHead>
+              <TableHead className="text-muted-foreground font-bold tracking-widest uppercase text-[10px] py-6 pl-8">{t("columns.title")}</TableHead>
+              <TableHead className="text-muted-foreground font-bold tracking-widest uppercase text-[10px] py-6">{t("columns.category")}</TableHead>
+              <TableHead className="text-muted-foreground font-bold tracking-widest uppercase text-[10px] py-6">{t("columns.status")}</TableHead>
+              <TableHead className="text-muted-foreground font-bold tracking-widest uppercase text-[10px] py-6">{t("columns.created")}</TableHead>
+              <TableHead className="text-muted-foreground font-bold tracking-widest uppercase text-[10px] py-6 text-right pr-8">{t("columns.actions")}</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -61,7 +64,7 @@ export default async function DashboardProjectsPage({ params }: { params: Promis
                     ? "border-emerald-500/20 bg-emerald-500/10 text-emerald-400"
                     : "border-border bg-muted text-muted-foreground"
                     }`}>
-                    {project.isPublished ? "Published" : "Draft"}
+                    {project.isPublished ? t("status.published") : t("status.draft")}
                   </span>
                 </TableCell>
                 <TableCell className="text-muted-foreground font-mono text-xs">

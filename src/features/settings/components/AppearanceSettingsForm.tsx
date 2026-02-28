@@ -2,38 +2,21 @@
 
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
-
-type ThemeMode = "light" | "dark" | "system";
-
-const STORAGE_KEY = "toota-theme";
-
-function applyTheme(mode: ThemeMode) {
-  if (typeof window === "undefined") {
-    return;
-  }
-
-  const root = document.documentElement;
-  const systemDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-  const shouldUseDark = mode === "dark" || (mode === "system" && systemDark);
-
-  root.classList.toggle("dark", shouldUseDark);
-}
+import { useTheme } from "next-themes";
+import { useTranslations } from "next-intl";
 
 export function AppearanceSettingsForm() {
-  const [mode, setMode] = useState<ThemeMode>("system");
+  const { theme, setTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+  const tTheme = useTranslations("Theme");
 
   useEffect(() => {
-    const stored = localStorage.getItem(STORAGE_KEY) as ThemeMode | null;
-    const nextMode = stored ?? "system";
-    setMode(nextMode);
-    applyTheme(nextMode);
+    setMounted(true);
   }, []);
 
-  const setTheme = (nextMode: ThemeMode) => {
-    setMode(nextMode);
-    localStorage.setItem(STORAGE_KEY, nextMode);
-    applyTheme(nextMode);
-  };
+  if (!mounted) {
+    return null;
+  }
 
   return (
     <div className="space-y-6">
@@ -42,15 +25,15 @@ export function AppearanceSettingsForm() {
       </p>
 
       <div className="flex flex-wrap gap-3">
-        {(["light", "dark", "system"] as ThemeMode[]).map((option) => (
+        {(["light", "dark", "system"] as const).map((option) => (
           <Button
             key={option}
             type="button"
-            variant={mode === option ? "default" : "outline"}
+            variant={theme === option ? "default" : "outline"}
             onClick={() => setTheme(option)}
             className="rounded-full capitalize"
           >
-            {option}
+            {tTheme(option)}
           </Button>
         ))}
       </div>

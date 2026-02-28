@@ -4,6 +4,7 @@ import { useState } from "react";
 import Image from "next/image";
 import { updateHeroImage, deleteHeroImage, setHeroRatioMode } from "@/features/dashboard/actions/hero-actions";
 import { Trash2, Upload, Loader2, Image as ImageIcon } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 const POSITIONS = [
   { id: 1, label: "Mask Detail", desc: "Top left - Portrait", defaultRatio: "4:5" },
@@ -15,6 +16,7 @@ const POSITIONS = [
 export function HeroImagesManager({ initialImages }: { initialImages: any[] }) {
   const [images, setImages] = useState(initialImages);
   const [uploadingPos, setUploadingPos] = useState<number | null>(null);
+  const t = useTranslations("DashboardHeroImages");
 
   const r2Domain = process.env.NEXT_PUBLIC_R2_PUBLIC_DOMAIN;
 
@@ -120,7 +122,7 @@ export function HeroImagesManager({ initialImages }: { initialImages: any[] }) {
               ) : (
                 <div className="flex flex-col items-center text-muted-foreground">
                   <ImageIcon strokeWidth={1.5} className="w-8 h-8 mb-2" />
-                  <span className="text-[10px] uppercase tracking-widest font-bold">Empty</span>
+                  <span className="text-[10px] uppercase tracking-widest font-bold">{t("empty")}</span>
                 </div>
               )}
             </div>
@@ -138,14 +140,14 @@ export function HeroImagesManager({ initialImages }: { initialImages: any[] }) {
 
               {currentImage && (
                 <div className="mt-4 flex flex-wrap gap-2">
-                  <span className="mr-2 flex items-center text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Aspect Ratio:</span>
+                  <span className="mr-2 flex items-center text-[10px] font-bold text-muted-foreground uppercase tracking-widest">{t("aspect_ratio")}</span>
                   {["original", "preset", "1:1", "4:5", "16:9"].map(mode => (
                     <button
                       key={mode}
                       onClick={() => handleRatioMode(pos.id, mode)}
                       className={`rounded-full px-3 py-1 text-[10px] font-bold uppercase tracking-widest transition-colors ${currentImage.ratioMode === mode ? "bg-primary text-primary-foreground" : "border border-border bg-muted text-muted-foreground hover:bg-accent hover:text-accent-foreground"}`}
                     >
-                      {mode === "preset" ? `Slot (${pos.defaultRatio})` : mode}
+                      {mode === "preset" ? t("slot", { ratio: pos.defaultRatio }) : mode}
                     </button>
                   ))}
                 </div>
@@ -167,9 +169,9 @@ export function HeroImagesManager({ initialImages }: { initialImages: any[] }) {
                   className="flex w-full items-center justify-center gap-2 rounded-xl bg-primary px-6 py-3 text-xs font-bold text-primary-foreground uppercase tracking-widest transition-colors group-hover:bg-primary/90 disabled:opacity-50"
                 >
                   {uploadingPos === pos.id ? (
-                    <><Loader2 className="w-4 h-4 animate-spin" /> Uploading...</>
+                    <><Loader2 className="w-4 h-4 animate-spin" /> {t("actions.uploading")}</>
                   ) : (
-                    <><Upload className="w-4 h-4" /> Upload</>
+                    <><Upload className="w-4 h-4" /> {t("actions.upload")}</>
                   )}
                 </button>
               </div>

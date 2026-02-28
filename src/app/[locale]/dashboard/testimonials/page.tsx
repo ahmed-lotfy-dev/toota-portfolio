@@ -2,6 +2,7 @@ import { db } from "@/db";
 import { testimonials } from "@/db/schema";
 import { desc } from "drizzle-orm";
 import { TestimonialsManager } from "@/features/dashboard/components/TestimonialsManager";
+import { getTranslations } from "next-intl/server";
 
 export default async function DashboardTestimonialsPage({ params }: { params: Promise<{ locale: string }> }) {
   await params;
@@ -10,13 +11,15 @@ export default async function DashboardTestimonialsPage({ params }: { params: Pr
     orderBy: [desc(testimonials.createdAt)],
   });
 
+  const t = await getTranslations("DashboardTestimonials");
+
   return (
     <div className="flex flex-col gap-12">
       <div className="flex items-center justify-between">
         <div className="flex flex-col gap-1 border-l-2 border-border pl-6">
-          <h1 className="text-4xl font-black text-foreground tracking-tighter uppercase">Testimonials</h1>
+          <h1 className="text-4xl font-black text-foreground tracking-tighter uppercase">{t("title")}</h1>
           <p className="text-muted-foreground text-sm font-bold tracking-tight uppercase">
-            Curate what the world thinks of your art.
+            {t("description")}
           </p>
         </div>
       </div>

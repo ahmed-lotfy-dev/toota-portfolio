@@ -6,6 +6,7 @@ import { authClient, useSession } from "@/lib/auth-client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { useTranslations } from "next-intl";
 
 export function ProfileSettingsForm() {
   const { data: session, isPending, refetch } = useSession();
@@ -13,6 +14,7 @@ export function ProfileSettingsForm() {
   const [status, setStatus] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [isSaving, setIsSaving] = useState(false);
+  const t = useTranslations("DashboardProfile");
 
   useEffect(() => {
     if (session?.user?.name) {
@@ -35,7 +37,7 @@ export function ProfileSettingsForm() {
       }
 
       await refetch();
-      setStatus("Profile updated successfully.");
+      setStatus(t("messages.success"));
     } catch {
       setError("Failed to update profile.");
     } finally {
@@ -47,7 +49,7 @@ export function ProfileSettingsForm() {
     return (
       <div className="flex items-center gap-2 text-sm text-muted-foreground">
         <Loader2 className="h-4 w-4 animate-spin" />
-        Loading profile...
+        {t("messages.loading")}
       </div>
     );
   }
@@ -55,26 +57,26 @@ export function ProfileSettingsForm() {
   return (
     <form onSubmit={onSubmit} className="space-y-6">
       <div className="space-y-2">
-        <Label htmlFor="profile-name" className="text-foreground">Name</Label>
+        <Label htmlFor="profile-name" className="text-foreground">{t("fields.name")}</Label>
         <Input
           id="profile-name"
           value={name}
           onChange={(event) => setName(event.target.value)}
-          placeholder="Your name"
+          placeholder={t("placeholders.name")}
           required
           className="border-border bg-background text-foreground"
         />
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="profile-email" className="text-foreground">Email</Label>
+        <Label htmlFor="profile-email" className="text-foreground">{t("fields.email")}</Label>
         <Input
           id="profile-email"
           value={session?.user?.email ?? ""}
           disabled
           className="border-border bg-muted text-muted-foreground"
         />
-        <p className="text-xs text-muted-foreground">Email change is currently disabled.</p>
+        <p className="text-xs text-muted-foreground">{t("messages.email_disabled")}</p>
       </div>
 
       {status ? <p className="text-sm text-emerald-400">{status}</p> : null}
@@ -84,10 +86,10 @@ export function ProfileSettingsForm() {
         {isSaving ? (
           <>
             <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-            Saving...
+            {t("messages.saving")}
           </>
         ) : (
-          "Save Profile"
+          t("messages.save")
         )}
       </Button>
     </form>

@@ -164,5 +164,168 @@
       "description": "The page you are trying to reach does not exist, was moved, or is temporarily unavailable.",
       "back_home": "Back to Home"
     }
+  },
+  "DashboardLayout": {
+    "dashboard": "Dashboard",
+    "control_panel": "Control Panel",
+    "overview": "Overview",
+    "projects": "Projects",
+    "categories": "Categories",
+    "hero_images": "Hero Images",
+    "testimonials": "Testimonials",
+    "settings": "Settings",
+    "profile": "Profile",
+    "password": "Password",
+    "appearance": "Appearance",
+    "backups": "Backups",
+    "two_factor": "Two-Factor",
+    "public_site": "Public Site"
+  },
+  "DashboardOverview": {
+    "welcome_back": "Welcome back. Here's your portfolio activity at a glance.",
+    "total_projects": "Total Projects",
+    "categories": "Categories",
+    "client_feedback": "Client Feedback",
+    "published_works": "Published Works"
+  },
+  "DashboardProjects": {
+    "title": "Projects",
+    "description": "Total {count} masterpieces in your portfolio.",
+    "new_creation": "New Creation",
+    "columns": {
+      "title": "Title",
+      "category": "Category",
+      "status": "Status",
+      "created": "Created",
+      "actions": "Actions"
+    },
+    "status": {
+      "published": "Published",
+      "draft": "Draft"
+    }
+  },
+  "DashboardCategories": {
+    "title": "Categories",
+    "description": "Organize your artistic creations with style.",
+    "add_category": "Add Category",
+    "edit_category": "Edit Category",
+    "new_category": "New Category",
+    "dialog_desc": "Organize your projects effectively.",
+    "fields": {
+      "name": "Name",
+      "slug": "Slug",
+      "description": "Description",
+      "order": "Order"
+    },
+    "columns": {
+      "name": "Name",
+      "slug": "Slug",
+      "actions": "Actions"
+    },
+    "placeholders": {
+      "name": "e.g. Scenery",
+      "slug": "e.g. scenery"
+    },
+    "save": "Save",
+    "empty": "No Categories Found"
+  },
+  "DashboardHeroImages": {
+    "title": "Hero Images",
+    "description": "Manage the 4 focal images on the landing page.",
+    "empty": "Empty",
+    "aspect_ratio": "Aspect Ratio:",
+    "slot": "Slot ({ratio})",
+    "actions": {
+      "uploading": "Uploading...",
+      "upload": "Upload"
+    }
+  },
+  "DashboardTestimonials": {
+    "title": "Testimonials",
+    "description": "Curate what the world thinks of your art.",
+    "add_testimonial": "Add Testimonial",
+    "edit_testimonial": "Edit Testimonial",
+    "new_testimonial": "New Testimonial",
+    "dialog_desc": "Share what your clients say about your masterpieces.",
+    "fields": {
+      "client_name": "Client Name",
+      "client_title": "Client Title/Role",
+      "content": "Testimonial Content",
+      "is_published": "Published on Site"
+    },
+    "columns": {
+      "client": "Client",
+      "message": "Message",
+      "status": "Status",
+      "actions": "Actions"
+    },
+    "placeholders": {
+      "client_name": "e.g. John Smith",
+      "client_title": "e.g. Art Collector",
+      "content": "The craftsmanship was beyond words..."
+    },
+    "status": {
+      "published": "Published",
+      "draft": "Draft"
+    },
+    "actions": {
+      "save": "Save Milestone"
+    },
+    "empty": "Silence is golden, but feedback is better."
+  },
+  "DashboardProfile": {
+    "title": "Profile",
+    "description": "Manage your basic account information.",
+    "fields": {
+      "name": "Name",
+      "email": "Email"
+    },
+    "placeholders": {
+      "name": "Your name"
+    },
+    "messages": {
+      "email_disabled": "Email change is currently disabled.",
+      "loading": "Loading profile...",
+      "success": "Profile updated successfully.",
+      "saving": "Saving...",
+      "save": "Save Profile"
+    }
+  },
+  "DashboardPassword": {
+    "title": "Password",
+    "description": "Set or update your account password.",
+    "info": "If you signed up with Google only, leave current password empty to set one for the first time.",
+    "fields": {
+      "current": "Current password",
+      "new": "New password",
+      "confirm": "Confirm new password"
+    },
+    "placeholders": {
+      "current": "Current password (optional for first setup)"
+    },
+    "messages": {
+      "mismatch": "New password and confirmation do not match.",
+      "success_change": "Password changed successfully.",
+      "success_set": "Password set successfully.",
+      "saving": "Saving...",
+      "save": "Update Password"
+    }
+  },
+  "DashboardAppearance": {
+    "title": "Appearance",
+    "description": "Customize the look and feel of your public site."
+  },
+  "DashboardBackups": {
+    "title": "Backups",
+    "description": "Never lose an artistic creation."
+  },
+  "DashboardTwoFactor": {
+    "title": "Two-Factor Auth",
+    "description": "Add an extra layer of security to your account."
+  },
+  "Theme": {
+    "light": "Light",
+    "system": "System",
+    "dark": "Dark"
   }
 }

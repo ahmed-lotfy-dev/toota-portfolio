@@ -20,6 +20,7 @@ import {
 } from "@/components/ui/dialog";
 import { PlusCircle, Pencil, Trash2, Loader2 } from "lucide-react";
 import { createCategory, updateCategory, deleteCategory } from "@/features/dashboard/actions/category-actions";
+import { useTranslations } from "next-intl";
 
 type Category = {
   id: number;
@@ -35,6 +36,7 @@ export function CategoriesManager({ initialCategories }: { initialCategories: Ca
   const [isDeleting, setIsDeleting] = useState<number | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [editingCategory, setEditingCategory] = useState<Category | null>(null);
+  const t = useTranslations("DashboardCategories");
 
   const handleOpenChange = (open: boolean) => {
     setIsOpen(open);
@@ -105,41 +107,41 @@ export function CategoriesManager({ initialCategories }: { initialCategories: Ca
           <DialogTrigger asChild>
             <Button className="h-12 rounded-2xl bg-primary px-6 font-bold text-primary-foreground hover:bg-primary/90 transition-all">
               <PlusCircle className="mr-2 h-4 w-4" />
-              Add Category
+              {t("add_category")}
             </Button>
           </DialogTrigger>
           <DialogContent className="border-border bg-card text-card-foreground sm:max-w-md">
             <DialogHeader>
               <DialogTitle className="text-2xl font-black uppercase tracking-tighter">
-                {editingCategory ? "Edit Category" : "New Category"}
+                {editingCategory ? t("edit_category") : t("new_category")}
               </DialogTitle>
               <DialogDescription className="text-muted-foreground">
-                Organize your projects effectively.
+                {t("dialog_desc")}
               </DialogDescription>
             </DialogHeader>
             <form onSubmit={onSubmit} className="flex flex-col gap-4 mt-4">
               <div className="flex flex-col gap-2">
-                <label className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Name</label>
+                <label className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">{t("fields.name")}</label>
                 <input
                   name="name"
                   defaultValue={editingCategory?.name}
                   required
-                  placeholder="e.g. Scenery"
+                  placeholder={t("placeholders.name")}
                   className="rounded-lg border border-input bg-background px-4 py-3 text-sm text-foreground focus:outline-none focus:border-primary"
                 />
               </div>
               <div className="flex flex-col gap-2">
-                <label className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Slug</label>
+                <label className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">{t("fields.slug")}</label>
                 <input
                   name="slug"
                   defaultValue={editingCategory?.slug}
                   required
-                  placeholder="e.g. scenery"
+                  placeholder={t("placeholders.slug")}
                   className="rounded-lg border border-input bg-background px-4 py-3 text-sm text-foreground focus:outline-none focus:border-primary"
                 />
               </div>
               <div className="flex flex-col gap-2">
-                <label className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Description</label>
+                <label className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">{t("fields.description")}</label>
                 <textarea
                   name="description"
                   defaultValue={editingCategory?.description || ""}
@@ -148,7 +150,7 @@ export function CategoriesManager({ initialCategories }: { initialCategories: Ca
                 />
               </div>
               <div className="flex flex-col gap-2">
-                <label className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Order</label>
+                <label className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">{t("fields.order")}</label>
                 <input
                   name="order"
                   type="number"
@@ -157,7 +159,7 @@ export function CategoriesManager({ initialCategories }: { initialCategories: Ca
                 />
               </div>
               <Button disabled={isLoading} type="submit" className="mt-4 h-12 w-full rounded-xl bg-primary text-primary-foreground font-bold hover:bg-primary/90">
-                {isLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : "Save"}
+                {isLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : t("save")}
               </Button>
             </form>
           </DialogContent>
@@ -168,9 +170,9 @@ export function CategoriesManager({ initialCategories }: { initialCategories: Ca
         <Table>
           <TableHeader className="bg-muted/50">
             <TableRow className="border-border hover:bg-transparent">
-              <TableHead className="text-muted-foreground font-bold tracking-widest uppercase text-[10px] py-6 pl-8">Name</TableHead>
-              <TableHead className="text-muted-foreground font-bold tracking-widest uppercase text-[10px] py-6">Slug</TableHead>
-              <TableHead className="text-muted-foreground font-bold tracking-widest uppercase text-[10px] py-6 text-right pr-8">Actions</TableHead>
+              <TableHead className="text-muted-foreground font-bold tracking-widest uppercase text-[10px] py-6 pl-8">{t("columns.name")}</TableHead>
+              <TableHead className="text-muted-foreground font-bold tracking-widest uppercase text-[10px] py-6">{t("columns.slug")}</TableHead>
+              <TableHead className="text-muted-foreground font-bold tracking-widest uppercase text-[10px] py-6 text-right pr-8">{t("columns.actions")}</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -204,7 +206,7 @@ export function CategoriesManager({ initialCategories }: { initialCategories: Ca
             {categories.length === 0 && (
               <TableRow className="border-border hover:bg-transparent">
                 <TableCell colSpan={3} className="py-12 text-center text-muted-foreground font-bold text-xs uppercase tracking-widest">
-                  No Categories Found
+                  {t("empty")}
                 </TableCell>
               </TableRow>
             )}

@@ -1,6 +1,7 @@
 @import "tailwindcss";
 @source "../features";
 @source "../components";
+
 @theme {
   --font-serif: "Playfair Display", serif;
   --font-sans: "Inter", sans-serif;
@@ -112,5 +113,14 @@
 
   body {
     @apply bg-background text-foreground;
+  }
+
+  button,
+  a {
+    cursor: pointer;
+  }
+
+  ::selection {
+    @apply bg-primary/30 text-foreground;
   }
 }

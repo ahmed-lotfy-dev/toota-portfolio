@@ -3,6 +3,7 @@ import { Link } from "@/i18n/navigation";
 import { DashboardHeaderControls } from "@/features/dashboard/components/DashboardHeaderControls";
 import { DashboardMobileNav } from "@/features/dashboard/components/DashboardMobileNav";
 import { LayoutDashboard, FolderKanban, Tags, Link as LinkIcon, Image as ImageIcon, MessageSquareQuote, UserCircle2, Lock, Palette, HardDriveDownload, ShieldCheck } from "lucide-react";
+import { getTranslations } from "next-intl/server";
 
 export default async function DashboardLayout({
   children,
@@ -13,21 +14,22 @@ export default async function DashboardLayout({
 }) {
   const { locale } = await params;
   await requireAdmin(locale, `/${locale}/dashboard`);
+  const t = await getTranslations("DashboardLayout");
 
   const mainNavItems = [
-    { href: "/dashboard", label: "Overview", icon: LayoutDashboard },
-    { href: "/dashboard/projects", label: "Projects", icon: FolderKanban },
-    { href: "/dashboard/categories", label: "Categories", icon: Tags },
-    { href: "/dashboard/hero-images", label: "Hero Images", icon: ImageIcon },
-    { href: "/dashboard/testimonials", label: "Testimonials", icon: MessageSquareQuote },
+    { href: "/dashboard", label: t("overview"), icon: LayoutDashboard },
+    { href: "/dashboard/projects", label: t("projects"), icon: FolderKanban },
+    { href: "/dashboard/categories", label: t("categories"), icon: Tags },
+    { href: "/dashboard/hero-images", label: t("hero_images"), icon: ImageIcon },
+    { href: "/dashboard/testimonials", label: t("testimonials"), icon: MessageSquareQuote },
   ];
 
   const settingsNavItems = [
-    { href: "/dashboard/profile", label: "Profile", icon: UserCircle2 },
-    { href: "/dashboard/password", label: "Password", icon: Lock },
-    { href: "/dashboard/appearance", label: "Appearance", icon: Palette },
-    { href: "/dashboard/backups", label: "Backups", icon: HardDriveDownload },
-    { href: "/dashboard/two-factor", label: "Two-Factor", icon: ShieldCheck },
+    { href: "/dashboard/profile", label: t("profile"), icon: UserCircle2 },
+    { href: "/dashboard/password", label: t("password"), icon: Lock },
+    { href: "/dashboard/appearance", label: t("appearance"), icon: Palette },
+    { href: "/dashboard/backups", label: t("backups"), icon: HardDriveDownload },
+    { href: "/dashboard/two-factor", label: t("two_factor"), icon: ShieldCheck },
   ];
 
   return (
@@ -39,8 +41,8 @@ export default async function DashboardLayout({
             T
           </div>
           <div className="flex flex-col">
-            <span className="text-foreground font-black tracking-tight leading-none uppercase">Dashboard</span>
-            <span className="text-[10px] text-muted-foreground font-bold tracking-widest uppercase mt-1">Control Panel</span>
+            <span className="text-foreground font-black tracking-tight leading-none uppercase">{t("dashboard")}</span>
+            <span className="text-[10px] text-muted-foreground font-bold tracking-widest uppercase mt-1">{t("control_panel")}</span>
           </div>
         </div>
 
@@ -60,7 +62,7 @@ export default async function DashboardLayout({
 
           <div className="border-t border-border pt-6">
             <p className="px-4 text-[10px] uppercase tracking-[0.25em] font-bold text-muted-foreground mb-3">
-              Settings
+              {t("settings")}
             </p>
             <nav className="flex flex-col gap-2">
               {settingsNavItems.map((item) => (
@@ -83,7 +85,7 @@ export default async function DashboardLayout({
             className="flex items-center gap-3 px-4 py-3 rounded-2xl text-muted-foreground hover:text-foreground hover:bg-accent transition-all duration-300"
           >
             <LinkIcon className="h-4 w-4" />
-            <span className="text-sm font-bold tracking-tight">Public Site</span>
+            <span className="text-sm font-bold tracking-tight">{t("public_site")}</span>
           </Link>
         </div>
       </aside>
@@ -94,7 +96,7 @@ export default async function DashboardLayout({
           <div className="flex items-center gap-3">
             <DashboardMobileNav />
             <h1 className="text-lg font-bold uppercase tracking-wider text-foreground">
-              Dashboard
+              {t("dashboard")}
             </h1>
           </div>
           <div className="hidden sm:block">

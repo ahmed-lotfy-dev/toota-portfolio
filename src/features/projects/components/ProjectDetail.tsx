@@ -22,15 +22,15 @@ export function ProjectDetail({ project }: ProjectDetailProps) {
   const [activeImage, setActiveImage] = useState(getImageUrl(project.images?.[0]?.imagePath));
 
   return (
-    <div className="bg-[#FDFCF8] min-h-screen pt-32 pb-20 px-6 md:px-12 selection:bg-stone-800 selection:text-white">
+    <div className="bg-background min-h-screen pt-32 pb-20 px-6 md:px-12 selection:bg-primary selection:text-primary-foreground">
       <div className="max-w-7xl mx-auto">
         {/* Back Link */}
         <div className="mb-12">
           <Link
             href="/"
-            className="inline-flex items-center gap-2 text-stone-500 hover:text-stone-900 transition-colors uppercase tracking-widest text-xs font-medium group"
+            className="inline-flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors uppercase tracking-widest text-xs font-medium group"
           >
-            <ArrowLeft className="w-4 h-4 transition-transform group-hover:-translate-x-1" />
+            <ArrowLeft className="w-4 h-4 transition-transform group-hover:-translate-x-1 rtl:group-hover:translate-x-1" />
             Back to Collection
           </Link>
         </div>
@@ -39,22 +39,22 @@ export function ProjectDetail({ project }: ProjectDetailProps) {
           {/* Content Column */}
           <div className="space-y-8">
             <div>
-              <span className="text-stone-500 uppercase tracking-[0.2em] text-xs font-medium mb-4 block font-sans">
+              <span className="text-muted-foreground uppercase tracking-[0.2em] text-xs font-medium mb-4 block font-sans">
                 {project.category?.name}
               </span>
-              <h1 className="text-5xl md:text-6xl font-serif text-stone-900 leading-tight italic">
+              <h1 className="text-5xl md:text-6xl font-serif text-foreground leading-tight italic">
                 {project.title}
               </h1>
-              <div className="w-20 h-1.5 bg-stone-900 mt-8 rounded-full" />
+              <div className="w-20 h-1.5 bg-foreground mt-8 rounded-full" />
             </div>
 
-            <p className="text-lg text-stone-600 leading-relaxed font-light font-sans whitespace-pre-line first-letter:text-4xl first-letter:font-serif first-letter:mr-1 first-letter:float-left first-letter:text-stone-900">
+            <p className="text-lg text-muted-foreground leading-relaxed font-light font-sans whitespace-pre-line first-letter:text-4xl first-letter:font-serif first-letter:mr-1 first-letter:float-left first-letter:text-foreground">
               {project.description}
             </p>
 
             {/* Gallery Thumbnails */}
-            <div className="pt-8 border-t border-stone-200">
-              <h3 className="text-xs uppercase tracking-widest font-medium text-stone-400 mb-6">Detail Shots</h3>
+            <div className="pt-8 border-t border-border">
+              <h3 className="text-xs uppercase tracking-widest font-medium text-muted-foreground mb-6">Detail Shots</h3>
               <div className="grid grid-cols-4 sm:grid-cols-6 gap-3">
                 {project.images?.map((img: any, idx: number) => {
                   const src = getImageUrl(img.imagePath);
@@ -62,7 +62,7 @@ export function ProjectDetail({ project }: ProjectDetailProps) {
                     <button
                       key={idx}
                       onClick={() => setActiveImage(src)}
-                      className={`relative aspect-square rounded-md overflow-hidden border-2 transition-all duration-300 ${activeImage === src ? "border-stone-900 scale-95 shadow-inner" : "border-transparent grayscale hover:grayscale-0 opacity-60 hover:opacity-100"
+                      className={`relative aspect-square rounded-md overflow-hidden border-2 transition-all duration-300 ${activeImage === src ? "border-primary scale-95 shadow-inner" : "border-transparent grayscale hover:grayscale-0 opacity-60 hover:opacity-100"
                         }`}
                     >
                       <Image
@@ -80,22 +80,22 @@ export function ProjectDetail({ project }: ProjectDetailProps) {
           </div>
 
           {/* Featured Image Column */}
-          <div className="relative">
+          <div className="relative lg:px-8">
             <div className="sticky top-32">
-              <div className="relative aspect-[3/4] md:aspect-[4/5] bg-stone-100 rounded-lg overflow-hidden shadow-2xl border-8 border-white group">
+              <div className="relative aspect-4/5 md:aspect-3/4 max-w-[500px] mx-auto bg-muted rounded-lg overflow-hidden shadow-2xl border-4 md:border-8 border-background group">
                 <Image
                   src={activeImage}
                   alt={project.title}
                   fill
                   unoptimized
-                  className="object-cover transition-all duration-700"
+                  className="object-contain md:object-cover transition-all duration-700"
                   priority
                 />
-                <div className="absolute inset-0 bg-stone-900/5 group-hover:bg-transparent transition-colors duration-500" />
+                <div className="absolute inset-0 bg-foreground/5 group-hover:bg-transparent transition-colors duration-500" />
               </div>
 
               {/* Decorative accent */}
-              <div className="absolute -bottom-8 -left-8 w-32 h-32 border-l-2 border-b-2 border-stone-200 -z-10" />
+              <div className="hidden lg:block absolute -bottom-8 left-0 w-32 h-32 border-l-2 border-b-2 border-border -z-10" />
             </div>
           </div>
         </div>

@@ -164,5 +164,168 @@
       "description": "الصفحة التي تحاول الوصول إليها غير موجودة أو تم نقلها أو غير متاحة مؤقتاً.",
       "back_home": "العودة للرئيسية"
     }
+  },
+  "DashboardLayout": {
+    "dashboard": "لوحة التحكم",
+    "control_panel": "لوحة التحكم الرئيسية",
+    "overview": "نظرة عامة",
+    "projects": "المشاريع",
+    "categories": "التصنيفات",
+    "hero_images": "صور الواجهة",
+    "testimonials": "آراء العملاء",
+    "settings": "الإعدادات",
+    "profile": "الملف الشخصي",
+    "password": "كلمة المرور",
+    "appearance": "المظهر",
+    "backups": "النسخ الاحتياطي",
+    "two_factor": "التحقق الثنائي",
+    "public_site": "الموقع العام"
+  },
+  "DashboardOverview": {
+    "welcome_back": "مرحباً بعودتك. إليك نظرة على نشاط معرض أعمالك.",
+    "total_projects": "إجمالي المشاريع",
+    "categories": "التصنيفات",
+    "client_feedback": "آراء العملاء",
+    "published_works": "الأعمال المنشورة"
+  },
+  "DashboardProjects": {
+    "title": "المشاريع",
+    "description": "إجمالي {count} تحفة فنية في معرض أعمالك.",
+    "new_creation": "عمل فني جديد",
+    "columns": {
+      "title": "العنوان",
+      "category": "التصنيف",
+      "status": "الحالة",
+      "created": "تاريخ الإنشاء",
+      "actions": "إجراءات"
+    },
+    "status": {
+      "published": "منشور",
+      "draft": "مسودة"
+    }
+  },
+  "DashboardCategories": {
+    "title": "التصنيفات",
+    "description": "نظم إبداعاتك الفنية بأناقة.",
+    "add_category": "إضافة تصنيف",
+    "edit_category": "تعديل التصنيف",
+    "new_category": "تصنيف جديد",
+    "dialog_desc": "نظم مشاريعك بشكل فعال.",
+    "fields": {
+      "name": "الاسم",
+      "slug": "الرابط الدائم (Slug)",
+      "description": "الوصف",
+      "order": "الترتيب"
+    },
+    "columns": {
+      "name": "الاسم",
+      "slug": "الرابط الدائم (Slug)",
+      "actions": "إجراءات"
+    },
+    "placeholders": {
+      "name": "مثال: ديكورات مسرحية",
+      "slug": "مثال: theater-props"
+    },
+    "save": "حفظ",
+    "empty": "لا يوجد تصنيفات"
+  },
+  "DashboardHeroImages": {
+    "title": "صور الواجهة",
+    "description": "إدارة الصور الرئيسية الأربعة في الصفحة الرئيسية.",
+    "empty": "فارغ",
+    "aspect_ratio": "نسبة العرض إلى الارتفاع:",
+    "slot": "حيز ({ratio})",
+    "actions": {
+      "uploading": "جاري الرفع...",
+      "upload": "رفع صورة"
+    }
+  },
+  "DashboardTestimonials": {
+    "title": "آراء العملاء",
+    "description": "اجمع واعرض ما يعتقده الآخرون عن فنك.",
+    "add_testimonial": "إضافة رأي",
+    "edit_testimonial": "تعديل الرأي",
+    "new_testimonial": "رأي جديد",
+    "dialog_desc": "شارك ما يقوله عملاؤك عن تحفك الفنية.",
+    "fields": {
+      "client_name": "اسم العميل",
+      "client_title": "اللقب أو الوظيفة",
+      "content": "محتوى الرأي",
+      "is_published": "منشور على الموقع"
+    },
+    "columns": {
+      "client": "العميل",
+      "message": "الرسالة",
+      "status": "الحالة",
+      "actions": "إجراءات"
+    },
+    "placeholders": {
+      "client_name": "مثال: أحمد عبد الله",
+      "client_title": "مثال: مهتم بجمع الفنون",
+      "content": "كانت الحرفية تفوق الوصف..."
+    },
+    "status": {
+      "published": "منشور",
+      "draft": "مسودة"
+    },
+    "actions": {
+      "save": "حفظ الرأي"
+    },
+    "empty": "الصمت من ذهب، لكن الآراء أفضل بكثير."
+  },
+  "DashboardProfile": {
+    "title": "الملف الشخصي",
+    "description": "إدارة معلومات حسابك الأساسية.",
+    "fields": {
+      "name": "الاسم",
+      "email": "البريد الإلكتروني"
+    },
+    "placeholders": {
+      "name": "اسمك"
+    },
+    "messages": {
+      "email_disabled": "تغيير البريد الإلكتروني غير متاح حالياً.",
+      "loading": "جاري تحميل الملف الشخصي...",
+      "success": "تم تحديث الملف الشخصي بنجاح.",
+      "saving": "جاري الحفظ...",
+      "save": "حفظ الملف الشخصي"
+    }
+  },
+  "DashboardPassword": {
+    "title": "كلمة المرور",
+    "description": "إعداد أو تحديث كلمة مرور حسابك.",
+    "info": "إذا قمت بالتسجيل باستخدام جوجل فقط، اترك كلمة المرور الحالية فارغة لتعيين واحدة لأول مرة.",
+    "fields": {
+      "current": "كلمة المرور الحالية",
+      "new": "كلمة المرور الجديدة",
+      "confirm": "تأكيد كلمة المرور الجديدة"
+    },
+    "placeholders": {
+      "current": "كلمة المرور الحالية (اختياري للتعيين لأول مرة)"
+    },
+    "messages": {
+      "mismatch": "كلمة المرور الجديدة والتأكيد لا يتطابقان.",
+      "success_change": "تم تغيير كلمة المرور بنجاح.",
+      "success_set": "تم تعيين كلمة المرور بنجاح.",
+      "saving": "جاري الحفظ...",
+      "save": "تحديث كلمة المرور"
+    }
+  },
+  "DashboardAppearance": {
+    "title": "المظهر",
+    "description": "تخصيص مظهر وشعور الموقع العام الخاص بك."
+  },
+  "DashboardBackups": {
+    "title": "النسخ الاحتياطي",
+    "description": "لا تخسر أبداً إبداعاً فنيًا واحدًا."
+  },
+  "DashboardTwoFactor": {
+    "title": "التحقق الثنائي",
+    "description": "أضف طبقة حماية إضافية لحسابك."
+  },
+  "Theme": {
+    "light": "فاتح",
+    "system": "النظام",
+    "dark": "داكن"
   }
 }

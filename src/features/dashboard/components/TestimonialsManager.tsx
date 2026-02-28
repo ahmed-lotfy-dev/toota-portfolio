@@ -20,6 +20,7 @@ import {
 } from "@/components/ui/dialog";
 import { PlusCircle, Pencil, Trash2, Loader2, MessageSquareQuote, Eye, EyeOff } from "lucide-react";
 import { createTestimonial, updateTestimonial, deleteTestimonial, toggleTestimonialPublished } from "@/features/dashboard/actions/testimonial-actions";
+import { useTranslations } from "next-intl";
 
 type Testimonial = {
   id: number;
@@ -35,6 +36,7 @@ export function TestimonialsManager({ initialTestimonials }: { initialTestimonia
   const [isProcessing, setIsProcessing] = useState<number | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [editingItem, setEditingItem] = useState<Testimonial | null>(null);
+  const t = useTranslations("DashboardTestimonials");
 
   const handleOpenChange = (open: boolean) => {
     setIsOpen(open);
@@ -125,47 +127,47 @@ export function TestimonialsManager({ initialTestimonials }: { initialTestimonia
           <DialogTrigger asChild>
             <Button className="h-12 rounded-2xl bg-primary px-6 font-bold text-primary-foreground hover:bg-primary/90 transition-all">
               <PlusCircle className="mr-2 h-4 w-4" />
-              Add Testimonial
+              {t("add_testimonial")}
             </Button>
           </DialogTrigger>
           <DialogContent className="border-border bg-card text-card-foreground sm:max-w-lg">
             <DialogHeader>
               <DialogTitle className="text-2xl font-black uppercase tracking-tighter text-foreground">
-                {editingItem ? "Edit Testimonial" : "New Testimonial"}
+                {editingItem ? t("edit_testimonial") : t("new_testimonial")}
               </DialogTitle>
               <DialogDescription className="text-muted-foreground">
-                Share what your clients say about your masterpieces.
+                {t("dialog_desc")}
               </DialogDescription>
             </DialogHeader>
             <form onSubmit={onSubmit} className="flex flex-col gap-6 mt-6">
               <div className="flex flex-col gap-2">
-                <label className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground pl-1">Client Name</label>
+                <label className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground pl-1">{t("fields.client_name")}</label>
                 <input
                   name="clientName"
                   defaultValue={editingItem?.clientName}
                   required
-                  placeholder="e.g. John Smith"
+                  placeholder={t("placeholders.client_name")}
                   className="rounded-xl border border-input bg-background px-4 py-3 text-sm text-foreground focus:outline-none focus:border-primary transition-all"
                 />
               </div>
               <div className="flex flex-col gap-2">
-                <label className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground pl-1">Client Title/Role</label>
+                <label className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground pl-1">{t("fields.client_title")}</label>
                 <input
                   name="clientTitle"
                   defaultValue={editingItem?.clientTitle || ""}
-                  placeholder="e.g. Art Collector"
+                  placeholder={t("placeholders.client_title")}
                   className="rounded-xl border border-input bg-background px-4 py-3 text-sm text-foreground focus:outline-none focus:border-primary transition-all"
                 />
               </div>
               <div className="flex flex-col gap-2">
-                <label className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground pl-1">Testimonial Content</label>
+                <label className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground pl-1">{t("fields.content")}</label>
                 <textarea
                   name="content"
                   defaultValue={editingItem?.content || ""}
                   required
                   rows={4}
                   className="resize-none rounded-xl border border-input bg-background px-4 py-3 text-sm text-foreground focus:outline-none focus:border-primary transition-all"
-                  placeholder="The craftsmanship was beyond words..."
+                  placeholder={t("placeholders.content")}
                 />
               </div>
               <div className="flex items-center gap-3 rounded-xl border border-border bg-muted/30 p-4">
@@ -176,10 +178,10 @@ export function TestimonialsManager({ initialTestimonials }: { initialTestimonia
                   defaultChecked={editingItem?.isPublished || false}
                   className="h-5 w-5 rounded-md border-input bg-background accent-primary"
                 />
-                <label htmlFor="isPublished" className="cursor-pointer text-xs font-bold text-foreground uppercase tracking-tight">Published on Site</label>
+                <label htmlFor="isPublished" className="cursor-pointer text-xs font-bold text-foreground uppercase tracking-tight">{t("fields.is_published")}</label>
               </div>
               <Button disabled={isLoading} type="submit" className="h-14 w-full rounded-2xl bg-primary text-primary-foreground font-black uppercase tracking-widest hover:bg-primary/90 transition-all">
-                {isLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : "Save Milestone"}
+                {isLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : t("actions.save")}
               </Button>
             </form>
           </DialogContent>
@@ -190,10 +192,10 @@ export function TestimonialsManager({ initialTestimonials }: { initialTestimonia
         <Table>
           <TableHeader className="bg-muted/50">
             <TableRow className="border-border hover:bg-transparent">
-              <TableHead className="text-muted-foreground font-bold tracking-widest uppercase text-[10px] py-6 pl-8">Client</TableHead>
-              <TableHead className="text-muted-foreground font-bold tracking-widest uppercase text-[10px] py-6">Message</TableHead>
-              <TableHead className="text-muted-foreground font-bold tracking-widest uppercase text-[10px] py-6">Status</TableHead>
-              <TableHead className="text-muted-foreground font-bold tracking-widest uppercase text-[10px] py-6 text-right pr-8">Actions</TableHead>
+              <TableHead className="text-muted-foreground font-bold tracking-widest uppercase text-[10px] py-6 pl-8">{t("columns.client")}</TableHead>
+              <TableHead className="text-muted-foreground font-bold tracking-widest uppercase text-[10px] py-6">{t("columns.message")}</TableHead>
+              <TableHead className="text-muted-foreground font-bold tracking-widest uppercase text-[10px] py-6">{t("columns.status")}</TableHead>
+              <TableHead className="text-muted-foreground font-bold tracking-widest uppercase text-[10px] py-6 text-right pr-8">{t("columns.actions")}</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -220,7 +222,7 @@ export function TestimonialsManager({ initialTestimonials }: { initialTestimonia
                       ? "border-emerald-500/20 bg-emerald-500/10 text-emerald-400 hover:bg-emerald-500/20"
                       : "border-border bg-muted text-muted-foreground hover:bg-accent"}`}
                   >
-                    {isProcessing === item.id ? <Loader2 className="h-3 w-3 animate-spin" /> : item.isPublished ? <><Eye className="w-3 h-3 mr-1.5" /> Published</> : <><EyeOff className="w-3 h-3 mr-1.5" /> Draft</>}
+                    {isProcessing === item.id ? <Loader2 className="h-3 w-3 animate-spin" /> : item.isPublished ? <><Eye className="w-3 h-3 mr-1.5" /> {t("status.published")}</> : <><EyeOff className="w-3 h-3 mr-1.5" /> {t("status.draft")}</>}
                   </Button>
                 </TableCell>
                 <TableCell className="text-right pr-8">
@@ -250,7 +252,7 @@ export function TestimonialsManager({ initialTestimonials }: { initialTestimonia
               <TableRow className="border-border hover:bg-transparent">
                 <TableCell colSpan={4} className="py-24 text-center">
                   <MessageSquareQuote className="mx-auto mb-4 h-12 w-12 text-muted-foreground" />
-                  <span className="font-black text-xs text-muted-foreground uppercase tracking-[0.2em]">Silence is golden, but feedback is better.</span>
+                  <span className="font-black text-xs text-muted-foreground uppercase tracking-[0.2em]">{t("empty")}</span>
                 </TableCell>
               </TableRow>
             )}

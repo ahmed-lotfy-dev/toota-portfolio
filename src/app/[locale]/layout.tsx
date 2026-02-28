@@ -7,6 +7,7 @@ import { notFound } from "next/navigation";
 import { routing } from "@/i18n/routing";
 import { Nav } from "@/features/projects/components/Nav";
 import { Footer } from "@/features/projects/components/Footer";
+import { ThemeProvider } from "@/components/ThemeProvider";
 
 const serif = Playfair_Display({
   subsets: ["latin"],
@@ -47,32 +48,23 @@ export default async function RootLayout({
 
   return (
     <html lang={locale} dir={dir} suppressHydrationWarning>
-      <head>
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `
-              (() => {
-                try {
-                  const key = "toota-theme";
-                  const saved = localStorage.getItem(key) || "system";
-                  const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-                  const useDark = saved === "dark" || (saved === "system" && prefersDark);
-                  document.documentElement.classList.toggle("dark", useDark);
-                } catch {}
-              })();
-            `,
-          }}
-        />
-      </head>
+      <head />
       <body
         className={`${serif.variable} ${sans.variable} ${arabic.variable} antialiased`}
       >
-        <NextIntlClientProvider locale={locale} messages={messages}>
-          <Nav />
-          {children}
-          <Footer />
-        </NextIntlClientProvider>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <NextIntlClientProvider locale={locale} messages={messages}>
+            <Nav />
+            {children}
+            <Footer />
+          </NextIntlClientProvider>
+        </ThemeProvider>
       </body>
-    </html>
+    </html >
   );
 }
