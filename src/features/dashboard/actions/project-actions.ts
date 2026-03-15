@@ -17,6 +17,7 @@ export async function createProject(prevState: any, formData: FormData) {
     const categoryId = parseInt(formData.get("categoryId") as string);
     const isFeatured = formData.get("isFeatured") === "on";
 
+    const now = new Date();
     const [newProject] = await db.insert(projects).values({
       title,
       slug,
@@ -25,6 +26,8 @@ export async function createProject(prevState: any, formData: FormData) {
       isPublished: true,
       isFeatured,
       order: 0,
+      createdAt: now,
+      updatedAt: now,
     }).returning();
 
     // Handle Images
@@ -41,6 +44,8 @@ export async function createProject(prevState: any, formData: FormData) {
           imagePath,
           order: i,
           isPrimary: i === 0,
+          createdAt: now,
+          updatedAt: now,
         });
       }
     }

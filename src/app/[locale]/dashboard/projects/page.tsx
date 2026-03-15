@@ -68,7 +68,7 @@ export default async function DashboardProjectsPage({ params }: { params: Promis
                   </span>
                 </TableCell>
                 <TableCell className="text-muted-foreground font-mono text-xs">
-                  {new Date(project.createdAt).toLocaleDateString()}
+                  {project.createdAt ? new Date(project.createdAt).toLocaleDateString() : "—"}
                 </TableCell>
                 <TableCell className="text-right pr-8">
                   <ProjectActions project={project} />
