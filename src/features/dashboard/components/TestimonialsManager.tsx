@@ -21,6 +21,7 @@ import {
 import { PlusCircle, Pencil, Trash2, Loader2, MessageSquareQuote, Eye, EyeOff } from "lucide-react";
 import { createTestimonial, updateTestimonial, deleteTestimonial, toggleTestimonialPublished } from "@/features/dashboard/actions/testimonial-actions";
 import { useTranslations } from "next-intl";
+import { useRouter } from "@/i18n/navigation";
 
 type Testimonial = {
   id: number;
@@ -31,6 +32,7 @@ type Testimonial = {
 };
 
 export function TestimonialsManager({ initialTestimonials }: { initialTestimonials: Testimonial[] }) {
+  const router = useRouter();
   const [items, setItems] = useState(initialTestimonials);
   const [isOpen, setIsOpen] = useState(false);
   const [isProcessing, setIsProcessing] = useState<number | null>(null);
@@ -58,6 +60,7 @@ export function TestimonialsManager({ initialTestimonials }: { initialTestimonia
       const result = await deleteTestimonial(id);
       if (result.success) {
         setItems((prev) => prev.filter((i) => i.id !== id));
+        router.refresh();
       } else {
         alert("Delete failed: " + result.error);
       }
@@ -103,6 +106,7 @@ export function TestimonialsManager({ initialTestimonials }: { initialTestimonia
             )
           );
           handleOpenChange(false);
+          router.refresh();
         } else {
           alert(result.error);
         }
@@ -111,6 +115,7 @@ export function TestimonialsManager({ initialTestimonials }: { initialTestimonia
         if (result.success && result.testimonial) {
           setItems((prev) => [...prev, result.testimonial as Testimonial]);
           handleOpenChange(false);
+          router.refresh();
         } else {
           alert(result.error);
         }

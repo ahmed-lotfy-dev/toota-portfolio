@@ -3,10 +3,11 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Pencil, Trash2, ExternalLink, Eye, EyeOff, Loader2 } from "lucide-react";
-import { Link } from "@/i18n/navigation";
+import { Link, useRouter } from "@/i18n/navigation";
 import { toggleProjectVisibility, deleteProject } from "@/features/dashboard/actions/project-actions";
 
 export function ProjectActions({ project }: { project: any }) {
+  const router = useRouter();
   const [isPending, setIsPending] = useState(false);
   const [isPublished, setIsPublished] = useState(project.isPublished);
 
@@ -27,8 +28,7 @@ export function ProjectActions({ project }: { project: any }) {
     setIsPending(true);
     const result = await deleteProject(project.id);
     if (result.success) {
-      // Refresh page or update state
-      window.location.reload();
+      router.refresh();
     } else {
       alert("Failed to delete project");
       setIsPending(false);

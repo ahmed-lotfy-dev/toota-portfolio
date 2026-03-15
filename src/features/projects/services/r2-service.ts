@@ -68,7 +68,8 @@ export async function uploadImageToR2(file: File) {
 
   await s3Client.send(command).catch(err => {
     console.error("S3 Upload Error:", err);
-    throw new Error("Failed to upload image to R2");
+    const message = err instanceof Error ? err.message : "Unknown error";
+    throw new Error(`Failed to upload image to R2: ${message}`);
   });
 
   // Construct the public URL or return key for path generation

@@ -118,7 +118,7 @@ export function Footer() {
             <ul className="space-y-6">
               <li className="group">
                 <p className="mb-1 font-sans text-xs uppercase tracking-wider text-primary-foreground/65">{t("footer.email_label")}</p>
-                <a href="mailto:info@totaart.com" className="block font-serif text-lg italic transition hover:text-primary-foreground">info@totaart.com</a>
+                <a href="mailto:tootaverse@gmail.com" className="block font-serif text-lg italic transition hover:text-primary-foreground">tootaverse@gmail.com</a>
               </li>
               <li className="group">
                 <p className="mb-1 font-sans text-xs uppercase tracking-wider text-primary-foreground/65">{t("footer.phone_label")}</p>

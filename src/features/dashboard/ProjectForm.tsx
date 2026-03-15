@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState, useState } from "react";
+import { useActionState, useEffect, useState } from "react";
 import { createProject, updateProject } from "./actions/project-actions";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -15,6 +15,7 @@ import {
 import { Checkbox } from "@/components/ui/checkbox";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Loader2, Upload, X } from "lucide-react";
+import { useRouter } from "@/i18n/navigation";
 
 interface ProjectFormProps {
   categories: { id: number; name: string }[];
@@ -22,12 +23,20 @@ interface ProjectFormProps {
 }
 
 export function ProjectForm({ categories, project }: ProjectFormProps) {
+  const router = useRouter();
   const [state, formAction, isPending] = useActionState(
     project ? updateProject.bind(null, project.id) : createProject,
     null
   );
   const [images, setImages] = useState<File[]>([]);
   const [existingImages, setExistingImages] = useState<any[]>(project?.images || []);
+
+  useEffect(() => {
+    if (state?.success) {
+      router.push("/dashboard/projects");
+      router.refresh();
+    }
+  }, [router, state?.success]);
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {

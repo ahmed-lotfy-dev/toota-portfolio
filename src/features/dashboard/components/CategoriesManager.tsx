@@ -21,6 +21,7 @@ import {
 import { PlusCircle, Pencil, Trash2, Loader2 } from "lucide-react";
 import { createCategory, updateCategory, deleteCategory } from "@/features/dashboard/actions/category-actions";
 import { useTranslations } from "next-intl";
+import { useRouter } from "@/i18n/navigation";
 
 type Category = {
   id: number;
@@ -31,6 +32,7 @@ type Category = {
 };
 
 export function CategoriesManager({ initialCategories }: { initialCategories: Category[] }) {
+  const router = useRouter();
   const [categories, setCategories] = useState(initialCategories);
   const [isOpen, setIsOpen] = useState(false);
   const [isDeleting, setIsDeleting] = useState<number | null>(null);
@@ -58,6 +60,7 @@ export function CategoriesManager({ initialCategories }: { initialCategories: Ca
       const result = await deleteCategory(id);
       if (result.success) {
         setCategories((prev) => prev.filter((c) => c.id !== id));
+        router.refresh();
       } else {
         alert("Delete failed: " + result.error);
       }
@@ -83,6 +86,7 @@ export function CategoriesManager({ initialCategories }: { initialCategories: Ca
             )
           );
           handleOpenChange(false);
+          router.refresh();
         } else {
           alert(result.error);
         }
@@ -91,6 +95,7 @@ export function CategoriesManager({ initialCategories }: { initialCategories: Ca
         if (result.success && result.category) {
           setCategories((prev) => [...prev, result.category as Category]);
           handleOpenChange(false);
+          router.refresh();
         } else {
           alert(result.error);
         }
