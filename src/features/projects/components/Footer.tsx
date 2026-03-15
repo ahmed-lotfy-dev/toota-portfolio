@@ -164,9 +164,15 @@ export function Footer() {
 
         {/* Bottom Bar */}
         <div className="flex flex-col items-center justify-between gap-4 border-t border-primary-foreground/20 pt-8 font-sans text-xs tracking-wide text-primary-foreground/65 md:flex-row">
-          <p>
-            &copy; {new Date().getFullYear()} {tNav("brand") || "Tootaverse"}. {t("footer.rights")}
-          </p>
+          <div className="flex flex-col gap-1 text-center md:text-start">
+            <p>
+              &copy; {new Date().getFullYear()} {tNav("brand") || "Tootaverse"}. {t("footer.rights")}
+            </p>
+            <p className="text-primary-foreground/40">
+              Designed &amp; Developed by{" "}
+              <span className="text-primary-foreground/60 font-semibold">Ahmed Shoman</span>
+            </p>
+          </div>
           <div className="flex gap-8">
             <Link href="#" className="font-sans transition hover:text-primary-foreground">{t("footer.privacy_policy")}</Link>
             <Link href="#" className="font-sans transition hover:text-primary-foreground">{t("footer.terms_of_service")}</Link>
