@@ -76,7 +76,7 @@ export function Footer() {
                 </svg>
               </div>
               <h3 className="text-3xl font-bold tracking-tight font-serif">
-                {tNav("brand") || "Toota Art"}
+                {tNav("brand") || "Tootaverse"}
               </h3>
             </div>
 
@@ -161,7 +161,7 @@ export function Footer() {
         {/* Bottom Bar */}
         <div className="flex flex-col items-center justify-between gap-4 border-t border-primary-foreground/20 pt-8 font-sans text-xs tracking-wide text-primary-foreground/65 md:flex-row">
           <p>
-            &copy; {new Date().getFullYear()} {tNav("brand") || "Toota Art"}. {t("footer.rights")}
+            &copy; {new Date().getFullYear()} {tNav("brand") || "Tootaverse"}. {t("footer.rights")}
           </p>
           <div className="flex gap-8">
             <Link href="#" className="font-sans transition hover:text-primary-foreground">{t("footer.privacy_policy")}</Link>

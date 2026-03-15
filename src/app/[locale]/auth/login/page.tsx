@@ -70,7 +70,7 @@ export default async function LoginPage({ params, searchParams }: LoginPageProps
 
         <div className="mt-12 pt-8 border-t border-zinc-900 w-full">
           <p className="text-[10px] text-zinc-700 font-black uppercase tracking-[0.2em]">
-            Toota Art &copy; 2025
+            Tootaverse &copy; 2025
           </p>
         </div>
       </div>

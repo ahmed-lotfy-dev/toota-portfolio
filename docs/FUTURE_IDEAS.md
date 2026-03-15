@@ -1,6 +1,6 @@
-# Future Feature Ideas for Toota Art
+# Future Feature Ideas for Tootaverse
 
-This document outlines potential enhancements and new features for the Toota Art project, categorized for clarity. These suggestions are intended to provide a roadmap for future development, whether for improving user engagement, expanding functionality, or enhancing the artist's administrative capabilities.
+This document outlines potential enhancements and new features for the Tootaverse project, categorized for clarity. These suggestions are intended to provide a roadmap for future development, whether for improving user engagement, expanding functionality, or enhancing the artist's administrative capabilities.
 
 ---
 

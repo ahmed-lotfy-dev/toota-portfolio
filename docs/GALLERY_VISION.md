@@ -1,7 +1,7 @@
-# 🎭 Toota Art - Image Gallery Vision Document
+# 🎭 Tootaverse - Image Gallery Vision Document
 
 ## Project Overview
-**Toota Art** is a Laravel 12 + Livewire 3 + Tailwind CSS website for artists creating handmade masks, props, and theatrical costumes. Currently, the site has placeholder sections, and your goal is to build a **stunning image gallery** to showcase the artist's work.
+**Tootaverse** is a Laravel 12 + Livewire 3 + Tailwind CSS website for artists creating handmade masks, props, and theatrical costumes. Currently, the site has placeholder sections, and your goal is to build a **stunning image gallery** to showcase the artist's work.
 
 ---
 

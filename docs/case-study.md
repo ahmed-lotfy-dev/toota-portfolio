@@ -1,4 +1,4 @@
-# Case Study: Toota Art Portfolio
+# Case Study: Tootaverse Portfolio
 **A Performance-First Digital Gallery for Visual Artists**
 
 > **Role:** Full-Stack Developer

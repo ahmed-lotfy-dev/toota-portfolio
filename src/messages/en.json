@@ -1,13 +1,13 @@
 {
   "Home": {
-    "title": "Toota Art",
+    "title": "Tootaverse",
     "description": "Portraying the soul of art in every creation",
     "about": {
       "subtitle": "The Art of Creation",
       "title": "Crafting the extraordinary from the ordinary.",
       "description1": "We specialize in the meticulous design and fabrication of hyper-realistic props, immersive escape room puzzles, and intricate artistic accessories.",
       "description2": "Every piece is a testament to our dedication to detail, blending traditional craftsmanship with innovative techniques.",
-      "artist_image_alt": "Toota Art Artist Portrait",
+      "artist_image_alt": "Tootaverse Artist Portrait",
       "experience_years": "10+",
       "experience_label": "Years Experience",
       "label": "About The Artist",
@@ -136,7 +136,7 @@
     }
   },
   "Navigation": {
-    "brand": "Toota Art",
+    "brand": "Tootaverse",
     "home": "Home",
     "projects": "Projects",
     "services": "Services",

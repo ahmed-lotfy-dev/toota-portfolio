@@ -59,7 +59,7 @@ export async function POST(request: Request) {
       from: fromEmail,
       to: [toEmail],
       replyTo: email,
-      subject: `[Toota Art] Contact from ${name}`,
+      subject: `[Tootaverse] Contact from ${name}`,
       text: [
         `Name: ${name}`,
         `Email: ${email}`,

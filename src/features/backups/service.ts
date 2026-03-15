@@ -78,7 +78,7 @@ export async function getExportData() {
 
 export async function buildJsonExportFile() {
   const dir = await createTempDir();
-  const path = join(dir, `toota-art-data-${Date.now()}.json`);
+  const path = join(dir, `tootaverse-data-${Date.now()}.json`);
   const data = await getExportData();
   await fs.writeFile(path, JSON.stringify(data, null, 2), "utf8");
   return path;
@@ -91,7 +91,7 @@ export async function buildSqlDumpFile() {
   }
 
   const dir = await createTempDir();
-  const path = join(dir, `toota-art-${Date.now()}.sql`);
+  const path = join(dir, `tootaverse-${Date.now()}.sql`);
 
   await execFileAsync("pg_dump", [
     "--no-owner",
@@ -137,7 +137,7 @@ export async function buildMediaArchiveFile() {
     }
   }
 
-  const archivePath = join(root, `toota-art-media-${Date.now()}.tar.gz`);
+  const archivePath = join(root, `tootaverse-media-${Date.now()}.tar.gz`);
   await execFileAsync("tar", ["-czf", archivePath, "-C", root, "media"]);
   return archivePath;
 }
@@ -171,7 +171,7 @@ export async function buildFullArchiveFile() {
     }
   }
 
-  const archivePath = join(root, `toota-art-full-${Date.now()}.tar.gz`);
+  const archivePath = join(root, `tootaverse-full-${Date.now()}.tar.gz`);
   await execFileAsync("tar", ["-czf", archivePath, "-C", root, "full-backup"]);
   return archivePath;
 }

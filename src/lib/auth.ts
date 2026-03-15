@@ -26,7 +26,7 @@ export const auth = betterAuth({
   },
   plugins: [
     twoFactor({
-      issuer: "Toota Art",
+      issuer: "Tootaverse",
       skipVerificationOnEnable: false,
       otpOptions: {
         sendOTP: async () => {

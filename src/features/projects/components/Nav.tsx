@@ -100,7 +100,7 @@ export function Nav() {
                   </svg>
                 </div>
                 <span className="font-serif text-2xl font-bold tracking-tight text-foreground">
-                  {t("brand") || "Toota Art"}
+                  {t("brand") || "Tootaverse"}
                 </span>
               </Link>
             </div>
@@ -160,7 +160,7 @@ export function Nav() {
                 </SheetTrigger>
                 <SheetContent side="right" className="w-[88vw] max-w-sm bg-card p-6">
                   <SheetHeader>
-                    <SheetTitle className="font-serif text-2xl">{t("brand") || "Toota Art"}</SheetTitle>
+                    <SheetTitle className="font-serif text-2xl">{t("brand") || "Tootaverse"}</SheetTitle>
                     <SheetDescription>Navigate sections and switch language.</SheetDescription>
                   </SheetHeader>
 

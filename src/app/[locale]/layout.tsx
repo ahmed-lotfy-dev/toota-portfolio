@@ -26,8 +26,8 @@ const arabic = Tajawal({
 });
 
 export const metadata: Metadata = {
-  title: "Toota Art Portfolio",
-  description: "Next.js Portfolio for Toota Art",
+  title: "Tootaverse Portfolio",
+  description: "Next.js Portfolio for Tootaverse",
 };
 
 export default async function RootLayout({

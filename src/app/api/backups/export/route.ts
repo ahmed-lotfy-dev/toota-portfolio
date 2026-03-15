@@ -15,10 +15,10 @@ function getContentType(type: BackupType) {
 }
 
 function getFileName(type: BackupType) {
-  if (type === "json") return `toota-art-data-${Date.now()}.json`;
-  if (type === "sql") return `toota-art-${Date.now()}.sql`;
-  if (type === "media") return `toota-art-media-${Date.now()}.tar.gz`;
-  return `toota-art-full-${Date.now()}.tar.gz`;
+  if (type === "json") return `tootaverse-data-${Date.now()}.json`;
+  if (type === "sql") return `tootaverse-${Date.now()}.sql`;
+  if (type === "media") return `tootaverse-media-${Date.now()}.tar.gz`;
+  return `tootaverse-full-${Date.now()}.tar.gz`;
 }
 
 export async function GET(request: Request) {

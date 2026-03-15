@@ -42,7 +42,7 @@ export function TwoFactorSettingsPanel() {
         headers: { "content-type": "application/json" },
         body: JSON.stringify({
           password,
-          issuer: "Toota Art",
+          issuer: "Tootaverse",
         }),
       });
       const data = (await response.json()) as EnableResponse;
