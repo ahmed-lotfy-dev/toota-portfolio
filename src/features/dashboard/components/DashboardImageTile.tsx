@@ -3,16 +3,20 @@
 import { ReactNode } from "react";
 import { Loader2, X } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 
 type DashboardImageTileProps = {
   src?: string | null;
   alt: string;
-  onDelete?: () => void;
+  onDelete?: () => Promise<void> | void;
   deleting?: boolean;
   badge?: string;
   className?: string;
   imageClassName?: string;
   placeholder?: ReactNode;
+  confirmTitle?: string;
+  confirmDescription?: string;
+  confirmText?: string;
 };
 
 export function DashboardImageTile({
@@ -24,6 +28,9 @@ export function DashboardImageTile({
   className,
   imageClassName,
   placeholder,
+  confirmTitle = "Delete image?",
+  confirmDescription = "This cannot be undone.",
+  confirmText = "Delete",
 }: DashboardImageTileProps) {
   return (
     <div className={cn("relative overflow-hidden rounded-3xl border border-border bg-card/60 shadow-lg", className)}>
@@ -48,19 +55,26 @@ export function DashboardImageTile({
       ) : null}
 
       {onDelete ? (
-        <button
-          type="button"
-          onClick={onDelete}
-          disabled={deleting}
-          className="absolute top-3 left-3 z-10 rounded-full bg-black/70 p-2 text-white border border-white/20 shadow-lg"
-          title="Delete image"
-        >
-          {deleting ? (
-            <Loader2 className="h-4 w-4 animate-spin" />
-          ) : (
-            <X className="h-4 w-4 text-red-300" />
-          )}
-        </button>
+        <ConfirmDialog
+          title={confirmTitle}
+          description={confirmDescription}
+          confirmText={confirmText}
+          onConfirm={onDelete}
+          trigger={
+            <button
+              type="button"
+              disabled={deleting}
+              className="absolute top-3 left-3 z-10 rounded-full bg-black/70 p-2 text-white border border-white/20 shadow-lg"
+              title="Delete image"
+            >
+              {deleting ? (
+                <Loader2 className="h-4 w-4 animate-spin" />
+              ) : (
+                <X className="h-4 w-4 text-red-300" />
+              )}
+            </button>
+          }
+        />
       ) : null}
     </div>
   );

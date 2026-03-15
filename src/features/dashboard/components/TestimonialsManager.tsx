@@ -22,6 +22,7 @@ import { PlusCircle, Pencil, Trash2, Loader2, MessageSquareQuote, Eye, EyeOff } 
 import { createTestimonial, updateTestimonial, deleteTestimonial, toggleTestimonialPublished } from "@/features/dashboard/actions/testimonial-actions";
 import { useTranslations } from "next-intl";
 import { useRouter } from "@/i18n/navigation";
+import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 
 type Testimonial = {
   id: number;
@@ -53,8 +54,6 @@ export function TestimonialsManager({ initialTestimonials }: { initialTestimonia
   };
 
   const handleDelete = async (id: number) => {
-    if (!confirm("Are you sure you want to delete this testimonial?")) return;
-
     setIsProcessing(id);
     try {
       const result = await deleteTestimonial(id);
@@ -240,15 +239,21 @@ export function TestimonialsManager({ initialTestimonials }: { initialTestimonia
                     >
                       <Pencil className="h-4 w-4" />
                     </Button>
-                    <Button
-                      onClick={() => handleDelete(item.id)}
-                      disabled={isProcessing === item.id}
-                      variant="ghost"
-                      size="icon"
-                      className="rounded-full text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-all"
-                    >
-                      {isProcessing === item.id ? <Loader2 className="h-4 w-4 animate-spin" /> : <Trash2 className="h-4 w-4" />}
-                    </Button>
+                    <ConfirmDialog
+                      title="Delete testimonial?"
+                      description="This will permanently remove the testimonial."
+                      onConfirm={() => handleDelete(item.id)}
+                      trigger={
+                        <Button
+                          disabled={isProcessing === item.id}
+                          variant="ghost"
+                          size="icon"
+                          className="rounded-full text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-all"
+                        >
+                          {isProcessing === item.id ? <Loader2 className="h-4 w-4 animate-spin" /> : <Trash2 className="h-4 w-4" />}
+                        </Button>
+                      }
+                    />
                   </div>
                 </TableCell>
               </TableRow>

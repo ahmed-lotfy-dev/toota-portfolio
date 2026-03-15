@@ -51,7 +51,6 @@ export function ProjectForm({ categories, project }: ProjectFormProps) {
   };
 
   const handleDeleteExistingImage = async (imageId: number) => {
-    if (!confirm("Delete this image? This cannot be undone.")) return;
     setDeletingImageId(imageId);
     try {
       const result = await deleteProjectImage(imageId);
@@ -141,6 +140,8 @@ export function ProjectForm({ categories, project }: ProjectFormProps) {
                 badge="Legacy"
                 onDelete={() => handleDeleteExistingImage(img.id)}
                 deleting={deletingImageId === img.id}
+                confirmTitle="Delete this image?"
+                confirmDescription="This will remove the image from storage."
                 className="aspect-[3/4] border-zinc-800 bg-zinc-900/30"
                 imageClassName="grayscale transition-all duration-700 hover:grayscale-0"
               />
@@ -151,6 +152,9 @@ export function ProjectForm({ categories, project }: ProjectFormProps) {
                 src={URL.createObjectURL(img)}
                 alt="Preview"
                 onDelete={() => removeImage(i)}
+                confirmTitle="Remove this image?"
+                confirmDescription="This will remove it from the upload list."
+                confirmText="Remove"
                 className="aspect-[3/4] border-zinc-800 bg-zinc-900/30"
                 imageClassName="transition-transform duration-700"
               />

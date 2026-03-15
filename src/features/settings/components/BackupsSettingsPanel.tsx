@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { Loader2, Download, Trash2, UploadCloud, RefreshCw } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 
 type BackupType = "json" | "sql" | "media" | "full";
 type Frequency = "daily" | "weekly" | "monthly";
@@ -115,7 +116,6 @@ export function BackupsSettingsPanel() {
   };
 
   const deleteCloudFile = async (key: string) => {
-    if (!confirm("Delete this backup from cloud storage?")) return;
     setWorkingType(`delete-${key}`);
     setMessage(null);
     setError(null);
@@ -221,15 +221,21 @@ export function BackupsSettingsPanel() {
                     <Download className="mr-2 h-4 w-4" />
                     Download
                   </Button>
-                  <Button
-                    type="button"
-                    variant="destructive"
-                    onClick={() => void deleteCloudFile(file.key)}
-                    disabled={workingType === `delete-${file.key}`}
-                  >
-                    {workingType === `delete-${file.key}` ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Trash2 className="mr-2 h-4 w-4" />}
-                    Delete
-                  </Button>
+                  <ConfirmDialog
+                    title="Delete backup?"
+                    description="This will remove the backup from cloud storage."
+                    onConfirm={() => deleteCloudFile(file.key)}
+                    trigger={
+                      <Button
+                        type="button"
+                        variant="destructive"
+                        disabled={workingType === `delete-${file.key}`}
+                      >
+                        {workingType === `delete-${file.key}` ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Trash2 className="mr-2 h-4 w-4" />}
+                        Delete
+                      </Button>
+                    }
+                  />
                 </div>
               </div>
             ))

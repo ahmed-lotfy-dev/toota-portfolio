@@ -82,8 +82,6 @@ export function HeroImagesManager({ initialImages }: { initialImages: any[] }) {
   };
 
   const handleDelete = async (position: number) => {
-    if (!confirm("Are you sure you want to delete this hero image?")) return;
-
     const result = await deleteHeroImage(position);
     if (result.success) {
       setImages((prev) => prev.filter(img => img.position !== position));
@@ -114,6 +112,8 @@ export function HeroImagesManager({ initialImages }: { initialImages: any[] }) {
               src={resolvedSrc}
               alt={pos.label}
               onDelete={currentImage ? () => handleDelete(pos.id) : undefined}
+              confirmTitle="Delete hero image?"
+              confirmDescription="This will remove the image from the homepage."
               className="h-32 w-32 shrink-0 rounded-xl border-border bg-muted"
               imageClassName="object-cover"
               placeholder={

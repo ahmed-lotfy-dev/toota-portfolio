@@ -22,6 +22,7 @@ import { PlusCircle, Pencil, Trash2, Loader2 } from "lucide-react";
 import { createCategory, updateCategory, deleteCategory } from "@/features/dashboard/actions/category-actions";
 import { useTranslations } from "next-intl";
 import { useRouter } from "@/i18n/navigation";
+import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 
 type Category = {
   id: number;
@@ -53,8 +54,6 @@ export function CategoriesManager({ initialCategories }: { initialCategories: Ca
   };
 
   const handleDelete = async (id: number) => {
-    if (!confirm("Are you sure you want to delete this category? All associated projects will ALSO be deleted.")) return;
-
     setIsDeleting(id);
     try {
       const result = await deleteCategory(id);
@@ -195,15 +194,21 @@ export function CategoriesManager({ initialCategories }: { initialCategories: Ca
                     >
                       <Pencil className="h-4 w-4" />
                     </Button>
-                    <Button
-                      onClick={() => handleDelete(category.id)}
-                      disabled={isDeleting === category.id}
-                      variant="ghost"
-                      size="icon"
-                      className="rounded-full text-muted-foreground hover:text-destructive hover:bg-destructive/10"
-                    >
-                      {isDeleting === category.id ? <Loader2 className="h-4 w-4 animate-spin" /> : <Trash2 className="h-4 w-4" />}
-                    </Button>
+                    <ConfirmDialog
+                      title="Delete category?"
+                      description="All associated projects will also be deleted."
+                      onConfirm={() => handleDelete(category.id)}
+                      trigger={
+                        <Button
+                          disabled={isDeleting === category.id}
+                          variant="ghost"
+                          size="icon"
+                          className="rounded-full text-muted-foreground hover:text-destructive hover:bg-destructive/10"
+                        >
+                          {isDeleting === category.id ? <Loader2 className="h-4 w-4 animate-spin" /> : <Trash2 className="h-4 w-4" />}
+                        </Button>
+                      }
+                    />
                   </div>
                 </TableCell>
               </TableRow>

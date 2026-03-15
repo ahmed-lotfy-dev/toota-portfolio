@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Pencil, Trash2, ExternalLink, Eye, EyeOff, Loader2 } from "lucide-react";
 import { Link, useRouter } from "@/i18n/navigation";
 import { toggleProjectVisibility, deleteProject } from "@/features/dashboard/actions/project-actions";
+import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 
 export function ProjectActions({ project }: { project: any }) {
   const router = useRouter();
@@ -24,7 +25,6 @@ export function ProjectActions({ project }: { project: any }) {
   };
 
   const handleDelete = async () => {
-    if (!confirm("Are you sure you want to delete this project?")) return;
     setIsPending(true);
     const result = await deleteProject(project.id);
     if (result.success) {
@@ -60,16 +60,23 @@ export function ProjectActions({ project }: { project: any }) {
         </Link>
       </Button>
 
-      <Button
-        variant="ghost"
-        size="icon"
-        onClick={handleDelete}
-        disabled={isPending}
-        className="rounded-full text-muted-foreground hover:bg-destructive/10 hover:text-destructive"
-        title="Delete"
-      >
-        <Trash2 className="h-4 w-4" />
-      </Button>
+      <ConfirmDialog
+        title="Delete project?"
+        description="This will remove the project and all related images."
+        confirmText="Delete"
+        onConfirm={handleDelete}
+        trigger={
+          <Button
+            variant="ghost"
+            size="icon"
+            disabled={isPending}
+            className="rounded-full text-muted-foreground hover:bg-destructive/10 hover:text-destructive"
+            title="Delete"
+          >
+            <Trash2 className="h-4 w-4" />
+          </Button>
+        }
+      />
 
       <Button variant="ghost" size="icon" asChild className="rounded-full text-muted-foreground hover:bg-accent hover:text-accent-foreground" title="View Public">
         <Link href={`/projects/${project.slug}`} target="_blank">
