@@ -5,7 +5,7 @@ import { db } from "@/db";
 import { projects, projectImages } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
-import { uploadImageToR2 } from "@/features/projects/services/r2-service";
+import { deleteImageFromR2, uploadImageToR2 } from "@/features/projects/services/r2-service";
 
 export async function createProject(prevState: any, formData: FormData) {
   try {
@@ -77,6 +77,33 @@ export async function toggleProjectVisibility(id: number, isPublished: boolean) 
   revalidatePath("/dashboard/projects");
 
   return { success: true };
+}
+
+export async function deleteProjectImage(imageId: number) {
+  try {
+    await requireAdmin();
+
+    const [image] = await db
+      .select({ id: projectImages.id, imagePath: projectImages.imagePath })
+      .from(projectImages)
+      .where(eq(projectImages.id, imageId))
+      .limit(1);
+
+    if (!image) {
+      return { success: false, error: "Image not found." };
+    }
+
+    await deleteImageFromR2(image.imagePath);
+    await db.delete(projectImages).where(eq(projectImages.id, imageId));
+
+    revalidatePath("/dashboard/projects");
+    revalidatePath("/");
+
+    return { success: true };
+  } catch (error: any) {
+    console.error("Project Image Delete Error:", error);
+    return { success: false, error: error.message || "Failed to delete image" };
+  }
 }
 export async function updateProject(id: number, prevState: any, formData: FormData) {
   try {

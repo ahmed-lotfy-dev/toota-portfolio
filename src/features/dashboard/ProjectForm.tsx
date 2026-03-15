@@ -1,7 +1,7 @@
 "use client";
 
 import { useActionState, useEffect, useState } from "react";
-import { createProject, updateProject } from "./actions/project-actions";
+import { createProject, deleteProjectImage, updateProject } from "./actions/project-actions";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -14,8 +14,9 @@ import {
 } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Loader2, Upload, X } from "lucide-react";
+import { Loader2, Upload } from "lucide-react";
 import { useRouter } from "@/i18n/navigation";
+import { DashboardImageTile } from "@/features/dashboard/components/DashboardImageTile";
 
 interface ProjectFormProps {
   categories: { id: number; name: string }[];
@@ -30,6 +31,7 @@ export function ProjectForm({ categories, project }: ProjectFormProps) {
   );
   const [images, setImages] = useState<File[]>([]);
   const [existingImages, setExistingImages] = useState<any[]>(project?.images || []);
+  const [deletingImageId, setDeletingImageId] = useState<number | null>(null);
 
   useEffect(() => {
     if (state?.success) {
@@ -46,6 +48,21 @@ export function ProjectForm({ categories, project }: ProjectFormProps) {
 
   const removeImage = (index: number) => {
     setImages(images.filter((_, i) => i !== index));
+  };
+
+  const handleDeleteExistingImage = async (imageId: number) => {
+    if (!confirm("Delete this image? This cannot be undone.")) return;
+    setDeletingImageId(imageId);
+    try {
+      const result = await deleteProjectImage(imageId);
+      if (result.success) {
+        setExistingImages((prev) => prev.filter((img) => img.id !== imageId));
+      } else {
+        alert(result.error || "Failed to delete image.");
+      }
+    } finally {
+      setDeletingImageId(null);
+    }
   };
 
   return (
@@ -117,34 +134,26 @@ export function ProjectForm({ categories, project }: ProjectFormProps) {
           </h2>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
             {existingImages.map((img, i) => (
-              <div key={`existing-${i}`} className="relative aspect-[3/4] rounded-3xl border border-zinc-800 bg-zinc-900/30 overflow-hidden group shadow-lg">
-                <img
-                  src={img.imagePath}
-                  className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700"
-                  alt="Existing"
-                />
-                <div className="absolute top-4 right-4 z-10">
-                  <span className="px-2 py-1 rounded-md bg-zinc-950 text-[8px] font-black uppercase text-zinc-500 border border-zinc-800">Legacy</span>
-                </div>
-              </div>
+              <DashboardImageTile
+                key={`existing-${i}`}
+                src={img.imagePath}
+                alt="Existing"
+                badge="Legacy"
+                onDelete={() => handleDeleteExistingImage(img.id)}
+                deleting={deletingImageId === img.id}
+                className="aspect-[3/4] border-zinc-800 bg-zinc-900/30"
+                imageClassName="grayscale transition-all duration-700 hover:grayscale-0"
+              />
             ))}
             {images.map((img, i) => (
-              <div key={i} className="relative aspect-[3/4] rounded-3xl border border-zinc-800 bg-zinc-900/30 overflow-hidden group shadow-lg">
-                <img
-                  src={URL.createObjectURL(img)}
-                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                  alt="Preview"
-                />
-                <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center backdrop-blur-sm">
-                  <button
-                    type="button"
-                    onClick={() => removeImage(i)}
-                    className="bg-white/10 hover:bg-red-500/20 text-white rounded-full p-3 border border-white/20 transition-all hover:border-red-500/50"
-                  >
-                    <X className="h-5 w-5 text-red-400" />
-                  </button>
-                </div>
-              </div>
+              <DashboardImageTile
+                key={i}
+                src={URL.createObjectURL(img)}
+                alt="Preview"
+                onDelete={() => removeImage(i)}
+                className="aspect-[3/4] border-zinc-800 bg-zinc-900/30"
+                imageClassName="transition-transform duration-700"
+              />
             ))}
             <label className="aspect-[3/4] rounded-3xl border-2 border-dashed border-zinc-800 bg-zinc-900/20 flex flex-col items-center justify-center cursor-pointer hover:bg-zinc-900/50 transition-all group">
               <div className="p-4 rounded-2xl bg-zinc-800/50 border border-zinc-700 mb-4 transition-transform group-hover:scale-110">

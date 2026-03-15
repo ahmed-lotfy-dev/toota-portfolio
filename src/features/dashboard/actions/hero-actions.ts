@@ -5,7 +5,7 @@ import { db } from "@/db";
 import { heroImages } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
-import { uploadImageToR2 } from "@/features/projects/services/r2-service";
+import { deleteImageFromR2, uploadImageToR2 } from "@/features/projects/services/r2-service";
 
 export async function updateHeroImage(position: number, formData: FormData) {
   try {
@@ -52,6 +52,16 @@ export async function updateHeroImage(position: number, formData: FormData) {
 export async function deleteHeroImage(position: number) {
   try {
     await requireAdmin();
+
+    const [image] = await db
+      .select({ imagePath: heroImages.imagePath })
+      .from(heroImages)
+      .where(eq(heroImages.position, position))
+      .limit(1);
+
+    if (image?.imagePath) {
+      await deleteImageFromR2(image.imagePath);
+    }
 
     await db.delete(heroImages).where(eq(heroImages.position, position));
 

@@ -1,10 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import Image from "next/image";
 import { updateHeroImage, deleteHeroImage, setHeroRatioMode } from "@/features/dashboard/actions/hero-actions";
-import { Trash2, Upload, Loader2, Image as ImageIcon } from "lucide-react";
+import { Upload, Loader2, Image as ImageIcon } from "lucide-react";
 import { useTranslations } from "next-intl";
+import { DashboardImageTile } from "@/features/dashboard/components/DashboardImageTile";
 
 const POSITIONS = [
   { id: 1, label: "Mask Detail", desc: "Top left - Portrait", defaultRatio: "4:5" },
@@ -110,22 +110,19 @@ export function HeroImagesManager({ initialImages }: { initialImages: any[] }) {
         return (
           <div key={pos.id} className="flex flex-col items-center gap-8 rounded-2xl border border-border bg-card/70 p-6 transition-colors hover:bg-card md:flex-row">
             {/* Preview */}
-            <div className="relative flex h-32 w-32 shrink-0 items-center justify-center overflow-hidden rounded-xl border border-border bg-muted">
-              {resolvedSrc ? (
-                <Image
-                  src={resolvedSrc}
-                  alt={pos.label}
-                  fill
-                  className="object-cover"
-                  unoptimized
-                />
-              ) : (
+            <DashboardImageTile
+              src={resolvedSrc}
+              alt={pos.label}
+              onDelete={currentImage ? () => handleDelete(pos.id) : undefined}
+              className="h-32 w-32 shrink-0 rounded-xl border-border bg-muted"
+              imageClassName="object-cover"
+              placeholder={
                 <div className="flex flex-col items-center text-muted-foreground">
                   <ImageIcon strokeWidth={1.5} className="w-8 h-8 mb-2" />
                   <span className="text-[10px] uppercase tracking-widest font-bold">{t("empty")}</span>
                 </div>
-              )}
-            </div>
+              }
+            />
 
             {/* Info */}
             <div className="flex-1 text-center md:text-left">
@@ -176,16 +173,6 @@ export function HeroImagesManager({ initialImages }: { initialImages: any[] }) {
                 </button>
               </div>
 
-              {currentImage && (
-                <button
-                  onClick={() => handleDelete(pos.id)}
-                  disabled={uploadingPos !== null}
-                  className="rounded-xl bg-destructive/10 p-3 text-destructive transition-colors hover:bg-destructive hover:text-destructive-foreground disabled:opacity-50"
-                  aria-label="Delete image"
-                >
-                  <Trash2 className="w-5 h-5" />
-                </button>
-              )}
             </div>
           </div>
         );

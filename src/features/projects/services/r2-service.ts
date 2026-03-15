@@ -1,4 +1,4 @@
-import { PutObjectCommand } from "@aws-sdk/client-s3";
+import { DeleteObjectCommand, PutObjectCommand } from "@aws-sdk/client-s3";
 import { s3Client, R2_BUCKET } from "@/lib/r2";
 
 type SanitizedImage = {
@@ -75,4 +75,32 @@ export async function uploadImageToR2(file: File) {
   // Construct the public URL or return key for path generation
   // Replace pub-XXXX.r2.dev with your actual public R2 domain if needed
   return `https://${process.env.NEXT_PUBLIC_R2_PUBLIC_DOMAIN}/${key}`;
+}
+
+export async function deleteImageFromR2(pathOrUrl: string) {
+  if (!pathOrUrl) return;
+  let key = pathOrUrl;
+
+  if (pathOrUrl.startsWith("http://") || pathOrUrl.startsWith("https://")) {
+    try {
+      const url = new URL(pathOrUrl);
+      key = url.pathname;
+    } catch {
+      key = pathOrUrl;
+    }
+  }
+
+  key = key.replace(/^\/+/, "");
+  if (!key) return;
+
+  const command = new DeleteObjectCommand({
+    Bucket: R2_BUCKET,
+    Key: key,
+  });
+
+  await s3Client.send(command).catch(err => {
+    console.error("S3 Delete Error:", err);
+    const message = err instanceof Error ? err.message : "Unknown error";
+    throw new Error(`Failed to delete image from R2: ${message}`);
+  });
 }
