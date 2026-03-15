@@ -17,6 +17,7 @@ import {
 } from "lucide-react";
 import { DashboardControls } from "@/features/dashboard/components/DashboardControls";
 import { cn } from "@/lib/utils";
+import Image from "next/image";
 
 const mainNavItems = [
   { href: "/", icon: LinkIcon, tone: "accent", labelKey: "public_site" },
@@ -45,8 +46,13 @@ export function DashboardSidebarNav() {
   return (
     <>
       <div className="flex items-center gap-3 mb-12">
-        <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center font-black text-primary-foreground">
-          T
+        <div className="relative h-[90px] w-[90px] overflow-hidden rounded-full shadow-[0_0_24px_rgba(212,175,55,0.15)]">
+          <Image
+            src="/generated_sent_logo_client (Edited).jpg"
+            alt="Tootaverse logo"
+            fill
+            className="object-cover"
+          />
         </div>
         <div className="flex flex-col">
           <span className="text-foreground font-black tracking-tight leading-none uppercase">{t("dashboard")}</span>

@@ -2,6 +2,7 @@ import { AuthButton } from "@/features/auth/AuthButton";
 import { CredentialSignInForm } from "@/features/auth/CredentialSignInForm";
 import { getAdminSession, getSession } from "@/features/auth/guard";
 import { redirect } from "next/navigation";
+import Image from "next/image";
 
 export const dynamic = "force-dynamic";
 
@@ -42,8 +43,13 @@ export default async function LoginPage({ params, searchParams }: LoginPageProps
   return (
     <div className="min-h-screen flex items-center justify-center bg-black">
       <div className="w-full max-w-md p-12 rounded-[3rem] bg-zinc-950/50 border border-zinc-900 backdrop-blur-3xl shadow-2xl flex flex-col items-center text-center">
-        <div className="w-16 h-16 rounded-2xl bg-white flex items-center justify-center font-black text-black text-3xl mb-8 shadow-[0_0_50px_rgba(255,255,255,0.2)]">
-          T
+        <div className="relative w-[150px] h-[150px] overflow-hidden rounded-full mb-8 shadow-[0_0_40px_rgba(212,175,55,0.2)]">
+          <Image
+            src="/generated_sent_logo_client (Edited).jpg"
+            alt="Tootaverse logo"
+            fill
+            className="object-cover"
+          />
         </div>
         <h1 className="text-3xl font-black text-white tracking-tighter uppercase mb-4">
           Masterpiece Access

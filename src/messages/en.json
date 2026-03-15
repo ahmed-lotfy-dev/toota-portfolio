@@ -69,8 +69,8 @@
     "hero": {
       "badge": "Handmade in the Studio",
       "subtitle_suffix": "& Curated Oddities",
-      "cta_explore": "Explore Collection",
-      "cta_commission": "Request Commission",
+      "cta_explore": "Request Custom Work",
+      "cta_commission": "Request Custom Work",
       "scroll": "Scroll"
     },
     "projects": {
